@@ -1,11 +1,5 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { createClient } from "@supabase/supabase-js";
-
-/* ── Supabase client ── */
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+import { supabase } from "./supabaseClient.js";
 
 /* ── Save entire app state to Supabase (upsert single row per workspace) ── */
 const saveState = async (workspaceId, listings, stockData, goals) => {

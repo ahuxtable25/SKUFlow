@@ -180,3 +180,26 @@ end;
 $$;
 
 grant execute on function create_workspace_and_profile(text, text) to authenticated;
+
+-- ─────────────────────────────────────────
+-- 10. WAITLIST
+-- Public landing page at /waitlist collects signups for the launch campaign.
+-- Anyone can insert (join); only workspace admins can read the list.
+-- ─────────────────────────────────────────
+create table waitlist (
+  id         uuid primary key default gen_random_uuid(),
+  email      text not null unique,
+  name       text,
+  notified   boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+alter table waitlist enable row level security;
+
+create policy "anyone can join waitlist" on waitlist
+  for insert
+  with check (true);
+
+create policy "admins can view waitlist" on waitlist
+  for select
+  using (exists (select 1 from profiles where id = auth.uid() and is_admin = true));
