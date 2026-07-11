@@ -552,7 +552,6 @@ const NAV = [
   {id:"analytics",   label:"Analytics",      icon:"↗", group:"Reports"  },
   {id:"growth",      label:"Growth",         icon:"📈",group:"Reports"  },
   {id:"history",     label:"History",        icon:"🗂", group:"Reports"  },
-  {id:"versions",    label:"Version History", icon:"🔄", group:"Reports"  },
   {id:"settings",    label:"Settings",        icon:"⚙️", group:"Settings"  },
 ];
 const TITLES = {
@@ -7124,16 +7123,16 @@ const WEEK_HIST_COLS = [
 /* ═══════════════════════════════════════════════════════════════
    VERSION HISTORY — Local backup restore
 ═══════════════════════════════════════════════════════════════ */
-function VersionHistory({ onRestore }) {
+function VersionHistory({ workspaceId, onRestore }) {
   const [versions, setVersions]     = useState([]);
   const [selected, setSelected]     = useState(null);
   const [confirming, setConfirming] = useState(false);
 
   useEffect(() => {
-    const v = loadLocalVersions();
+    const v = loadLocalVersions(workspaceId);
     setVersions(v);
     if (v.length) setSelected(v[0]);
-  }, []);
+  }, [workspaceId]);
 
   const exportVersion = (v) => {
     // ── Pure-JS XLSX builder — no library or CDN needed ──
@@ -7755,7 +7754,7 @@ function AccountTab({ profile, workspace, onLogout }) {
   );
 }
 
-function Settings({ liveData, setLiveData, customPlatforms, setListings, profile, workspace, onLogout }) {
+function Settings({ liveData, setLiveData, customPlatforms, setListings, profile, workspace, onLogout, workspaceId, onRestoreVersion }) {
   // platformAccounts shape: { Vinted: ["Vinted 1","Vinted 2"], Depop: ["Depop"], ... }
   const initAccounts = () => {
     const pa = liveData?.platformAccounts;
@@ -7875,6 +7874,7 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
           {id:"stock_",    label:"Stock"},
           {id:"display",   label:"Display"},
           {id:"notifs",    label:"Notifications"},
+          {id:"versions",  label:"Version History"},
         ].map(t => (
           <div key={t.id} className={`tab ${settingsTab===t.id?"active":""}`} onClick={()=>setSettingsTab(t.id)}>{t.label}</div>
         ))}
@@ -8164,6 +8164,11 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
           Push notifications require browser permission. Tap the 🔔 icon in the top bar to enable.
         </div>
       </div>
+      )}
+
+      {/* ── VERSION HISTORY TAB ── */}
+      {settingsTab==="versions" && (
+        <VersionHistory workspaceId={workspaceId} onRestore={onRestoreVersion} />
       )}
 
     </div>
@@ -9227,8 +9232,7 @@ export default function App() {
             {view==="analytics"   && <Analytics listings={listings} stockData={stockData} customPlatforms={customPlatforms} liveData={liveData} />}
             {view==="growth"      && <Growth listings={listings} stockData={stockData} />}
             {view==="history"     && <History listings={listings} stockData={stockData} liveData={liveData} />}
-            {view==="settings"    && <Settings liveData={liveData} setLiveData={setLiveData} customPlatforms={customPlatforms} setListings={setListings} profile={profile} workspace={workspace} onLogout={handleLogout} />}
-            {view==="versions"    && <VersionHistory onRestore={(v)=>{ setListingsRaw(v.listings); setStockDataRaw(v.stockData); setView("dashboard"); }} />}
+            {view==="settings"    && <Settings liveData={liveData} setLiveData={setLiveData} customPlatforms={customPlatforms} setListings={setListings} profile={profile} workspace={workspace} onLogout={handleLogout} workspaceId={workspaceId} onRestoreVersion={(v)=>{ setListingsRaw(v.listings); setStockDataRaw(v.stockData); setView("dashboard"); }} />}
           </div>
         </div>
       </div>
