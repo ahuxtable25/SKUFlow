@@ -8260,20 +8260,17 @@ function LoginScreen({ onLoggedIn }) {
       setError(signUpErr.message);
       return;
     }
+    // Stash the workspace/name info so the app can finish setup once a session
+    // exists — whether that's right now, or later after email confirmation.
+    try {
+      localStorage.setItem("sf_pending_signup", JSON.stringify({
+        workspaceName: wsName.trim(), fullName: fullName.trim(),
+      }));
+    } catch (_) {}
+    setLoading(false);
     // No session yet — project requires email confirmation before sign-in
     if (!data.session) {
-      setLoading(false);
       setConfirmEmail(true);
-      return;
-    }
-    // Signed in immediately — create the workspace + profile for this new account
-    const { error: rpcErr } = await supabase.rpc("create_workspace_and_profile", {
-      p_workspace_name: wsName.trim(),
-      p_full_name: fullName.trim(),
-    });
-    setLoading(false);
-    if (rpcErr) {
-      setError(`Account created but workspace setup failed: ${rpcErr.message}`);
       return;
     }
     onLoggedIn?.();
@@ -8416,12 +8413,41 @@ export default function App() {
     if (!session?.user) return;
     let cancelled = false;
     (async () => {
-      const { data: prof, error: profErr } = await supabase
+      let { data: prof, error: profErr } = await supabase
         .from("profiles")
         .select("full_name, is_admin, workspace_id")
         .eq("id", session.user.id)
         .single();
       if (cancelled) return;
+
+      // No profile yet — if this session came from our sign-up form (stashed
+      // before email confirmation, since that delays session creation),
+      // finish setup now instead of treating it as an admin-provisioning gap.
+      if ((profErr || !prof)) {
+        let pending = null;
+        try { pending = JSON.parse(localStorage.getItem("sf_pending_signup") || "null"); } catch (_) {}
+        if (pending) {
+          const { error: rpcErr } = await supabase.rpc("create_workspace_and_profile", {
+            p_workspace_name: pending.workspaceName,
+            p_full_name: pending.fullName,
+          });
+          if (cancelled) return;
+          if (rpcErr) {
+            setAuthError(`Workspace setup failed: ${rpcErr.message}`);
+            return;
+          }
+          try { localStorage.removeItem("sf_pending_signup"); } catch (_) {}
+          const retry = await supabase
+            .from("profiles")
+            .select("full_name, is_admin, workspace_id")
+            .eq("id", session.user.id)
+            .single();
+          if (cancelled) return;
+          prof = retry.data;
+          profErr = retry.error;
+        }
+      }
+
       if (profErr || !prof) {
         setAuthError("No profile found for this account. Contact support to get your workspace set up.");
         return;
