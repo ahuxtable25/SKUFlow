@@ -203,3 +203,69 @@ create policy "anyone can join waitlist" on waitlist
 create policy "admins can view waitlist" on waitlist
   for select
   using (exists (select 1 from profiles where id = auth.uid() and is_admin = true));
+
+-- ─────────────────────────────────────────
+-- 11. VERSION HISTORY (server-side, replaces localStorage snapshots)
+-- One row per workspace per day. Auto-filled at 6am UK time (DST-aware)
+-- by pg_cron; also upserted on-demand by the app's manual Save button.
+-- Rolling 14-day retention, cleaned up by the same cron job.
+-- ─────────────────────────────────────────
+create table app_state_snapshots (
+  id            uuid primary key default gen_random_uuid(),
+  workspace_id  uuid not null references workspaces(id) on delete cascade,
+  snapshot_date date not null,
+  listings      jsonb not null default '[]'::jsonb,
+  stock_data    jsonb not null default '[]'::jsonb,
+  goals         jsonb not null default '{}'::jsonb,
+  manual        boolean not null default false,
+  created_at    timestamptz not null default now(),
+  unique (workspace_id, snapshot_date)
+);
+
+alter table app_state_snapshots enable row level security;
+
+create policy "read own snapshots" on app_state_snapshots
+  for select
+  using (workspace_id = (select workspace_id from profiles where id = auth.uid()));
+
+-- Lets the app's manual "Save" button write an on-demand snapshot for today
+create policy "insert own snapshots" on app_state_snapshots
+  for insert
+  with check (workspace_id = (select workspace_id from profiles where id = auth.uid()));
+
+create policy "update own snapshots" on app_state_snapshots
+  for update
+  using (workspace_id = (select workspace_id from profiles where id = auth.uid()));
+
+-- Runs hourly but only does work at 6am Europe/London (handles BST/GMT automatically)
+create or replace function run_daily_snapshot()
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if extract(hour from (now() at time zone 'Europe/London')) <> 6 then
+    return;
+  end if;
+
+  insert into app_state_snapshots (workspace_id, snapshot_date, listings, stock_data, goals, manual)
+  select workspace_id, (now() at time zone 'Europe/London')::date, listings, stock_data, goals, false
+  from app_state
+  on conflict (workspace_id, snapshot_date) do update
+    set listings   = excluded.listings,
+        stock_data = excluded.stock_data,
+        goals      = excluded.goals,
+        created_at = now();
+  -- Note: does NOT overwrite manual=true rows' flag, only the automatic ones —
+  -- if a manual save already happened today, this still refreshes its data
+  -- but leaves it correctly attributed as that day's snapshot either way.
+
+  delete from app_state_snapshots
+  where snapshot_date < (now() at time zone 'Europe/London')::date - interval '14 days';
+end;
+$$;
+
+-- Requires the pg_cron extension (enable via Database > Extensions in the
+-- Supabase dashboard, or: create extension if not exists pg_cron;)
+select cron.schedule('daily-app-state-snapshot', '0 * * * *', 'select run_daily_snapshot();');
