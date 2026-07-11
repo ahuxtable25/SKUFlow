@@ -7739,11 +7739,11 @@ function AccountTab({ profile, workspace, onLogout }) {
       <SettingsHeader title="Set / Change Password" sub="Use this if you signed in via an email link and haven't set a password yet, or want to change your existing one." />
       <form onSubmit={updatePassword}>
         <div style={{marginBottom:10}}>
-          <input className="finp" type="password" autoComplete="new-password" placeholder="New password"
+          <PasswordField autoComplete="new-password" placeholder="New password"
             value={pw1} onChange={e=>setPw1(e.target.value)} />
         </div>
         <div style={{marginBottom:10}}>
-          <input className="finp" type="password" autoComplete="new-password" placeholder="Confirm new password"
+          <PasswordField autoComplete="new-password" placeholder="Confirm new password"
             value={pw2} onChange={e=>setPw2(e.target.value)} />
         </div>
         {msg && (
@@ -8179,6 +8179,30 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
 /* ═══════════════════════════════════════════════════════════════
    AUTH — Login screen + status gates
 ═══════════════════════════════════════════════════════════════ */
+function PasswordField({ value, onChange, placeholder, autoComplete, required }) {
+  const [visible, setVisible] = useState(false);
+  return (
+    <div style={{position:"relative"}}>
+      <input
+        className="finp" type={visible ? "text" : "password"}
+        autoComplete={autoComplete} required={required}
+        value={value} onChange={onChange} placeholder={placeholder}
+        style={{paddingRight:36}}
+      />
+      <button
+        type="button" onClick={() => setVisible(v => !v)}
+        title={visible ? "Hide password" : "Show password"}
+        style={{
+          position:"absolute", right:6, top:"50%", transform:"translateY(-50%)",
+          background:"none", border:"none", cursor:"pointer", padding:4,
+          fontSize:13, color:"var(--txd)", lineHeight:1,
+        }}>
+        {visible ? "🙈" : "👁"}
+      </button>
+    </div>
+  );
+}
+
 function FieldLabel({ children }) {
   return (
     <label style={{display:"block", fontSize:10.5, fontWeight:700, textTransform:"uppercase",
@@ -8317,8 +8341,7 @@ function LoginScreen({ onLoggedIn }) {
 
         <div style={{marginBottom:20}}>
           <FieldLabel>Password</FieldLabel>
-          <input
-            className="finp" type="password"
+          <PasswordField
             autoComplete={mode === "signin" ? "current-password" : "new-password"} required
             value={password} onChange={e => setPassword(e.target.value)}
             placeholder="••••••••"
