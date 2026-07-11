@@ -1,0 +1,130 @@
+{
+  "stock": [
+    {
+      "bundleSku": "BDL-001",
+      "name": "Vintage Levi's 501 Bundle x20",
+      "website": "Depop",
+      "seller": "VintageWholesaleUK",
+      "datePurchased": "2026-06-10",
+      "dateArrived": "2026-06-14",
+      "contentDetails": "Mixed waist sizes 30-36, various washes",
+      "received": 20,
+      "sellable": 20,
+      "costPer": 8.5,
+      "totalCost": 170,
+      "imported": true,
+      "restock": false
+    },
+    {
+      "bundleSku": "BDL-002",
+      "name": "Nike Windbreaker Bundle x15",
+      "website": "eBay",
+      "seller": "RetroSportsLot",
+      "datePurchased": "2026-06-18",
+      "dateArrived": "2026-06-22",
+      "contentDetails": "90s-00s shell jackets, mixed colourways",
+      "received": 15,
+      "sellable": 14,
+      "costPer": 6,
+      "totalCost": 90,
+      "imported": true,
+      "restock": false
+    },
+    {
+      "bundleSku": "BDL-003",
+      "name": "Y2K Baby Tees Bundle x25",
+      "website": "Vinted",
+      "seller": "Y2KArchive",
+      "datePurchased": "2026-06-25",
+      "dateArrived": "2026-06-29",
+      "contentDetails": "Graphic tees, S-M sizing",
+      "received": 25,
+      "sellable": 25,
+      "costPer": 3.2,
+      "totalCost": 80,
+      "imported": true,
+      "restock": false
+    },
+    {
+      "bundleSku": "BDL-004",
+      "name": "Carhartt Workwear Bundle x12",
+      "website": "Fleek",
+      "seller": "WorkwearJobLot",
+      "datePurchased": "2026-07-01",
+      "dateArrived": "2026-07-04",
+      "contentDetails": "Detroit jackets + carpenter pants",
+      "received": 12,
+      "sellable": 12,
+      "costPer": 12,
+      "totalCost": 144,
+      "imported": true,
+      "restock": false
+    },
+    {
+      "bundleSku": "BDL-005",
+      "name": "Harrington Jackets Bundle x10",
+      "website": "VWS",
+      "seller": "British Casuals Ltd",
+      "datePurchased": "2026-07-05",
+      "dateArrived": "2026-07-08",
+      "contentDetails": "Classic fishtail & harrington styles",
+      "received": 10,
+      "sellable": 10,
+      "costPer": 9.5,
+      "totalCost": 95,
+      "imported": true,
+      "restock": false
+    },
+    {
+      "bundleSku": "BDL-006",
+      "name": "Band Tees Mixed Bundle x18",
+      "website": "Depop",
+      "seller": "MerchVaultUK",
+      "datePurchased": "2026-07-09",
+      "dateArrived": "2026-07-11",
+      "contentDetails": "Rock/metal band tees, mixed era",
+      "received": 18,
+      "sellable": 18,
+      "costPer": 4.75,
+      "totalCost": 85.5,
+      "imported": false,
+      "restock": false
+    }
+  ],
+  "listings": [
+    { "bundleSku":"BDL-001","sku":"A1","brand":"Levi's","type":"Jeans","colour":"Blue Wash","size":"W32","desc":"501 straight leg, light distressing","length":"32","pitToPit":"","price":8.5,"listed":true,"sold":true,"shipped":true,"dayListed":"2026-06-15","daySold":"2026-06-19","days":4,"platform":"Depop","platforms":["Depop","Vinted"],"platformDates":{"Depop":"2026-06-15","Vinted":"2026-06-15"},"soldPrice":42,"profit":33.5,"notes":"Quick sale" },
+    { "bundleSku":"BDL-001","sku":"A2","brand":"Levi's","type":"Jeans","colour":"Black","size":"W34","desc":"501 straight leg, faded black","length":"34","pitToPit":"","price":8.5,"listed":true,"sold":true,"shipped":true,"dayListed":"2026-06-16","daySold":"2026-06-24","days":8,"platform":"Vinted","platforms":["Vinted"],"platformDates":{"Vinted":"2026-06-16"},"soldPrice":38,"profit":29.5,"notes":"" },
+    { "bundleSku":"BDL-001","sku":"A3","brand":"Levi's","type":"Jeans","colour":"Mid Wash","size":"W30","desc":"501 straight leg, classic wash","length":"30","pitToPit":"","price":8.5,"listed":true,"sold":true,"shipped":false,"dayListed":"2026-06-20","daySold":"2026-07-05","days":15,"platform":"eBay","platforms":["eBay","Depop"],"platformDates":{"eBay":"2026-06-20","Depop":"2026-06-20"},"soldPrice":45,"profit":36.5,"notes":"Awaiting packaging" },
+    { "bundleSku":"BDL-001","sku":"A4","brand":"Levi's","type":"Jeans","colour":"Blue Wash","size":"W36","desc":"501 straight leg, light wear","length":"36","pitToPit":"","price":8.5,"listed":true,"sold":false,"shipped":false,"dayListed":"2026-07-02","daySold":null,"days":null,"platform":null,"platforms":["Depop","Vinted"],"platformDates":{"Depop":"2026-07-02","Vinted":"2026-07-02"},"soldPrice":null,"profit":null,"notes":"" },
+    { "bundleSku":"BDL-001","sku":"A5","brand":"Levi's","type":"Jeans","colour":"Black","size":"W28","desc":"501 straight leg, dark wash","length":"28","pitToPit":"","price":8.5,"listed":false,"sold":false,"shipped":false,"dayListed":null,"daySold":null,"days":null,"platform":null,"platforms":[],"platformDates":{},"soldPrice":null,"profit":null,"notes":"" },
+
+    { "bundleSku":"BDL-002","sku":"A6","brand":"Nike","type":"Jacket","colour":"Navy/Red","size":"L","desc":"90s shell jacket, embroidered swoosh","length":"","pitToPit":"24","price":6,"listed":true,"sold":true,"shipped":true,"dayListed":"2026-06-23","daySold":"2026-06-27","days":4,"platform":"Whatnot","platforms":["Whatnot"],"platformDates":{"Whatnot":"2026-06-23"},"soldPrice":32,"profit":26,"notes":"" },
+    { "bundleSku":"BDL-002","sku":"A7","brand":"Nike","type":"Jacket","colour":"Black/White","size":"M","desc":"00s windbreaker, full zip","length":"","pitToPit":"22","price":6,"listed":true,"sold":true,"shipped":true,"dayListed":"2026-06-24","daySold":"2026-07-01","days":7,"platform":"Depop","platforms":["Depop","eBay"],"platformDates":{"Depop":"2026-06-24","eBay":"2026-06-24"},"soldPrice":28,"profit":22,"notes":"" },
+    { "bundleSku":"BDL-002","sku":"A8","brand":"Nike","type":"Jacket","colour":"Grey","size":"XL","desc":"90s shell jacket, oversized fit","length":"","pitToPit":"26","price":6,"listed":true,"sold":true,"shipped":false,"dayListed":"2026-06-25","daySold":"2026-07-09","days":14,"platform":"Vinted","platforms":["Vinted"],"platformDates":{"Vinted":"2026-06-25"},"soldPrice":30,"profit":24,"notes":"" },
+    { "bundleSku":"BDL-002","sku":"A9","brand":"Nike","type":"Jacket","colour":"Navy","size":"S","desc":"90s shell jacket, cropped fit","length":"","pitToPit":"20","price":6,"listed":true,"sold":false,"shipped":false,"dayListed":"2026-07-06","daySold":null,"days":null,"platform":null,"platforms":["Depop"],"platformDates":{"Depop":"2026-07-06"},"soldPrice":null,"profit":null,"notes":"" },
+    { "bundleSku":"BDL-002","sku":"A10","brand":"Nike","type":"Jacket","colour":"Red/Black","size":"M","desc":"00s windbreaker, colourblock","length":"","pitToPit":"22","price":6,"listed":false,"sold":false,"shipped":false,"dayListed":null,"daySold":null,"days":null,"platform":null,"platforms":[],"platformDates":{},"soldPrice":null,"profit":null,"notes":"" },
+
+    { "bundleSku":"BDL-003","sku":"A11","brand":"Unbranded","type":"T-Shirt","colour":"Pink","size":"S","desc":"Y2K graphic baby tee, butterfly print","length":"","pitToPit":"16","price":3.2,"listed":true,"sold":true,"shipped":true,"dayListed":"2026-06-30","daySold":"2026-07-02","days":2,"platform":"Depop","platforms":["Depop","Vinted"],"platformDates":{"Depop":"2026-06-30","Vinted":"2026-06-30"},"soldPrice":18,"profit":14.8,"notes":"" },
+    { "bundleSku":"BDL-003","sku":"A12","brand":"Unbranded","type":"T-Shirt","colour":"Baby Blue","size":"S","desc":"Y2K graphic baby tee, star print","length":"","pitToPit":"16","price":3.2,"listed":true,"sold":true,"shipped":true,"dayListed":"2026-06-30","daySold":"2026-07-04","days":4,"platform":"Depop","platforms":["Depop"],"platformDates":{"Depop":"2026-06-30"},"soldPrice":16,"profit":12.8,"notes":"" },
+    { "bundleSku":"BDL-003","sku":"A13","brand":"Unbranded","type":"T-Shirt","colour":"White","size":"M","desc":"Y2K graphic baby tee, flame print","length":"","pitToPit":"17","price":3.2,"listed":true,"sold":true,"shipped":false,"dayListed":"2026-07-01","daySold":"2026-07-10","days":9,"platform":"Vinted","platforms":["Vinted","Depop"],"platformDates":{"Vinted":"2026-07-01","Depop":"2026-07-01"},"soldPrice":15,"profit":11.8,"notes":"" },
+    { "bundleSku":"BDL-003","sku":"A14","brand":"Unbranded","type":"T-Shirt","colour":"Black","size":"S","desc":"Y2K graphic baby tee, tribal print","length":"","pitToPit":"16","price":3.2,"listed":true,"sold":false,"shipped":false,"dayListed":"2026-07-08","daySold":null,"days":null,"platform":null,"platforms":["Depop","Vinted"],"platformDates":{"Depop":"2026-07-08","Vinted":"2026-07-08"},"soldPrice":null,"profit":null,"notes":"" },
+    { "bundleSku":"BDL-003","sku":"A15","brand":"Unbranded","type":"T-Shirt","colour":"Lilac","size":"M","desc":"Y2K graphic baby tee, heart print","length":"","pitToPit":"17","price":3.2,"listed":false,"sold":false,"shipped":false,"dayListed":null,"daySold":null,"days":null,"platform":null,"platforms":[],"platformDates":{},"soldPrice":null,"profit":null,"notes":"" },
+
+    { "bundleSku":"BDL-004","sku":"A16","brand":"Carhartt","type":"Jacket","colour":"Brown Duck","size":"L","desc":"Detroit jacket, blanket lined","length":"","pitToPit":"25","price":12,"listed":true,"sold":true,"shipped":true,"dayListed":"2026-07-05","daySold":"2026-07-09","days":4,"platform":"eBay","platforms":["eBay","Depop"],"platformDates":{"eBay":"2026-07-05","Depop":"2026-07-05"},"soldPrice":65,"profit":53,"notes":"" },
+    { "bundleSku":"BDL-004","sku":"A17","brand":"Carhartt","type":"Trousers","colour":"Sandstone","size":"34x32","desc":"Carpenter pants, double knee","length":"32","pitToPit":"","price":12,"listed":true,"sold":true,"shipped":true,"dayListed":"2026-07-05","daySold":"2026-07-08","days":3,"platform":"Depop","platforms":["Depop"],"platformDates":{"Depop":"2026-07-05"},"soldPrice":42,"profit":30,"notes":"" },
+    { "bundleSku":"BDL-004","sku":"A18","brand":"Carhartt","type":"Jacket","colour":"Black","size":"XL","desc":"Detroit jacket, light wear","length":"","pitToPit":"27","price":12,"listed":true,"sold":false,"shipped":false,"dayListed":"2026-07-09","daySold":null,"days":null,"platform":null,"platforms":["eBay","Depop"],"platformDates":{"eBay":"2026-07-09","Depop":"2026-07-09"},"soldPrice":null,"profit":null,"notes":"" },
+    { "bundleSku":"BDL-004","sku":"A19","brand":"Carhartt","type":"Trousers","colour":"Navy","size":"32x30","desc":"Carpenter pants, faded","length":"30","pitToPit":"","price":12,"listed":true,"sold":false,"shipped":false,"dayListed":"2026-07-10","daySold":null,"days":null,"platform":null,"platforms":["Depop"],"platformDates":{"Depop":"2026-07-10"},"soldPrice":null,"profit":null,"notes":"" },
+    { "bundleSku":"BDL-004","sku":"A20","brand":"Carhartt","type":"Jacket","colour":"Brown Duck","size":"M","desc":"Detroit jacket, corduroy collar","length":"","pitToPit":"23","price":12,"listed":false,"sold":false,"shipped":false,"dayListed":null,"daySold":null,"days":null,"platform":null,"platforms":[],"platformDates":{},"soldPrice":null,"profit":null,"notes":"" },
+
+    { "bundleSku":"BDL-005","sku":"A21","brand":"Ben Sherman","type":"Jacket","colour":"Navy","size":"M","desc":"Classic harrington, tartan lining","length":"","pitToPit":"22","price":9.5,"listed":true,"sold":true,"shipped":true,"dayListed":"2026-07-08","daySold":"2026-07-10","days":2,"platform":"Depop","platforms":["Depop"],"platformDates":{"Depop":"2026-07-08"},"soldPrice":48,"profit":38.5,"notes":"" },
+    { "bundleSku":"BDL-005","sku":"A22","brand":"Baracuta","type":"Jacket","colour":"Black","size":"L","desc":"G9 harrington, fishtail hem","length":"","pitToPit":"24","price":9.5,"listed":true,"sold":false,"shipped":false,"dayListed":"2026-07-09","daySold":null,"days":null,"platform":null,"platforms":["Depop","eBay"],"platformDates":{"Depop":"2026-07-09","eBay":"2026-07-09"},"soldPrice":null,"profit":null,"notes":"" },
+    { "bundleSku":"BDL-005","sku":"A23","brand":"Ben Sherman","type":"Jacket","colour":"Olive","size":"S","desc":"Classic harrington, light wear","length":"","pitToPit":"20","price":9.5,"listed":true,"sold":false,"shipped":false,"dayListed":"2026-07-10","daySold":null,"days":null,"platform":null,"platforms":["Vinted"],"platformDates":{"Vinted":"2026-07-10"},"soldPrice":null,"profit":null,"notes":"" },
+    { "bundleSku":"BDL-005","sku":"A24","brand":"Fred Perry","type":"Jacket","colour":"Burgundy","size":"M","desc":"Harrington, twin tipped collar","length":"","pitToPit":"22","price":9.5,"listed":false,"sold":false,"shipped":false,"dayListed":null,"daySold":null,"days":null,"platform":null,"platforms":[],"platformDates":{},"soldPrice":null,"profit":null,"notes":"" }
+  ],
+  "goals": {
+    "weekly": "300",
+    "monthly": "1200",
+    "weeklyRev": "600",
+    "monthlyRev": "2500"
+  }
+}

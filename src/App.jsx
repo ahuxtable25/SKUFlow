@@ -9032,6 +9032,7 @@ export default function App() {
         if (d.liveData)       setLiveData(d.liveData);
         setStorageStatus("loading");
         const ok = await saveState(
+          workspaceId,
           d.listings || listings,
           d.stock    || stockData,
           { weekly: d.goals?.weekly || weeklyGoal, monthly: d.goals?.monthly || monthlyGoal, weeklyRev: d.goals?.weeklyRev || weeklyRevGoal, monthlyRev: d.goals?.monthlyRev || monthlyRevGoal }
