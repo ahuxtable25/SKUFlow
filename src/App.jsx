@@ -500,6 +500,51 @@ const TITLES = {
 };
 
 /* ═══════════════════════════════════════════════════════════════
+   NAV / SETTINGS SVG ICONS — 15×15, stroke 1.75, currentColor
+═══════════════════════════════════════════════════════════════ */
+const IcoDashboard  = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>;
+const IcoStock      = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>;
+const IcoListings   = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>;
+const IcoMovement   = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>;
+const IcoData       = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>;
+const IcoPin        = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>;
+const IcoDrafter    = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>;
+const IcoSold       = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>;
+const IcoShipping   = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>;
+const IcoLive       = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>;
+const IcoCalc       = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>;
+const IcoAnalytics  = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>;
+const IcoGrowth     = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>;
+const IcoHistory    = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3h5l2 3H3z"/><path d="M3 8h18v13H3z"/></svg>;
+const IcoBell       = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>;
+const IcoSettings   = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>;
+const IcoUser       = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>;
+const IcoMail       = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>;
+const IcoBilling    = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>;
+const IcoVersion    = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>;
+const IcoPrefs      = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>;
+const IcoPlat       = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>;
+const IcoGoals      = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>;
+const IcoDataMgmt   = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>;
+
+function NavItem({ label, icon, active, onClick }) {
+  return (
+    <div className={`nav-item2${active ? " active" : ""}`} onClick={onClick}>
+      <span className="nav-icon2">{icon}</span>
+      <span style={{flex:1}}>{label}</span>
+    </div>
+  );
+}
+
+const NAV_ICONS = {
+  dashboard: IcoDashboard, stock: IcoStock, listings: IcoListings,
+  movement: IcoMovement, listingdata: IcoData, marklisted: IcoPin,
+  drafter: IcoDrafter, marksold: IcoSold, shipping: IcoShipping,
+  livedata: IcoLive, calculator: IcoCalc, analytics: IcoAnalytics,
+  growth: IcoGrowth, history: IcoHistory, settings: IcoSettings,
+};
+
+/* ═══════════════════════════════════════════════════════════════
    GLOBAL CSS
 ═══════════════════════════════════════════════════════════════ */
 const CSS = `
@@ -517,6 +562,30 @@ const CSS = `
   --shm:0 4px 24px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.06);
   --shl:0 8px 40px rgba(0,0,0,.14);
   --sb-w:212px;--tb-h:50px;--r:6px;--r2:8px;
+
+  --sidebar-w:     220px;
+  --sidebar-bg:    #16181D;
+  --main-bg:       #F7F8FA;
+  --card-bg:       #FFFFFF;
+  --border-dark:   #2A2D35;
+  --txs:           #D1D5DB;
+  --acd:           #4F46E5;
+  --sidebar-tx:    #9CA3AF;
+  --sidebar-txh:   #F9FAFB;
+  --sidebar-hover: #1E2028;
+  --rd:            #DC2626;
+  --rdl:           #FEF2F2;
+  --shadow:        0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:     0 4px 12px rgba(0,0,0,.08);
+}
+[data-theme="dark"] {
+  --main-bg:  #0E1015;
+  --card-bg:  #16181D;
+  --bd:       #2A2D35;
+  --tx:       #F9FAFB;
+  --txm:      #9CA3AF;
+  --txd:      #6B7280;
+  --sf2:      #1E2028;
 }
 body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--tx);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}input,select,textarea{font-size:16px !important;}input[type=checkbox],input[type=radio]{font-size:inherit !important;}
 
@@ -524,8 +593,8 @@ body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--tx)
 .app{display:flex;height:100vh;overflow:hidden}
 
 /* Sidebar */
-.sidebar{background:var(--sf);border-right:1px solid var(--bd);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
-.logo-area{padding:15px 13px 13px;border-bottom:1px solid rgba(255,255,255,.12);display:flex;align-items:center;gap:10px;overflow:hidden;background:var(--nv);flex-shrink:0}
+.sidebar{background:var(--sidebar-bg);border-right:1px solid var(--border-dark);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+.logo-area{padding:15px 13px 13px;border-bottom:1px solid var(--border-dark);display:flex;align-items:center;gap:10px;overflow:hidden;background:var(--sidebar-bg);flex-shrink:0}
 .logo-badge{flex-shrink:0;background:#f0ebdb;border-radius:5px;padding:5px 7px 4px;display:flex;flex-direction:column;line-height:1.15}
 .logo-badge span{font-size:6.5px;font-weight:900;color:var(--nv);letter-spacing:.4px;display:block;white-space:nowrap;text-transform:uppercase}
 .logo-badge .since{font-size:5px;color:var(--ac);letter-spacing:1px;margin-top:2px}
@@ -541,15 +610,30 @@ nav::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
 .nav-item.active{color:var(--ac);border-left-color:var(--ac);background:var(--acl)}
 .nav-icon{font-size:13px;width:18px;min-width:18px;text-align:center;flex-shrink:0}
 .nav-dot{width:7px;height:7px;border-radius:50%;background:var(--ac);position:absolute;right:12px;top:50%;transform:translateY(-50%);box-shadow:0 0 0 2px var(--sf)}
-.sb-foot{padding:11px 13px;border-top:1px solid var(--bd);font-size:10px;color:var(--txd);display:flex;align-items:center;gap:6px;overflow:hidden;white-space:nowrap;flex-shrink:0}
+.sb-foot{padding:11px 13px;border-top:1px solid var(--border-dark);font-size:10px;color:var(--sidebar-tx);display:flex;align-items:center;gap:6px;overflow:hidden;white-space:nowrap;flex-shrink:0}
 .live-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* Redesigned nav items (Phase 1 visual overhaul) */
+.logo-mark{width:30px;height:30px;background:var(--ac);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0}
+.logo-name2{font-size:13px;font-weight:700;color:var(--sidebar-txh);letter-spacing:-.2px;line-height:1.2}
+.logo-sub2{font-size:10px;color:#4B5563;font-weight:500}
+.nav-item2{display:flex;align-items:center;gap:9px;padding:7px 18px;color:var(--sidebar-tx);font-size:12.5px;font-weight:500;border-left:3px solid transparent;cursor:pointer;transition:all .12s;white-space:nowrap;position:relative}
+.nav-item2:hover{background:var(--sidebar-hover);color:var(--sidebar-txh)}
+.nav-item2.active{color:#fff;background:rgba(99,102,241,.12);border-left-color:var(--ac)}
+.nav-icon2{width:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-icon2 svg{opacity:.75}
+.nav-item2.active .nav-icon2 svg{opacity:1}
+.workspace-badge{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,.04);border-radius:var(--r2);border:1px solid var(--border-dark);cursor:pointer}
+.ws-avatar{width:26px;height:26px;border-radius:6px;background:linear-gradient(135deg,#6366F1,#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0}
+.ws-name{font-size:11.5px;font-weight:600;color:#E5E7EB;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tier-pill{display:inline-flex;font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:1px 7px;border-radius:20px;background:rgba(99,102,241,.2);color:#A5B4FC;margin-top:1px}
 
 /* Main */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 .sunday-banner{background:var(--nv);color:#fff;padding:9px 18px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:700;flex-shrink:0;gap:10px;flex-wrap:wrap}
 .sunday-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;padding:4px 12px;border-radius:var(--r);cursor:pointer;font-family:Arial,sans-serif;font-size:11px;font-weight:700;transition:background .12s}
 .sunday-btn:hover{background:rgba(255,255,255,.22)}
-.topbar{height:var(--tb-h);background:var(--sf);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 10px;gap:6px;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.topbar{height:var(--tb-h);background:var(--card-bg);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 10px;gap:6px;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .topbar::-webkit-scrollbar{display:none}
 @media(max-width:640px){.tb-date{display:none!important}.topbar{gap:4px;padding:0 8px}}
 .menu-tog{background:none;border:1px solid var(--bdd);border-radius:var(--r);cursor:pointer;padding:5px 9px;font-size:15px;color:var(--txm);transition:all .12s;flex-shrink:0;line-height:1}
@@ -559,8 +643,10 @@ nav::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
 .tb-date{font-size:11px;color:var(--txd);white-space:nowrap}
 @media(max-width:560px){.tb-date{display:none}}
 @media(max-width:480px){.tb-import{display:none}}
-.content{flex:1;overflow-y:auto;overflow-x:hidden;padding:18px 22px}
+.content{flex:1;overflow-y:auto;overflow-x:hidden;padding:18px 22px;background:var(--main-bg)}
 @media(max-width:600px){.content{padding:13px 13px;overflow-x:hidden}}
+.notif-btn{width:32px;height:32px;border-radius:var(--r2);background:var(--sf2);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--txm);flex-shrink:0}
+.notif-btn:hover{background:var(--acl);color:var(--ac);border-color:var(--ac2)}
 
 /* Buttons */
 .btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;font-family:Arial,sans-serif;font-size:11px;font-weight:700;cursor:pointer;border-radius:var(--r);border:1px solid transparent;transition:background .12s,border-color .12s,color .12s,opacity .12s;white-space:nowrap;text-transform:uppercase;letter-spacing:.4px;line-height:1}
@@ -9069,13 +9155,10 @@ export default function App() {
         {/* ─── SIDEBAR ─── */}
         <div className="sidebar" style={sidebarStyle}>
           <div className="logo-area">
-            <div className="logo-badge">
-              <span>SKU</span>
-              <span>FLOW</span>
-            </div>
-            <div className="logo-text">
-              <div className="logo-main">SKU<br/>Flow</div>
-              <div className="logo-sub">Business OS</div>
+            <div className="logo-mark">SF</div>
+            <div>
+              <div className="logo-name2">SKU Flow</div>
+              <div className="logo-sub2">Reseller OS</div>
             </div>
           </div>
 
@@ -9083,19 +9166,22 @@ export default function App() {
             {Object.entries(navGroups).map(([group, items]) => (
               <div key={group}>
                 <div className="nav-group-label">{group}</div>
-                {items.map(item => (
-                  <div
-                    key={item.id}
-                    className={`nav-item ${view===item.id?"active":""}`}
-                    onClick={() => navigate(item.id)}
-                  >
-                    <span className="nav-icon">{item.icon}</span>
-                    <span style={{flex:1}}>{item.label}</span>
-                    {item.id==="shipping" && toShipCount>0 && (
-                      <span className="nav-dot" title={`${toShipCount} to ship`} />
-                    )}
-                  </div>
-                ))}
+                {items.map(item => {
+                  const Icon = NAV_ICONS[item.id];
+                  return (
+                    <div key={item.id} style={{position:"relative"}}>
+                      <NavItem
+                        label={item.label}
+                        icon={Icon ? <Icon/> : null}
+                        active={view===item.id}
+                        onClick={() => navigate(item.id)}
+                      />
+                      {item.id==="shipping" && toShipCount>0 && (
+                        <span className="nav-dot" title={`${toShipCount} to ship`} style={{top:"50%",transform:"translateY(-50%)"}} />
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             ))}
           </nav>
@@ -9105,13 +9191,15 @@ export default function App() {
               <div className="live-dot" style={{background:dotColor,boxShadow:dotShadow}} />
               <span>{statusLabel}</span>
             </div>
-            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:6}}>
-              <span style={{overflow:"hidden",textOverflow:"ellipsis"}} title={workspace.name}>
-                {workspace.name} · {workspace.tier}
-              </span>
-              <button onClick={handleLogout} title="Sign out"
-                style={{background:"none",border:"none",color:"var(--txd)",cursor:"pointer",
-                  fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:".4px",
+            <div className="workspace-badge" onClick={()=>navigate("settings")}>
+              <div className="ws-avatar">{(workspace.name||"SF").trim().slice(0,2).toUpperCase()}</div>
+              <div style={{flex:1,minWidth:0}}>
+                <div className="ws-name">{workspace.name}</div>
+                <div className="tier-pill">{workspace.tier}</div>
+              </div>
+              <button onClick={(e)=>{e.stopPropagation();handleLogout();}} title="Sign out"
+                style={{background:"none",border:"none",color:"var(--sidebar-tx)",cursor:"pointer",
+                  fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:".4px",
                   padding:0,flexShrink:0}}>
                 Sign out
               </button>
@@ -9152,12 +9240,9 @@ export default function App() {
               <button className="btn btn-o btn-sm" onClick={exportJSON}
                 style={{whiteSpace:"nowrap"}}>↓ Backup XLSX</button>
               {"Notification" in window && Notification.permission !== "granted" && (
-                <button onClick={requestNotifPermission}
-                  title="Enable push notifications"
-                  style={{flexShrink:0, padding:"5px 8px", fontSize:13,
-                    background:"#fff8e1", border:"1px solid #f0c040",
-                    borderRadius:"var(--r)", cursor:"pointer", color:"#7a4e0e"}}>
-                  🔔
+                <button className="notif-btn" onClick={requestNotifPermission}
+                  title="Enable push notifications">
+                  <IcoBell />
                 </button>
               )}
               <button onClick={hardSave} disabled={hardSaving}
