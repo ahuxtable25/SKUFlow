@@ -2861,13 +2861,13 @@ function ListingsTab({ listings, setListings, stockData, customPlatforms, liveDa
     if (search.trim()) {
       const s = search.toLowerCase();
       d = d.filter(l =>
-        l.sku.toLowerCase().includes(s) ||
-        l.name.toLowerCase().includes(s) ||
-        l.brand.toLowerCase().includes(s) ||
-        l.colour.toLowerCase().includes(s) ||
+        (l.sku||"").toLowerCase().includes(s) ||
+        (l.name||"").toLowerCase().includes(s) ||
+        (l.brand||"").toLowerCase().includes(s) ||
+        (l.colour||"").toLowerCase().includes(s) ||
         (l.platform && l.platform.toLowerCase().includes(s)) ||
         (l.notes && l.notes.toLowerCase().includes(s)) ||
-        l.type.toLowerCase().includes(s)
+        (l.type||"").toLowerCase().includes(s)
       );
     }
 
@@ -3650,10 +3650,10 @@ function CrossListTab({ listings, visiblePlats }) {
     if (search.trim()) {
       const s = search.toLowerCase();
       d = d.filter(l =>
-        l.sku.toLowerCase().includes(s) ||
-        l.colour.toLowerCase().includes(s) ||
+        (l.sku||"").toLowerCase().includes(s) ||
+        (l.colour||"").toLowerCase().includes(s) ||
         (l.name||"").toLowerCase().includes(s) ||
-        l.size.toLowerCase().includes(s)
+        (l.size||"").toLowerCase().includes(s)
       );
     }
     return d;
@@ -4299,11 +4299,11 @@ function MarkAsListed({ listings, setListings, customPlatforms, liveData }) {
     if (!skuSearch.trim()) return unlisted.slice(0, 8);
     const s = skuSearch.toLowerCase();
     return unlisted.filter(l =>
-      l.sku.toLowerCase().includes(s) ||
-      l.name.toLowerCase().includes(s) ||
-      l.colour.toLowerCase().includes(s) ||
-      l.size.toLowerCase().includes(s) ||
-      l.brand.toLowerCase().includes(s)
+      (l.sku||"").toLowerCase().includes(s) ||
+      (l.name||"").toLowerCase().includes(s) ||
+      (l.colour||"").toLowerCase().includes(s) ||
+      (l.size||"").toLowerCase().includes(s) ||
+      (l.brand||"").toLowerCase().includes(s)
     ).slice(0, 8);
   }, [unlisted, skuSearch]);
 
@@ -4721,7 +4721,7 @@ function ListingDrafter({ listings, setListings, liveData }) {
       : `EXACT colour to use: "${it.colour}" — write this IN FULL in the title, e.g. "Stussy ${it.colour} Denim Jorts"`;
 
     // Also check if item.colour itself contains multiple colours
-    const colourNote = it.colour.toLowerCase().includes(" and ") || it.colour.toLowerCase().includes("/")
+    const colourNote = (it.colour||"").toLowerCase().includes(" and ") || (it.colour||"").toLowerCase().includes("/")
       ? `⚠ This is a multi-colour item: "${it.colour}" — include ALL colours, not just the first one`
       : "";
 
@@ -4917,12 +4917,12 @@ Return exactly this JSON shape:
               ? unlisted.filter(l => {
                   const s = drafterSearch.toLowerCase();
                   return (
-                    l.sku.toLowerCase().includes(s) ||
-                    l.brand.toLowerCase().includes(s) ||
-                    l.name.toLowerCase().includes(s) ||
-                    l.colour.toLowerCase().includes(s) ||
-                    l.size.toLowerCase().includes(s) ||
-                    l.type.toLowerCase().includes(s)
+                    (l.sku||"").toLowerCase().includes(s) ||
+                    (l.brand||"").toLowerCase().includes(s) ||
+                    (l.name||"").toLowerCase().includes(s) ||
+                    (l.colour||"").toLowerCase().includes(s) ||
+                    (l.size||"").toLowerCase().includes(s) ||
+                    (l.type||"").toLowerCase().includes(s)
                   );
                 }).slice(0, 10)
               : [];
@@ -5343,10 +5343,10 @@ function QuickMarkSold({ listings, setListings, customPlatforms, liveData }) {
     if (!skuSearch.trim()) return unsold.slice(0,8);
     const s = skuSearch.toLowerCase();
     return unsold.filter(l =>
-      l.sku.toLowerCase().includes(s) ||
-      l.brand.toLowerCase().includes(s) ||
-      l.colour.toLowerCase().includes(s) ||
-      l.size.toLowerCase().includes(s)
+      (l.sku||"").toLowerCase().includes(s) ||
+      (l.brand||"").toLowerCase().includes(s) ||
+      (l.colour||"").toLowerCase().includes(s) ||
+      (l.size||"").toLowerCase().includes(s)
     ).slice(0,8);
   }, [unsold, skuSearch]);
 
@@ -6212,7 +6212,7 @@ function PriceCalculator({ listings=[] }) {
     if (!skuSearch.trim()) return [];
     const s = skuSearch.toLowerCase();
     return unsold.filter(l =>
-      l.sku.toLowerCase().includes(s) ||
+      (l.sku||"").toLowerCase().includes(s) ||
       (l.brand||"").toLowerCase().includes(s) ||
       (l.colour||"").toLowerCase().includes(s) ||
       (l.size||"").toLowerCase().includes(s)
