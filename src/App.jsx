@@ -8019,7 +8019,7 @@ const SETTINGS_TITLES = {
   contact:"Contact Us", versions:"Version History",
 };
 
-function Settings({ liveData, setLiveData, customPlatforms, setListings, profile, workspace, onLogout, workspaceId, onRestoreVersion, listings, stockData, setStockData, handleExportData }) {
+function Settings({ liveData, setLiveData, customPlatforms, setListings, profile, workspace, onLogout, workspaceId, onRestoreVersion, listings, stockData, setStockData, handleExportData, weeklyGoal, setWeeklyGoal, monthlyGoal, setMonthlyGoal, weeklyRevGoal, setWeeklyRevGoal, monthlyRevGoal, setMonthlyRevGoal }) {
   // platformAccounts shape: { Vinted: ["Vinted 1","Vinted 2"], Depop: ["Depop"], ... }
   const initAccounts = () => {
     const pa = liveData?.platformAccounts;
@@ -8235,10 +8235,10 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
       {settingsTab==="goals" && (
       <div className="tw" style={{padding:"18px 20px",marginBottom:14}}>
         <SettingsHeader title="Weekly & Monthly Goals" sub="Set default targets — shown on the Dashboard. These persist across sessions." />
-        <SettingRow label="Weekly profit target £"><SettingNumInput value={as.weeklyGoal} onChange={v=>setAS("weeklyGoal",v)} placeholder="e.g. 250" /></SettingRow>
-        <SettingRow label="Weekly revenue target £"><SettingNumInput value={as.weeklyRevGoal} onChange={v=>setAS("weeklyRevGoal",v)} placeholder="e.g. 500" /></SettingRow>
-        <SettingRow label="Monthly profit target £"><SettingNumInput value={as.monthlyGoal} onChange={v=>setAS("monthlyGoal",v)} placeholder="e.g. 1000" /></SettingRow>
-        <SettingRow label="Monthly revenue target £"><SettingNumInput value={as.monthlyRevGoal} onChange={v=>setAS("monthlyRevGoal",v)} placeholder="e.g. 2000" /></SettingRow>
+        <SettingRow label="Weekly profit target £"><SettingNumInput value={weeklyGoal} onChange={setWeeklyGoal} placeholder="e.g. 250" /></SettingRow>
+        <SettingRow label="Weekly revenue target £"><SettingNumInput value={weeklyRevGoal} onChange={setWeeklyRevGoal} placeholder="e.g. 500" /></SettingRow>
+        <SettingRow label="Monthly profit target £"><SettingNumInput value={monthlyGoal} onChange={setMonthlyGoal} placeholder="e.g. 1000" /></SettingRow>
+        <SettingRow label="Monthly revenue target £"><SettingNumInput value={monthlyRevGoal} onChange={setMonthlyRevGoal} placeholder="e.g. 2000" /></SettingRow>
       </div>
       )}
 
@@ -10309,7 +10309,7 @@ export default function App() {
             {view==="analytics"   && <Analytics listings={listings} stockData={stockData} customPlatforms={customPlatforms} liveData={liveData} />}
             {view==="growth"      && <Growth listings={listings} stockData={stockData} />}
             {view==="history"     && <History listings={listings} stockData={stockData} liveData={liveData} />}
-            {view==="settings"    && <Settings liveData={liveData} setLiveData={setLiveData} customPlatforms={customPlatforms} setListings={setListings} profile={profile} workspace={workspace} onLogout={handleLogout} workspaceId={workspaceId} onRestoreVersion={(v)=>{ setListingsRaw(v.listings); setStockDataRaw(v.stockData); setView("dashboard"); }} listings={listings} stockData={stockData} setStockData={setStockData} handleExportData={handleExportData} />}
+            {view==="settings"    && <Settings liveData={liveData} setLiveData={setLiveData} customPlatforms={customPlatforms} setListings={setListings} profile={profile} workspace={workspace} onLogout={handleLogout} workspaceId={workspaceId} onRestoreVersion={(v)=>{ setListingsRaw(v.listings); setStockDataRaw(v.stockData); setView("dashboard"); }} listings={listings} stockData={stockData} setStockData={setStockData} handleExportData={handleExportData} weeklyGoal={weeklyGoal} setWeeklyGoal={setWeeklyGoal} monthlyGoal={monthlyGoal} setMonthlyGoal={setMonthlyGoal} weeklyRevGoal={weeklyRevGoal} setWeeklyRevGoal={setWeeklyRevGoal} monthlyRevGoal={monthlyRevGoal} setMonthlyRevGoal={setMonthlyRevGoal} />}
           </div>
         </div>
       </div>
