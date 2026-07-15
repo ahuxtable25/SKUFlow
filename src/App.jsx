@@ -710,8 +710,8 @@ nav::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
 .onb-topnav{height:54px;background:var(--card-bg);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 36px;flex-shrink:0}
 .onb-pill{font-size:11.5px;font-weight:600;color:var(--txd);background:var(--main-bg);border:1px solid var(--bd);padding:4px 12px;border-radius:20px}
 .onb-skip{font-size:12px;font-weight:600;color:var(--txd);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.onb-body{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 36px;overflow-y:auto}
-.onb-footer{height:62px;background:var(--card-bg);border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 36px;flex-shrink:0}
+.onb-body{flex:1;display:flex;justify-content:center;padding:32px 36px;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0}
+.onb-footer{min-height:62px;background:var(--card-bg);border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:14px 36px calc(14px + env(safe-area-inset-bottom));flex-shrink:0}
 .onb-inner{width:100%;max-width:560px}
 .onb-inner-wide{width:100%;max-width:760px}
 .onb-tag{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ac);margin-bottom:8px}
@@ -9163,9 +9163,10 @@ function OnbStep2({ form, set }) {
 }
 
 function OnbStep3({ form, set }) {
-  const skuEx = form.skuFormat==="A001" ? `${form.skuPrefix}1, ${form.skuPrefix}2…`
+  const pad3 = (n) => String(n).padStart(3,"0");
+  const skuEx = form.skuFormat==="A001" ? `${form.skuPrefix}${pad3(1)}, ${form.skuPrefix}${pad3(2)}…`
     : form.skuFormat==="001" ? "001, 002…"
-    : `${form.skuPrefix}-1, ${form.skuPrefix}-2…`;
+    : `${form.skuPrefix}-${pad3(1)}, ${form.skuPrefix}-${pad3(2)}…`;
   const bundleEx = form.bundleFormat==="BDL-001" ? "BDL-001, BDL-002…"
     : form.bundleFormat==="BATCH-01" ? "BATCH-01, BATCH-02…"
     : form.bundleFormat==="B001" ? "B001, B002…"
@@ -9178,7 +9179,7 @@ function OnbStep3({ form, set }) {
 
       <label className="onb-sec-label">Item SKUs</label>
       <OnbOptGrid cols={2}>
-        <OnbOpt eg="A001" desc="Letter + number" selected={form.skuFormat==="A001"} onClick={()=>set("skuFormat","A001")} />
+        <OnbOpt eg={`${form.skuPrefix||"SKU"}${pad3(1)}`} desc="Prefix + number" selected={form.skuFormat==="A001"} onClick={()=>set("skuFormat","A001")} />
         <OnbOpt eg="001" desc="Numbers only" selected={form.skuFormat==="001"} onClick={()=>set("skuFormat","001")} />
       </OnbOptGrid>
       {form.skuFormat!=="001" && (
@@ -9342,15 +9343,26 @@ function OnbComplete({ form, tier, onComplete }) {
   );
 }
 
+function OnbWelcome({ onStart }) {
+  return (
+    <div className="onb-inner" style={{textAlign:"center"}}>
+      <div className="logo-mark" style={{width:56,height:56,fontSize:24,margin:"0 auto 20px"}}>SF</div>
+      <div className="onb-title">Welcome to SKUFlow</div>
+      <div className="onb-sub">The reseller business OS. Let's set up your workspace — takes about two minutes, and everything here can be changed later in Settings.</div>
+      <button className="btn btn-p" style={{width:"100%",justifyContent:"center",padding:"11px 0"}} onClick={onStart}>Get Started →</button>
+    </div>
+  );
+}
+
 function OnboardingWizard({ tier, onComplete }) {
   const isProOrInternal = ["pro","internal"].includes(tier);
   const totalSteps = isProOrInternal ? 6 : 4;
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0); // 0 = welcome, 1..totalSteps = content, totalSteps+1 = complete
   const [form, setForm] = useState({
     name:"", businessName:"",
     currency:"£", dateFormat:"DD/MM",
     platforms:["Depop","Vinted","eBay"],
-    skuFormat:"A001", skuPrefix:"A",
+    skuFormat:"A001", skuPrefix:"SKU",
     bundleFormat:"BDL-001", bundlePrefix:"BDL",
     condition:"Excellent",
     weeklyProfit:"", weeklyRevenue:"",
@@ -9362,6 +9374,7 @@ function OnboardingWizard({ tier, onComplete }) {
   const progress = Math.round((Math.min(step,totalSteps+1)/(totalSteps+1))*100);
   const canSkip = step > 2 && step <= totalSteps;
   const isComplete = step === totalSteps + 1;
+  const isWelcome = step === 0;
 
   return (
     <div className="onb-screen">
@@ -9372,11 +9385,12 @@ function OnboardingWizard({ tier, onComplete }) {
           <div className="logo-mark">SF</div>
           <span style={{fontSize:13,fontWeight:700,color:"var(--tx)"}}>SKUFlow</span>
         </div>
-        {!isComplete && <div className="onb-pill">Step {step} of {totalSteps}</div>}
+        {!isComplete && !isWelcome && <div className="onb-pill">Step {step} of {totalSteps}</div>}
         {isComplete && <div style={{fontSize:12,fontWeight:600,color:"var(--gn)"}}>✓ Setup complete</div>}
         {canSkip ? <span className="onb-skip" onClick={()=>setStep(s=>s+1)}>Skip for now</span> : <div style={{width:72}}/>}
       </div>
       <div className="onb-body">
+        {isWelcome && <OnbWelcome onStart={()=>setStep(1)}/>}
         {step===1 && <OnbStep1 form={form} set={set}/>}
         {step===2 && <OnbStep2 form={form} set={set}/>}
         {step===3 && <OnbStep3 form={form} set={set}/>}
@@ -9385,9 +9399,9 @@ function OnboardingWizard({ tier, onComplete }) {
         {step===6 && isProOrInternal && <OnbStep6 form={form} set={set}/>}
         {isComplete && <OnbComplete form={form} tier={tier} onComplete={onComplete}/>}
       </div>
-      {!isComplete && (
+      {!isComplete && !isWelcome && (
         <div className="onb-footer">
-          {step>1 ? <button className="btn btn-o" onClick={()=>setStep(s=>s-1)}>← Back</button> : <div/>}
+          <button className="btn btn-o" onClick={()=>setStep(s=>s-1)}>← Back</button>
           <button className="btn btn-p" onClick={()=>setStep(s=>s+1)}>
             {step===totalSteps?"Finish setup →":"Continue →"}
           </button>
