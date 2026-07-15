@@ -675,6 +675,8 @@ nav::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
 @media(max-width:600px){.content{padding:13px 13px;overflow-x:hidden}}
 .notif-btn{width:32px;height:32px;border-radius:var(--r2);background:var(--sf2);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--txm);flex-shrink:0}
 .notif-btn:hover{background:var(--acl);color:var(--ac);border-color:var(--ac2)}
+.limit-banner{display:flex;align-items:flex-start;gap:8px;background:var(--aml);border:1px solid rgba(217,119,6,.25);border-radius:var(--r2);padding:9px 12px;font-size:12px;color:var(--am);line-height:1.5;margin-bottom:10px}
+.limit-banner.limit-banner-full{background:var(--rdl);border-color:rgba(220,38,38,.25);color:var(--rd)}
 
 /* Settings — sidebar-nav-within-settings (Phase 2) */
 .settings-layout{display:flex;flex:1;min-height:0}
@@ -700,6 +702,50 @@ nav::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
 .s-row-sub{font-size:11px;color:var(--txm);margin-top:1px}
 .tier-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 @media(max-width:820px){.settings-layout{flex-direction:column}.settings-nav{width:100%;border-right:none;border-bottom:1px solid var(--bd);display:flex;overflow-x:auto;padding:8px}.settings-nav-label{display:none}.settings-nav-item{border-left:none;border-bottom:3px solid transparent;white-space:nowrap}.tier-grid{grid-template-columns:1fr}}
+
+/* Onboarding wizard (Phase 3) */
+.onb-screen{position:fixed;inset:0;background:var(--main-bg);display:flex;flex-direction:column;z-index:9999}
+.onb-progress{width:100%;height:4px;background:var(--bd);flex-shrink:0}
+.onb-progress-fill{height:100%;background:linear-gradient(90deg,var(--ac),#8B5CF6);transition:width .3s ease}
+.onb-topnav{height:54px;background:var(--card-bg);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 36px;flex-shrink:0}
+.onb-pill{font-size:11.5px;font-weight:600;color:var(--txd);background:var(--main-bg);border:1px solid var(--bd);padding:4px 12px;border-radius:20px}
+.onb-skip{font-size:12px;font-weight:600;color:var(--txd);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.onb-body{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 36px;overflow-y:auto}
+.onb-footer{height:62px;background:var(--card-bg);border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 36px;flex-shrink:0}
+.onb-inner{width:100%;max-width:560px}
+.onb-inner-wide{width:100%;max-width:760px}
+.onb-tag{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ac);margin-bottom:8px}
+.onb-title{font-size:24px;font-weight:800;color:var(--tx);letter-spacing:-.5px;line-height:1.2;margin-bottom:6px}
+.onb-sub{font-size:13px;color:var(--txm);line-height:1.65;margin-bottom:24px}
+.onb-sec-label{font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--txd);display:block;margin:16px 0 8px}
+.onb-sec-label:first-child{margin-top:0}
+.onb-divider{height:1px;background:var(--bd);margin:18px 0}
+.onb-opt-grid{display:grid;gap:8px}
+.onb-g2{grid-template-columns:1fr 1fr}
+.onb-g3{grid-template-columns:1fr 1fr 1fr}
+.onb-g4{grid-template-columns:1fr 1fr 1fr 1fr}
+.onb-opt{border:1.5px solid var(--bd);border-radius:var(--r2);padding:12px 14px;background:var(--card-bg);cursor:pointer;box-shadow:var(--shadow);transition:all .1s}
+.onb-opt:hover{border-color:#C7D2FE}
+.onb-opt.sel{border-color:var(--ac);background:var(--acl)}
+.onb-opt-eg{font-family:monospace;font-size:15px;font-weight:700;color:var(--tx);margin-bottom:3px}
+.onb-opt.sel .onb-opt-eg{color:var(--ac)}
+.onb-opt-desc{font-size:11px;color:var(--txm)}
+.onb-plat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.onb-plat{border:1.5px solid var(--bd);border-radius:var(--r2);padding:12px 8px;background:var(--card-bg);text-align:center;cursor:pointer;box-shadow:var(--shadow);transition:all .1s}
+.onb-plat.sel{border-color:var(--ac);background:var(--acl)}
+.onb-plat-icon{width:34px;height:34px;border-radius:9px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff}
+.onb-plat-name{font-size:11px;font-weight:700;color:var(--tx)}
+.onb-plat.sel .onb-plat-name{color:var(--ac)}
+.onb-sku-preview{display:flex;align-items:center;gap:10px;background:var(--card-bg);border:1px solid var(--bd);border-radius:var(--r2);padding:9px 14px;margin-top:8px;box-shadow:var(--shadow)}
+.onb-sku-result{margin-left:auto;font-family:monospace;font-size:13px;font-weight:700;color:var(--ac);background:var(--acl);padding:4px 10px;border-radius:5px}
+.onb-tone-card{border:1.5px solid var(--bd);border-radius:var(--r2);padding:12px 14px;background:var(--card-bg);display:flex;align-items:center;gap:12px;cursor:pointer;box-shadow:var(--shadow);transition:all .1s;margin-bottom:8px}
+.onb-tone-card.sel{border-color:var(--ac);background:var(--acl)}
+.onb-tone-icon{width:34px;height:34px;border-radius:8px;flex-shrink:0;background:var(--main-bg);display:flex;align-items:center;justify-content:center;color:var(--ac);font-weight:800}
+.onb-tone-card.sel .onb-tone-icon{background:rgba(99,102,241,.12)}
+.onb-tone-name{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:2px}
+.onb-tone-card.sel .onb-tone-name{color:var(--ac)}
+.onb-tone-desc{font-size:11px;color:var(--txm)}
+@media(max-width:600px){.onb-topnav{padding:0 16px}.onb-body{padding:20px 16px}.onb-footer{padding:0 16px}.onb-plat-grid{grid-template-columns:repeat(2,1fr)}.onb-g3,.onb-g4{grid-template-columns:1fr 1fr}}
 
 /* Buttons */
 .btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;font-family:Arial,sans-serif;font-size:11px;font-weight:700;cursor:pointer;border-radius:var(--r);border:1px solid transparent;transition:background .12s,border-color .12s,color .12s,opacity .12s;white-space:nowrap;text-transform:uppercase;letter-spacing:.4px;line-height:1}
@@ -4833,9 +4879,14 @@ const DRAFTER_DIALECT_INSTR = {
 };
 const DRAFTER_LENGTH_WORDS = { short: 40, medium: 80, detailed: 150 };
 
-function ListingDrafter({ listings, setListings, liveData }) {
+function ListingDrafter({ listings, setListings, liveData, tier, onOpenSettings }) {
   const unlisted = useMemo(() => listings.filter(l => !l.sold), [listings]);
   const as = getAS(liveData);
+  const isProOrInternal = ["pro","internal"].includes(tier);
+  // Raw (unmerged) check — DEFAULT_APP_SETTINGS gives drafterTone a default,
+  // so we look at the actual saved value to know if the user has ever visited
+  // Settings → Platforms → Listing Drafter Config.
+  const drafterConfigured = liveData?.appSettings?.drafterTone !== undefined;
 
   /* ── Style directives from Settings → Platforms → Listing Drafter Config (Pro) ── */
   const styleDirectives = useMemo(() => {
@@ -5069,6 +5120,18 @@ Return exactly this JSON shape:
 
   return (
     <div>
+      {isProOrInternal && !drafterConfigured && (
+        <div className="limit-banner">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <span>
+            Your Drafter isn't fully configured — it's using default tone and style until you set it up.{" "}
+            <strong style={{cursor:"pointer",textDecoration:"underline"}} onClick={onOpenSettings}>Complete setup →</strong>
+          </span>
+        </div>
+      )}
       <div className="info-banner">
         <strong>AI Listing Drafter</strong> — select an unlisted item, add condition and notes,
         then generate. Each field has its own copy button. The description matches your Depop style
@@ -9027,6 +9090,313 @@ function AuthStatusScreen({ message, showLogout, onLogout }) {
   );
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   ONBOARDING WIZARD — shown once on first login (Phase 3)
+═══════════════════════════════════════════════════════════════ */
+function OnbOptGrid({ cols=2, children }) {
+  return <div className={`onb-opt-grid onb-g${cols}`}>{children}</div>;
+}
+function OnbOpt({ selected, onClick, eg, desc }) {
+  return (
+    <div className={`onb-opt${selected?" sel":""}`} onClick={onClick}>
+      <div className="onb-opt-eg">{eg}</div>
+      <div className="onb-opt-desc">{desc}</div>
+    </div>
+  );
+}
+
+function OnbStep1({ form, set }) {
+  return (
+    <div className="onb-inner">
+      <span className="onb-tag">Step 1</span>
+      <div className="onb-title">Let's get to know you</div>
+      <div className="onb-sub">This sets up your profile and how numbers are displayed across SKUFlow.</div>
+
+      <label className="onb-sec-label">Your name</label>
+      <input className="finp" value={form.name} onChange={e=>set("name",e.target.value)} placeholder="Jane Smith" />
+      <div style={{height:12}}/>
+      <label className="onb-sec-label">Business name</label>
+      <input className="finp" value={form.businessName} onChange={e=>set("businessName",e.target.value)} placeholder="Jane's Vintage Co" />
+
+      <div className="onb-divider"/>
+      <label className="onb-sec-label">Currency</label>
+      <OnbOptGrid cols={3}>
+        {["£","$","€"].map(c => (
+          <OnbOpt key={c} eg={c} desc={c==="£"?"GBP":c==="$"?"USD":"EUR"} selected={form.currency===c} onClick={()=>set("currency",c)} />
+        ))}
+      </OnbOptGrid>
+      <div style={{height:12}}/>
+      <label className="onb-sec-label">Date format</label>
+      <OnbOptGrid cols={2}>
+        <OnbOpt eg="DD/MM/YY" desc="UK / most of the world" selected={form.dateFormat==="DD/MM"} onClick={()=>set("dateFormat","DD/MM")} />
+        <OnbOpt eg="MM/DD/YY" desc="US" selected={form.dateFormat==="MM/DD"} onClick={()=>set("dateFormat","MM/DD")} />
+      </OnbOptGrid>
+    </div>
+  );
+}
+
+function OnbStep2({ form, set }) {
+  const toggle = (p) => {
+    const cur = form.platforms;
+    const next = cur.includes(p) ? cur.filter(x=>x!==p) : [...cur,p];
+    if (next.length > 0) set("platforms", next);
+  };
+  return (
+    <div className="onb-inner-wide">
+      <span className="onb-tag">Step 2</span>
+      <div className="onb-title">Where do you sell?</div>
+      <div className="onb-sub">Platforms you don't select are hidden everywhere in the app. You can change this anytime in Settings.</div>
+      <div className="onb-plat-grid">
+        {PLAT_FAMILY_BASES.map(p => {
+          const sel = form.platforms.includes(p);
+          const col = getPlatColour(p);
+          return (
+            <div key={p} className={`onb-plat${sel?" sel":""}`} onClick={()=>toggle(p)}>
+              <div className="onb-plat-icon" style={{background:col}}>{p.slice(0,2).toUpperCase()}</div>
+              <div className="onb-plat-name">{p}{sel?" ✓":""}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function OnbStep3({ form, set }) {
+  const skuEx = form.skuFormat==="A001" ? `${form.skuPrefix}1, ${form.skuPrefix}2…`
+    : form.skuFormat==="001" ? "001, 002…"
+    : `${form.skuPrefix}-1, ${form.skuPrefix}-2…`;
+  const bundleEx = form.bundleFormat==="BDL-001" ? "BDL-001, BDL-002…"
+    : form.bundleFormat==="BATCH-01" ? "BATCH-01, BATCH-02…"
+    : form.bundleFormat==="B001" ? "B001, B002…"
+    : `${form.bundlePrefix}-001, ${form.bundlePrefix}-002…`;
+  return (
+    <div className="onb-inner">
+      <span className="onb-tag">Step 3</span>
+      <div className="onb-title">SKU naming</div>
+      <div className="onb-sub">How new item and bundle SKUs get generated. You can change this anytime in Settings → Listings.</div>
+
+      <label className="onb-sec-label">Item SKUs</label>
+      <OnbOptGrid cols={2}>
+        <OnbOpt eg="A001" desc="Letter + number" selected={form.skuFormat==="A001"} onClick={()=>set("skuFormat","A001")} />
+        <OnbOpt eg="001" desc="Numbers only" selected={form.skuFormat==="001"} onClick={()=>set("skuFormat","001")} />
+      </OnbOptGrid>
+      {form.skuFormat!=="001" && (
+        <div className="onb-sku-preview">
+          <span style={{fontSize:11,color:"var(--txm)"}}>Prefix</span>
+          <input className="finp" style={{width:70,textAlign:"center"}} value={form.skuPrefix} maxLength={6}
+            onChange={e=>set("skuPrefix",e.target.value.toUpperCase())} />
+          <span className="onb-sku-result">{skuEx}</span>
+        </div>
+      )}
+
+      <div className="onb-divider"/>
+      <label className="onb-sec-label">Bundle SKUs</label>
+      <OnbOptGrid cols={3}>
+        <OnbOpt eg="BDL-001" desc="BDL prefix" selected={form.bundleFormat==="BDL-001"} onClick={()=>set("bundleFormat","BDL-001")} />
+        <OnbOpt eg="BATCH-01" desc="BATCH prefix" selected={form.bundleFormat==="BATCH-01"} onClick={()=>set("bundleFormat","BATCH-01")} />
+        <OnbOpt eg="Custom" desc="Your own prefix" selected={form.bundleFormat==="CUSTOM-001"} onClick={()=>set("bundleFormat","CUSTOM-001")} />
+      </OnbOptGrid>
+      {form.bundleFormat==="CUSTOM-001" && (
+        <div className="onb-sku-preview">
+          <span style={{fontSize:11,color:"var(--txm)"}}>Prefix</span>
+          <input className="finp" style={{width:70,textAlign:"center"}} value={form.bundlePrefix} maxLength={8}
+            onChange={e=>set("bundlePrefix",e.target.value.toUpperCase())} />
+          <span className="onb-sku-result">{bundleEx}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function OnbStep4({ form, set }) {
+  return (
+    <div className="onb-inner">
+      <span className="onb-tag">Step 4</span>
+      <div className="onb-title">Condition and goals</div>
+      <div className="onb-sub">Your default listing condition, and starting targets shown on the Dashboard. Both editable anytime.</div>
+
+      <label className="onb-sec-label">Default condition</label>
+      <OnbOptGrid cols={2}>
+        {["Excellent","Very Good","Good","Fair"].map(c => (
+          <OnbOpt key={c} eg={c} desc="" selected={form.condition===c} onClick={()=>set("condition",c)} />
+        ))}
+      </OnbOptGrid>
+
+      <div className="onb-divider"/>
+      <label className="onb-sec-label">Weekly targets £</label>
+      <div style={{display:"flex",gap:8}}>
+        <input className="finp" type="number" placeholder="Profit" value={form.weeklyProfit} onChange={e=>set("weeklyProfit",e.target.value)} />
+        <input className="finp" type="number" placeholder="Revenue" value={form.weeklyRevenue} onChange={e=>set("weeklyRevenue",e.target.value)} />
+      </div>
+      <div style={{height:12}}/>
+      <label className="onb-sec-label">Monthly targets £</label>
+      <div style={{display:"flex",gap:8}}>
+        <input className="finp" type="number" placeholder="Profit" value={form.monthlyProfit} onChange={e=>set("monthlyProfit",e.target.value)} />
+        <input className="finp" type="number" placeholder="Revenue" value={form.monthlyRevenue} onChange={e=>set("monthlyRevenue",e.target.value)} />
+      </div>
+    </div>
+  );
+}
+
+function OnbStep5() {
+  return (
+    <div className="onb-inner">
+      <span className="onb-tag" style={{color:"var(--acd)"}}>Pro feature</span>
+      <div className="onb-title">Let's configure your Listing Drafter</div>
+      <div className="onb-sub">SKUFlow's AI writes listing descriptions in your voice — a few quick preferences make every draft sound like you from day one.</div>
+      <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:20}}>
+        {["Tone — casual, formal, or hyped up","Dialect — UK or US English","Description length — short, medium, or detailed","Phrases to always or never include","Brand voice notes"].map(item => (
+          <div key={item} style={{display:"flex",alignItems:"center",gap:9,fontSize:12.5,color:"var(--tx)"}}>
+            <span style={{color:"var(--ac)",fontWeight:700}}>✓</span>{item}
+          </div>
+        ))}
+      </div>
+      <div style={{background:"var(--acl)",borderRadius:"var(--r2)",padding:"12px 14px",fontSize:12,color:"var(--tx)",lineHeight:1.6}}>
+        Example: "Levi's Blue Wash Jeans 🔥 — 90s straight leg with that lived-in fade. Excellent condition. 🏷️ SKU: A12"
+      </div>
+    </div>
+  );
+}
+
+function OnbStep6({ form, set }) {
+  return (
+    <div className="onb-inner">
+      <span className="onb-tag">Step 6</span>
+      <div className="onb-title">Drafter preferences</div>
+      <div className="onb-sub">Editable anytime in Settings → Platforms → Listing Drafter Config.</div>
+
+      <label className="onb-sec-label">Tone</label>
+      {[
+        {v:"casual",l:"Casual",d:"Relaxed and conversational"},
+        {v:"hype",l:"Hype",d:"Energetic and exciting"},
+        {v:"formal",l:"Formal",d:"Professional and polished"},
+      ].map(t => (
+        <div key={t.v} className={`onb-tone-card${form.drafterTone===t.v?" sel":""}`} onClick={()=>set("drafterTone",t.v)}>
+          <div className="onb-tone-icon">{form.drafterTone===t.v?"✓":""}</div>
+          <div><div className="onb-tone-name">{t.l}</div><div className="onb-tone-desc">{t.d}</div></div>
+        </div>
+      ))}
+
+      <div className="onb-divider"/>
+      <label className="onb-sec-label">Dialect</label>
+      <OnbOptGrid cols={2}>
+        <OnbOpt eg="UK" desc="colour, trousers" selected={form.drafterDialect==="uk"} onClick={()=>set("drafterDialect","uk")} />
+        <OnbOpt eg="US" desc="color, pants" selected={form.drafterDialect==="us"} onClick={()=>set("drafterDialect","us")} />
+      </OnbOptGrid>
+
+      <div className="onb-divider"/>
+      <label className="onb-sec-label">Description length</label>
+      <OnbOptGrid cols={3}>
+        <OnbOpt eg="Short" desc="~40 words" selected={form.drafterLength==="short"} onClick={()=>set("drafterLength","short")} />
+        <OnbOpt eg="Medium" desc="~80 words" selected={form.drafterLength==="medium"} onClick={()=>set("drafterLength","medium")} />
+        <OnbOpt eg="Detailed" desc="~150 words" selected={form.drafterLength==="detailed"} onClick={()=>set("drafterLength","detailed")} />
+      </OnbOptGrid>
+
+      <div className="onb-divider"/>
+      <label className="onb-sec-label">Always include</label>
+      <textarea className="fta" style={{width:"100%",boxSizing:"border-box",minHeight:44}} value={form.alwaysInclude} onChange={e=>set("alwaysInclude",e.target.value)} placeholder="e.g. shipping timeframe" />
+      <div style={{height:10}}/>
+      <label className="onb-sec-label">Never include</label>
+      <textarea className="fta" style={{width:"100%",boxSizing:"border-box",minHeight:44}} value={form.neverInclude} onChange={e=>set("neverInclude",e.target.value)} placeholder="e.g. exact measurements" />
+      <div style={{height:10}}/>
+      <label className="onb-sec-label">Brand voice notes</label>
+      <textarea className="fta" style={{width:"100%",boxSizing:"border-box",minHeight:44}} value={form.brandVoice} onChange={e=>set("brandVoice",e.target.value)} placeholder="Anything else the Drafter should know" />
+    </div>
+  );
+}
+
+function OnbComplete({ form, tier, onComplete }) {
+  const isProOrInternal = ["pro","internal"].includes(tier);
+  return (
+    <div className="onb-inner" style={{textAlign:"center"}}>
+      <div style={{
+        width:56,height:56,borderRadius:16,margin:"0 auto 16px",
+        background:"linear-gradient(135deg,#6366F1,#8B5CF6)",
+        display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,color:"#fff",
+      }}>✓</div>
+      <div className="onb-title">You're all set</div>
+      <div className="onb-sub">SKUFlow is ready to go. Everything below is editable anytime in Settings.</div>
+
+      <div style={{textAlign:"left",background:"var(--card-bg)",border:"1px solid var(--bd)",borderRadius:"var(--r2)",padding:"16px 18px",marginBottom:20,boxShadow:"var(--shadow)"}}>
+        {[
+          ["Currency", form.currency],
+          ["Platforms", form.platforms.join(", ")],
+          ["Item SKU", form.skuFormat==="001"?"001, 002…":`${form.skuPrefix}1, ${form.skuPrefix}2…`],
+          ["Bundle SKU", form.bundleFormat],
+          ["Default condition", form.condition],
+          ["Weekly profit goal", form.weeklyProfit ? `£${form.weeklyProfit}` : "—"],
+          ...(isProOrInternal ? [["Drafter tone", `${form.drafterTone} · ${form.drafterDialect.toUpperCase()} · ${form.drafterLength}`]] : []),
+        ].map(([k,v]) => (
+          <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"7px 0",borderBottom:"1px solid var(--bd)",fontSize:12}}>
+            <span style={{color:"var(--txm)"}}>{k}</span>
+            <span style={{color:"var(--tx)",fontWeight:600,textAlign:"right"}}>{v||"—"}</span>
+          </div>
+        ))}
+      </div>
+
+      <button className="btn btn-p" style={{width:"100%",justifyContent:"center",padding:"11px 0"}} onClick={()=>onComplete(form)}>
+        Enter SKUFlow →
+      </button>
+    </div>
+  );
+}
+
+function OnboardingWizard({ tier, onComplete }) {
+  const isProOrInternal = ["pro","internal"].includes(tier);
+  const totalSteps = isProOrInternal ? 6 : 4;
+  const [step, setStep] = useState(1);
+  const [form, setForm] = useState({
+    name:"", businessName:"",
+    currency:"£", dateFormat:"DD/MM",
+    platforms:["Depop","Vinted","eBay"],
+    skuFormat:"A001", skuPrefix:"A",
+    bundleFormat:"BDL-001", bundlePrefix:"BDL",
+    condition:"Excellent",
+    weeklyProfit:"", weeklyRevenue:"",
+    monthlyProfit:"", monthlyRevenue:"",
+    drafterTone:"casual", drafterDialect:"uk", drafterLength:"medium",
+    alwaysInclude:"", neverInclude:"", brandVoice:"",
+  });
+  const set = (k,v) => setForm(p=>({...p,[k]:v}));
+  const progress = Math.round((Math.min(step,totalSteps+1)/(totalSteps+1))*100);
+  const canSkip = step > 2 && step <= totalSteps;
+  const isComplete = step === totalSteps + 1;
+
+  return (
+    <div className="onb-screen">
+      <style>{CSS}</style>
+      <div className="onb-progress"><div className="onb-progress-fill" style={{width:`${progress}%`}}/></div>
+      <div className="onb-topnav">
+        <div style={{display:"flex",alignItems:"center",gap:9}}>
+          <div className="logo-mark">SF</div>
+          <span style={{fontSize:13,fontWeight:700,color:"var(--tx)"}}>SKUFlow</span>
+        </div>
+        {!isComplete && <div className="onb-pill">Step {step} of {totalSteps}</div>}
+        {isComplete && <div style={{fontSize:12,fontWeight:600,color:"var(--gn)"}}>✓ Setup complete</div>}
+        {canSkip ? <span className="onb-skip" onClick={()=>setStep(s=>s+1)}>Skip for now</span> : <div style={{width:72}}/>}
+      </div>
+      <div className="onb-body">
+        {step===1 && <OnbStep1 form={form} set={set}/>}
+        {step===2 && <OnbStep2 form={form} set={set}/>}
+        {step===3 && <OnbStep3 form={form} set={set}/>}
+        {step===4 && <OnbStep4 form={form} set={set}/>}
+        {step===5 && isProOrInternal && <OnbStep5/>}
+        {step===6 && isProOrInternal && <OnbStep6 form={form} set={set}/>}
+        {isComplete && <OnbComplete form={form} tier={tier} onComplete={onComplete}/>}
+      </div>
+      {!isComplete && (
+        <div className="onb-footer">
+          {step>1 ? <button className="btn btn-o" onClick={()=>setStep(s=>s-1)}>← Back</button> : <div/>}
+          <button className="btn btn-p" onClick={()=>setStep(s=>s+1)}>
+            {step===totalSteps?"Finish setup →":"Continue →"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function App() {
   /* ── Auth / workspace state ── */
   const [session,     setSession]     = useState(null);
@@ -9056,7 +9426,7 @@ export default function App() {
     (async () => {
       let { data: prof, error: profErr } = await supabase
         .from("profiles")
-        .select("full_name, is_admin, workspace_id")
+        .select("full_name, is_admin, workspace_id, onboarding_complete")
         .eq("id", session.user.id)
         .single();
       if (cancelled) return;
@@ -9080,7 +9450,7 @@ export default function App() {
           try { localStorage.removeItem("sf_pending_signup"); } catch (_) {}
           const retry = await supabase
             .from("profiles")
-            .select("full_name, is_admin, workspace_id")
+            .select("full_name, is_admin, workspace_id, onboarding_complete")
             .eq("id", session.user.id)
             .single();
           if (cancelled) return;
@@ -9109,6 +9479,7 @@ export default function App() {
       }
       setProfile({ full_name: prof.full_name, is_admin: prof.is_admin });
       setWorkspace(ws);
+      setOnboardingDone(prof.onboarding_complete !== false);
     })();
     return () => { cancelled = true; };
   }, [session?.user?.id]);
@@ -9119,6 +9490,40 @@ export default function App() {
     setProfile(null);
     setAuthError("");
   }, []);
+
+  const [onboardingDone, setOnboardingDone] = useState(true); // default true to avoid a flash
+  const handleOnboardingComplete = useCallback(async (formData) => {
+    setLiveData(prev => ({
+      ...prev,
+      appSettings: {
+        ...getAS(prev),
+        currency: formData.currency,
+        dateFormat: formData.dateFormat,
+        activePlatforms: formData.platforms,
+        skuFormat: formData.skuFormat,
+        skuPrefix: formData.skuPrefix,
+        bundleFormat: formData.bundleFormat,
+        bundlePrefix: formData.bundlePrefix,
+        defaultCondition: formData.condition,
+        ...(formData.drafterTone ? {
+          drafterTone: formData.drafterTone,
+          drafterDialect: formData.drafterDialect,
+          drafterLength: formData.drafterLength,
+          alwaysInclude: formData.alwaysInclude,
+          neverInclude: formData.neverInclude,
+          brandVoice: formData.brandVoice,
+        } : {}),
+      },
+    }));
+    setWeeklyGoal(formData.weeklyProfit || "");
+    setWeeklyRevGoal(formData.weeklyRevenue || "");
+    setMonthlyGoal(formData.monthlyProfit || "");
+    setMonthlyRevGoal(formData.monthlyRevenue || "");
+    if (session?.user?.id) {
+      await supabase.from("profiles").update({ onboarding_complete: true }).eq("id", session.user.id);
+    }
+    setOnboardingDone(true);
+  }, [session?.user?.id]);
 
   const [view,            setView]            = useState("dashboard");
   const [sidebarOpen,     setSidebarOpen]     = useState(() => {
@@ -9760,6 +10165,9 @@ export default function App() {
   if (!workspace || !profile) {
     return <AuthStatusScreen message="Setting up your workspace…" />;
   }
+  if (!onboardingDone) {
+    return <OnboardingWizard tier={workspace.tier} onComplete={handleOnboardingComplete} />;
+  }
 
   return (
     <>
@@ -9893,7 +10301,7 @@ export default function App() {
             {view==="movement"    && <MovementTracker listings={listings} />}
             {view==="listingdata" && <ListingDataTab listings={listings} liveData={liveData} />}
             {view==="marklisted"  && <MarkAsListed listings={listings} setListings={setListings} customPlatforms={customPlatforms} liveData={liveData} />}
-            {view==="drafter"     && <ListingDrafter listings={listings} setListings={setListings} liveData={liveData} />}
+            {view==="drafter"     && <ListingDrafter listings={listings} setListings={setListings} liveData={liveData} tier={workspace.tier} onOpenSettings={()=>setView("settings")} />}
             {view==="marksold"    && <QuickMarkSold listings={listings} setListings={setListings} customPlatforms={customPlatforms} liveData={liveData} />}
             {view==="shipping"    && <ShippingTab listings={listings} setListings={setListings} />}
             {view==="livedata"    && <LiveData listings={listings} stockData={stockData} liveData={liveData} setLiveData={setLiveData} customPlatforms={customPlatforms} />}

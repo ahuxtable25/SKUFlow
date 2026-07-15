@@ -172,8 +172,8 @@ begin
   values (p_workspace_name, 'core', 300)
   returning id into new_workspace_id;
 
-  insert into profiles (id, workspace_id, full_name, email, is_admin)
-  values (auth.uid(), new_workspace_id, p_full_name, auth.email(), true);
+  insert into profiles (id, workspace_id, full_name, email, is_admin, onboarding_complete)
+  values (auth.uid(), new_workspace_id, p_full_name, auth.email(), true, false);
 
   return new_workspace_id;
 end;
@@ -269,3 +269,12 @@ $$;
 -- Requires the pg_cron extension (enable via Database > Extensions in the
 -- Supabase dashboard, or: create extension if not exists pg_cron;)
 select cron.schedule('daily-app-state-snapshot', '0 * * * *', 'select run_daily_snapshot();');
+
+-- ─────────────────────────────────────────
+-- 12. ONBOARDING WIZARD
+-- Defaults to true so existing accounts never see the wizard —
+-- create_workspace_and_profile() explicitly sets false for new signups.
+-- Admin-provisioned accounts (manual SQL insert) should also set this
+-- to false if you want them to see the wizard on first login.
+-- ─────────────────────────────────────────
+alter table profiles add column if not exists onboarding_complete boolean not null default true;
