@@ -554,19 +554,20 @@ const TITLES = {
    NAV / SETTINGS SVG ICONS — 15×15, stroke 1.75, currentColor
 ═══════════════════════════════════════════════════════════════ */
 const IcoDashboard  = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>;
-const IcoStock      = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>;
-const IcoListings   = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>;
-const IcoMovement   = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>;
+const IcoStock      = ({size=15}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>;
+const IcoListings   = ({size=15}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>;
+const IcoMovement   = ({size=15}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>;
+const IcoFilter     = ({size=15}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>;
 const IcoData       = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>;
 const IcoPin        = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>;
 const IcoDrafter    = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>;
 const IcoSold       = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>;
-const IcoShipping   = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>;
+const IcoShipping   = ({size=15}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>;
 const IcoLive       = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>;
 const IcoCalc       = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>;
-const IcoAnalytics  = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>;
-const IcoGrowth     = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>;
-const IcoHistory    = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3h5l2 3H3z"/><path d="M3 8h18v13H3z"/></svg>;
+const IcoAnalytics  = ({size=15}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>;
+const IcoGrowth     = ({size=15}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>;
+const IcoHistory    = ({size=15}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3h5l2 3H3z"/><path d="M3 8h18v13H3z"/></svg>;
 const IcoBell       = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>;
 const IcoSettings   = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>;
 const IcoUser       = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>;
@@ -709,6 +710,11 @@ nav::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
 .notif-btn:hover{background:var(--acl);color:var(--ac);border-color:var(--ac2)}
 .limit-banner{display:flex;align-items:flex-start;gap:8px;background:var(--aml);border:1px solid rgba(217,119,6,.25);border-radius:var(--r2);padding:9px 12px;font-size:12px;color:var(--am);line-height:1.5;margin-bottom:10px}
 .limit-banner.limit-banner-full{background:var(--rdl);border-color:rgba(220,38,38,.25);color:var(--rd)}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;gap:8px}
+.empty-state-icon{width:44px;height:44px;border-radius:12px;background:var(--acl);display:flex;align-items:center;justify-content:center;color:var(--ac);margin-bottom:4px}
+.empty-state-icon.positive{background:var(--gnl);color:var(--gn)}
+.empty-state-title{font-size:14px;font-weight:700;color:var(--tx);letter-spacing:-.2px}
+.empty-state-sub{font-size:12px;color:var(--txm);line-height:1.6;max-width:260px}
 
 /* Settings — sidebar-nav-within-settings (Phase 2) */
 .settings-layout{display:flex;flex:1;min-height:0}
@@ -1984,7 +1990,15 @@ function StockTab({ stockData, setStockData, listings, setListings, liveData }) 
               </tr>
             </thead>
             <tbody>
-              {filtered.length === 0 ? (
+              {stockData.length === 0 ? (
+                <tr>
+                  <td colSpan={visCols.length}>
+                    <EmptyState icon={<IcoStock size={22}/>} title="No stock yet"
+                      sub="Add your first wholesale bundle to start tracking."
+                      action={{ label:"+ Add Bundle", onClick:()=>setShowAdd(true) }} />
+                  </td>
+                </tr>
+              ) : filtered.length === 0 ? (
                 <tr>
                   <td colSpan={visCols.length} style={{textAlign:"center",padding:"28px",color:"var(--txd)"}}>
                     No bundles match your search.
@@ -3025,6 +3039,21 @@ function BulkEditDrawer({ selectedSkus, listings, setListings, customPlatforms, 
 const SORTABLE_LISTING_COLS = new Set(["sku","price","soldPrice","profit","days","dayListed","daySold"]);
 
 /* ── Listing limit warning — shown at 80%+ of the workspace's tier limit ── */
+function EmptyState({ icon, title, sub, action, positive }) {
+  return (
+    <div className="empty-state">
+      <div className={`empty-state-icon${positive ? " positive" : ""}`}>{icon}</div>
+      <div className="empty-state-title">{title}</div>
+      {sub && <div className="empty-state-sub">{sub}</div>}
+      {action && (
+        <button className="btn btn-p" style={{marginTop:8}} onClick={action.onClick}>
+          {action.label}
+        </button>
+      )}
+    </div>
+  );
+}
+
 function ListingLimitBanner({ listingCount, limit, tier, onUpgrade }) {
   if (!limit || !isFinite(limit)) return null;
   const pct = Math.round((listingCount / limit) * 100);
@@ -3368,13 +3397,19 @@ function ListingsTab({ listings, setListings, stockData, customPlatforms, liveDa
               </tr>
             </thead>
             <tbody>
-              {rows.length === 0 ? (
+              {listings.length === 0 ? (
                 <tr>
-                  <td
-                    colSpan={visCols.length + 1}
-                    style={{textAlign:"center",padding:"32px",color:"var(--txd)"}}
-                  >
-                    No listings match your filters.
+                  <td colSpan={visCols.length + 1}>
+                    <EmptyState icon={<IcoListings size={22}/>} title="No listings yet"
+                      sub="Add your first item to get started."
+                      action={{ label:"+ Add Listing", onClick:()=>setShowAdd(true) }} />
+                  </td>
+                </tr>
+              ) : rows.length === 0 ? (
+                <tr>
+                  <td colSpan={visCols.length + 1}>
+                    <EmptyState icon={<IcoFilter size={22}/>} title="Nothing here"
+                      sub="No items match this filter right now." />
                   </td>
                 </tr>
               ) : rows.map(l => {
@@ -3811,7 +3846,12 @@ function MovementTracker({ listings }) {
               </tr>
             </thead>
             <tbody>
-              {sorted.length===0 ? (
+              {groups.length===0 ? (
+                <tr><td colSpan={visCols.length}>
+                  <EmptyState icon={<IcoMovement size={22}/>} title="No activity yet"
+                    sub="Movement data will appear here as you list and sell items." />
+                </td></tr>
+              ) : sorted.length===0 ? (
                 <tr><td colSpan={visCols.length} style={{textAlign:"center",padding:28,color:"var(--txd)"}}>No groups match filters.</td></tr>
               ) : sorted.map((row,i) => (
                 <tr key={i}>
@@ -4393,12 +4433,15 @@ function ListingRecap({ listings, platFilt, setPlatFilt }) {
   const crossListed = todayItems.filter(it => it.plats.length > 1).length;
   const filtered    = platFilt === "All" ? todayItems : todayItems.filter(it => it.plats.some(p => getPlatFamily(p) === platFilt));
 
-  if (todayItems.length === 0) return null;
-
   return (
     <div style={{marginTop:24}}>
       <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"1.5px",
         color:"var(--txd)",marginBottom:12}}>Today's Listing Recap</div>
+
+      {todayItems.length === 0 ? (
+        <div style={{fontSize:12,color:"var(--txd)"}}>No items listed this session yet.</div>
+      ) : (
+      <>
 
       {/* KPIs */}
       <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8,marginBottom:14}}>
@@ -4475,6 +4518,8 @@ function ListingRecap({ listings, platFilt, setPlatFilt }) {
           </div>
         ))}
       </div>
+      </>
+      )}
     </div>
   );
 }
@@ -5838,22 +5883,22 @@ function QuickMarkSold({ listings, setListings, customPlatforms, liveData }) {
       </div>
 
       {/* Session history */}
-      {history.length > 0 && (
-        <div style={{marginTop:14}}>
-          <div className="st" style={{marginBottom:8}}>Session History</div>
-          {history.map((h,i)=>(
-            <div key={i} style={{background:"var(--gnl)",border:"1px solid rgba(31,92,53,.15)",
-              borderRadius:"var(--r)",padding:"8px 12px",marginBottom:7,
-              fontSize:12,color:"var(--gn)",display:"flex",justifyContent:"space-between"}}>
-              <span>✓ <strong>{h.sku}</strong> — {h.name} sold for <strong>{h.price}</strong> on {h.plat}</span>
-              {h.delistFrom?.length > 0 && (
-                <span style={{fontSize:10,color:"#7a4e0e",marginLeft:8}}>delist from: {h.delistFrom.join(", ")}</span>
-              )}
-              <span style={{fontSize:11,opacity:.6,flexShrink:0,marginLeft:10}}>{h.time}</span>
-            </div>
-          ))}
-        </div>
-      )}
+      <div style={{marginTop:14}}>
+        <div className="st" style={{marginBottom:8}}>Session History</div>
+        {history.length === 0 ? (
+          <div style={{fontSize:12,color:"var(--txd)"}}>No items sold this session yet.</div>
+        ) : history.map((h,i)=>(
+          <div key={i} style={{background:"var(--gnl)",border:"1px solid rgba(31,92,53,.15)",
+            borderRadius:"var(--r)",padding:"8px 12px",marginBottom:7,
+            fontSize:12,color:"var(--gn)",display:"flex",justifyContent:"space-between"}}>
+            <span>✓ <strong>{h.sku}</strong> — {h.name} sold for <strong>{h.price}</strong> on {h.plat}</span>
+            {h.delistFrom?.length > 0 && (
+              <span style={{fontSize:10,color:"#7a4e0e",marginLeft:8}}>delist from: {h.delistFrom.join(", ")}</span>
+            )}
+            <span style={{fontSize:11,opacity:.6,flexShrink:0,marginLeft:10}}>{h.time}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -5979,10 +6024,9 @@ function ShippingTab({ listings, setListings }) {
       </div>
 
       {!toShip.length ? (
-        <div className="tw" style={{padding:"30px 24px",textAlign:"center"}}>
-          <div style={{fontSize:28,marginBottom:9,opacity:.2}}>✓</div>
-          <div style={{fontWeight:900,textTransform:"uppercase",letterSpacing:".4px",marginBottom:5}}>All Clear</div>
-          <div style={{fontSize:12,color:"var(--txm)"}}>Everything has been shipped!</div>
+        <div className="tw">
+          <EmptyState icon={<IcoShipping size={22}/>} title="All shipped"
+            sub="No items are waiting to be dispatched." positive />
         </div>
       ) : byPlat.map(([plat, items]) => {
         const family = getPlatFamily(plat);
@@ -6819,6 +6863,15 @@ function Analytics({ listings, stockData, customPlatforms: cpArg, liveData }) {
 
   const selPlatData = platformStats.find(p=>p.name===selPlat);
 
+  if (listings.length === 0) {
+    return (
+      <div className="tw">
+        <EmptyState icon={<IcoAnalytics size={22}/>} title="Not enough data yet"
+          sub="Analytics will populate once you have listings and sales." />
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* ── RESTOCK INTELLIGENCE ── */}
@@ -7138,6 +7191,15 @@ function Growth({ listings, stockData }) {
     }
     return mons;
   }, [sold]);
+
+  if (sold.length === 0) {
+    return (
+      <div className="tw">
+        <EmptyState icon={<IcoGrowth size={22}/>} title="Growth data will appear here"
+          sub="Start listing and selling to see your progress over time." />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -7870,6 +7932,15 @@ function History({ listings, stockData, liveData }) {
       </div>
     );
   };
+
+  if (!listings.some(l => l.sold)) {
+    return (
+      <div className="tw">
+        <EmptyState icon={<IcoHistory size={22}/>} title="No history yet"
+          sub="Your monthly and weekly summaries will appear here." />
+      </div>
+    );
+  }
 
   return (
     <div>
