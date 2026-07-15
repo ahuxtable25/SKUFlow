@@ -3024,7 +3024,31 @@ function BulkEditDrawer({ selectedSkus, listings, setListings, customPlatforms, 
 
 const SORTABLE_LISTING_COLS = new Set(["sku","price","soldPrice","profit","days","dayListed","daySold"]);
 
-function ListingsTab({ listings, setListings, stockData, customPlatforms, liveData, setLiveData }) {
+/* ── Listing limit warning — shown at 80%+ of the workspace's tier limit ── */
+function ListingLimitBanner({ listingCount, limit, tier, onUpgrade }) {
+  if (!limit || !isFinite(limit)) return null;
+  const pct = Math.round((listingCount / limit) * 100);
+  if (pct < 80) return null;
+  const atLimit = listingCount >= limit;
+  return (
+    <div className={`limit-banner${atLimit ? " limit-banner-full" : ""}`}>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+      <span>
+        {atLimit
+          ? `You've reached your ${tier} plan limit of ${limit} listings. `
+          : `${listingCount} of ${limit} listings used (${pct}%). `}
+        <strong style={{cursor:"pointer",textDecoration:"underline"}} onClick={onUpgrade}>
+          {atLimit ? "Upgrade to add more →" : "Upgrade your plan →"}
+        </strong>
+      </span>
+    </div>
+  );
+}
+
+function ListingsTab({ listings, setListings, stockData, customPlatforms, liveData, setLiveData, tier, listingLimit, onUpgrade }) {
   const [cols,         setCols]        = useState(DEFAULT_COLS);
   const [showColPanel, setShowColPanel]= useState(false);
   const [showAdd,      setShowAdd]     = useState(false);
@@ -3206,6 +3230,8 @@ function ListingsTab({ listings, setListings, stockData, customPlatforms, liveDa
         />
       )}
 
+      <ListingLimitBanner listingCount={listings.length} limit={listingLimit} tier={tier} onUpgrade={onUpgrade} />
+
       {/* ── Controls row above tabs ── */}
       <div style={{display:"flex",justifyContent:"flex-end",alignItems:"center",gap:7,marginBottom:8}}>
         <div style={{position:"relative"}}>
@@ -3214,7 +3240,11 @@ function ListingsTab({ listings, setListings, stockData, customPlatforms, liveDa
             <ColPanel cols={cols} setCols={setCols} onClose={()=>setShowColPanel(false)} />
           )}
         </div>
-        <button className="btn btn-p btn-sm" onClick={()=>setShowAdd(true)}>+ Add Listing</button>
+        <button className="btn btn-p btn-sm" onClick={()=>setShowAdd(true)}
+          disabled={listingLimit && isFinite(listingLimit) && listings.length >= listingLimit}
+          title={listingLimit && isFinite(listingLimit) && listings.length >= listingLimit ? "Upgrade your plan to add more listings." : undefined}>
+          + Add Listing
+        </button>
       </div>
 
       {/* ── Tab bar ── */}
@@ -6152,7 +6182,7 @@ function GoalCard({ title, period, profit, revenue, profitGoal, setProfit, profi
   );
 }
 
-function Dashboard({ listings, stockData, weeklyGoal: wgProp, setWeeklyGoal, monthlyGoal: mgProp, setMonthlyGoal, weeklyRevGoal: wrgProp, setWeeklyRevGoal, monthlyRevGoal: mrgProp, setMonthlyRevGoal, liveData }) {
+function Dashboard({ listings, stockData, weeklyGoal: wgProp, setWeeklyGoal, monthlyGoal: mgProp, setMonthlyGoal, weeklyRevGoal: wrgProp, setWeeklyRevGoal, monthlyRevGoal: mrgProp, setMonthlyRevGoal, liveData, tier, listingLimit, onUpgrade }) {
   // Prefer goals from appSettings (Settings tab) — fall back to App state props
   const as = getAS(liveData);
   const weeklyGoal     = as.weeklyGoal     || wgProp  || "";
@@ -6205,6 +6235,8 @@ function Dashboard({ listings, stockData, weeklyGoal: wgProp, setWeeklyGoal, mon
           </div>
         ))}
       </div>
+
+      <ListingLimitBanner listingCount={listings.length} limit={listingLimit} tier={tier} onUpgrade={onUpgrade} />
 
       {/* Goal cards */}
       <div className="two-col" style={{marginBottom:16}}>
@@ -8048,7 +8080,7 @@ const SETTINGS_TITLES = {
   contact:"Contact Us", versions:"Version History",
 };
 
-function Settings({ liveData, setLiveData, customPlatforms, setListings, profile, workspace, onLogout, workspaceId, onRestoreVersion, listings, stockData, setStockData, handleExportData, weeklyGoal, setWeeklyGoal, monthlyGoal, setMonthlyGoal, weeklyRevGoal, setWeeklyRevGoal, monthlyRevGoal, setMonthlyRevGoal }) {
+function Settings({ liveData, setLiveData, customPlatforms, setListings, profile, workspace, onLogout, workspaceId, onRestoreVersion, listings, stockData, setStockData, handleExportData, weeklyGoal, setWeeklyGoal, monthlyGoal, setMonthlyGoal, weeklyRevGoal, setWeeklyRevGoal, monthlyRevGoal, setMonthlyRevGoal, initialTab }) {
   // platformAccounts shape: { Vinted: ["Vinted 1","Vinted 2"], Depop: ["Depop"], ... }
   const initAccounts = () => {
     const pa = liveData?.platformAccounts;
@@ -8149,7 +8181,7 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
     pendingRenames.current = {};
   };
 
-  const [settingsTab, setSettingsTab] = useState("platforms");
+  const [settingsTab, setSettingsTab] = useState(initialTab || "platforms");
   const as = getAS(liveData);
   const setAS = (key, val) => setLiveData(p => ({ ...p, appSettings: { ...getAS(p), [key]: val } }));
 
@@ -9535,6 +9567,7 @@ export default function App() {
   }, []);
 
   const [onboardingDone, setOnboardingDone] = useState(true); // default true to avoid a flash
+  const [settingsInitialTab, setSettingsInitialTab] = useState("platforms");
   const handleOnboardingComplete = useCallback(async (formData) => {
     setLiveData(prev => ({
       ...prev,
@@ -10191,6 +10224,9 @@ export default function App() {
         transition: "width .22s ease, min-width .22s ease",
       };
 
+  const listingLimit = workspace?.listing_limit ?? null;
+  const goToUpgrade  = useCallback(() => { setSettingsInitialTab("billing"); setView("settings"); }, []);
+
   const dotColor  = storageStatus === "error" ? "var(--ac)" : "#3dbd6a";
   const dotShadow = storageStatus === "error" ? "0 0 0 2px var(--acl)" : "0 0 0 2px #d0f0de";
   const statusLabel = storageStatus === "loading" ? "Saving…" : storageStatus === "error" ? "Save error" : "Saved ✓";
@@ -10338,9 +10374,9 @@ export default function App() {
           </div>
 
           <div className="content">
-            {view==="dashboard"   && <Dashboard listings={listings} stockData={stockData} weeklyGoal={weeklyGoal} setWeeklyGoal={setWeeklyGoal} monthlyGoal={monthlyGoal} setMonthlyGoal={setMonthlyGoal} weeklyRevGoal={weeklyRevGoal} setWeeklyRevGoal={setWeeklyRevGoal} monthlyRevGoal={monthlyRevGoal} setMonthlyRevGoal={setMonthlyRevGoal} liveData={liveData} />}
+            {view==="dashboard"   && <Dashboard listings={listings} stockData={stockData} weeklyGoal={weeklyGoal} setWeeklyGoal={setWeeklyGoal} monthlyGoal={monthlyGoal} setMonthlyGoal={setMonthlyGoal} weeklyRevGoal={weeklyRevGoal} setWeeklyRevGoal={setWeeklyRevGoal} monthlyRevGoal={monthlyRevGoal} setMonthlyRevGoal={setMonthlyRevGoal} liveData={liveData} tier={workspace.tier} listingLimit={listingLimit} onUpgrade={goToUpgrade} />}
             {view==="stock"       && <StockTab stockData={stockData} setStockData={setStockData} listings={listings} setListings={setListings} liveData={liveData} />}
-            {view==="listings"    && <ListingsTab listings={listings} setListings={setListings} stockData={stockData} customPlatforms={customPlatforms} liveData={liveData} setLiveData={setLiveData} />}
+            {view==="listings"    && <ListingsTab listings={listings} setListings={setListings} stockData={stockData} customPlatforms={customPlatforms} liveData={liveData} setLiveData={setLiveData} tier={workspace.tier} listingLimit={listingLimit} onUpgrade={goToUpgrade} />}
             {view==="movement"    && <MovementTracker listings={listings} />}
             {view==="listingdata" && <ListingDataTab listings={listings} liveData={liveData} />}
             {view==="marklisted"  && <MarkAsListed listings={listings} setListings={setListings} customPlatforms={customPlatforms} liveData={liveData} />}
@@ -10352,7 +10388,7 @@ export default function App() {
             {view==="analytics"   && <Analytics listings={listings} stockData={stockData} customPlatforms={customPlatforms} liveData={liveData} />}
             {view==="growth"      && <Growth listings={listings} stockData={stockData} />}
             {view==="history"     && <History listings={listings} stockData={stockData} liveData={liveData} />}
-            {view==="settings"    && <Settings liveData={liveData} setLiveData={setLiveData} customPlatforms={customPlatforms} setListings={setListings} profile={profile} workspace={workspace} onLogout={handleLogout} workspaceId={workspaceId} onRestoreVersion={(v)=>{ setListingsRaw(v.listings); setStockDataRaw(v.stockData); setView("dashboard"); }} listings={listings} stockData={stockData} setStockData={setStockData} handleExportData={handleExportData} weeklyGoal={weeklyGoal} setWeeklyGoal={setWeeklyGoal} monthlyGoal={monthlyGoal} setMonthlyGoal={setMonthlyGoal} weeklyRevGoal={weeklyRevGoal} setWeeklyRevGoal={setWeeklyRevGoal} monthlyRevGoal={monthlyRevGoal} setMonthlyRevGoal={setMonthlyRevGoal} />}
+            {view==="settings"    && <Settings liveData={liveData} setLiveData={setLiveData} customPlatforms={customPlatforms} setListings={setListings} profile={profile} workspace={workspace} onLogout={handleLogout} workspaceId={workspaceId} onRestoreVersion={(v)=>{ setListingsRaw(v.listings); setStockDataRaw(v.stockData); setView("dashboard"); }} listings={listings} stockData={stockData} setStockData={setStockData} handleExportData={handleExportData} weeklyGoal={weeklyGoal} setWeeklyGoal={setWeeklyGoal} monthlyGoal={monthlyGoal} setMonthlyGoal={setMonthlyGoal} weeklyRevGoal={weeklyRevGoal} setWeeklyRevGoal={setWeeklyRevGoal} monthlyRevGoal={monthlyRevGoal} setMonthlyRevGoal={setMonthlyRevGoal} initialTab={settingsInitialTab} />}
           </div>
         </div>
       </div>
