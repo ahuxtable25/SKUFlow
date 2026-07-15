@@ -241,11 +241,43 @@ const getNextSku = (listings) => {
   return `A${String(max + 1).padStart(3,"0")}`;
 };
 
-const getNextBundleSku = (stockData) => {
+/* ── SKU generation — respects Settings → Listings SKU/Bundle format ── */
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const BUNDLE_SKU_FORMATS = {
+  "BDL-001":    { prefix: "BDL",   sep: "-", pad: 3 },
+  "BATCH-01":   { prefix: "BATCH", sep: "-", pad: 2 },
+  "B001":       { prefix: "B",     sep: "",  pad: 3 },
+  "CUSTOM-001": { prefix: null,    sep: "-", pad: 3 }, // prefix comes from bundlePrefix
+};
+const getNextBundleSku = (stockData, as = {}) => {
+  const fmt = BUNDLE_SKU_FORMATS[as.bundleFormat] || BUNDLE_SKU_FORMATS["BDL-001"];
+  const prefix = fmt.prefix || as.bundlePrefix || "BDL";
+  const re = new RegExp(`^${escapeRe(prefix)}${escapeRe(fmt.sep)}(\\d+)$`);
   const nums = stockData
-    .map(s => parseInt((s.bundleSku||"").replace("BDL-","").replace(/^0+/,"")))
+    .map(s => { const m = (s.bundleSku||"").match(re); return m ? parseInt(m[1]) : NaN; })
     .filter(n => !isNaN(n) && n > 0);
-  return `BDL-${String((nums.length ? Math.max(...nums) : 0) + 1).padStart(3,"0")}`;
+  const next = (nums.length ? Math.max(...nums) : 0) + 1;
+  return `${prefix}${fmt.sep}${String(next).padStart(fmt.pad,"0")}`;
+};
+
+const ITEM_SKU_FORMATS = {
+  "A001":       { sep: "", noPrefix: false },
+  "001":        { sep: "", noPrefix: true  },
+  "CUSTOM-001": { sep: "-", noPrefix: false },
+  "AD-001":     { sep: "-", noPrefix: false },
+};
+const getNextItemSku = (listings, as = {}) => {
+  const fmt = ITEM_SKU_FORMATS[as.skuFormat] || ITEM_SKU_FORMATS["A001"];
+  const prefix = fmt.noPrefix ? "" : (as.skuPrefix || "A");
+  const re = prefix
+    ? new RegExp(`^${escapeRe(prefix)}${escapeRe(fmt.sep)}(\\d+)$`)
+    : /^(\d+)$/;
+  const nums = listings
+    .map(l => { const m = (l.sku||"").match(re); return m ? parseInt(m[1]) : NaN; })
+    .filter(n => !isNaN(n) && n > 0);
+  const next = (nums.length ? Math.max(...nums) : 0) + 1;
+  return { prefix, sep: prefix ? fmt.sep : "", next };
 };
 
 const getTag = (name, type, brand, listings) => {
@@ -1421,8 +1453,8 @@ function EditStockDrawer({ stock, derived, onSave, onDelete, onClose, onAddListi
 /* ═══════════════════════════════════════════════════════════════
    STOCK — Add Stock Modal
 ═══════════════════════════════════════════════════════════════ */
-function AddStockModal({ stockData, onAdd, onClose }) {
-  const nextBsku = getNextBundleSku(stockData);
+function AddStockModal({ stockData, onAdd, onClose, as }) {
+  const nextBsku = getNextBundleSku(stockData, as);
   const [form, setForm] = useState({
     name:"", website:"Fleek", seller:"",
     datePurchased:TODAY, dateArrived:TODAY,
@@ -1733,7 +1765,8 @@ function exportStockForSheets(stockData) {
   a.click();
 }
 
-function StockTab({ stockData, setStockData, listings, setListings }) {
+function StockTab({ stockData, setStockData, listings, setListings, liveData }) {
+  const as = getAS(liveData);
   const [cols,         setCols]        = useState(STOCK_COLS);
   const [showColPanel, setShowColPanel]= useState(false);
   const [showAdd,      setShowAdd]     = useState(false);
@@ -1793,7 +1826,7 @@ function StockTab({ stockData, setStockData, listings, setListings }) {
   const handleAddStock    = (ns) => {
     // Prevent duplicate SKU — if this SKU already exists with a different name, bump to next
     const hasDupe = stockData.some(s => s.bundleSku === ns.bundleSku && s.name !== ns.name);
-    const safeSku = hasDupe ? getNextBundleSku([...stockData, {bundleSku: ns.bundleSku}]) : ns.bundleSku;
+    const safeSku = hasDupe ? getNextBundleSku([...stockData, {bundleSku: ns.bundleSku}], as) : ns.bundleSku;
     setStockData(p => [...p, { ...ns, bundleSku: safeSku }]);
   };
   const handleDeleteStock = (bsku, originalName) => {
@@ -1821,11 +1854,7 @@ function StockTab({ stockData, setStockData, listings, setListings }) {
   };
 
   const handleAutoImport = (stock, count) => {
-    const nextSkuNum = (() => {
-      const skus = listings.map(l=>parseInt(l.sku.replace(/[^0-9]/g,"")||0)).filter(n=>!isNaN(n)&&n>0);
-      return skus.length ? Math.max(...skus)+1 : 1;
-    })();
-    const letter = (listings[0]?.sku?.match(/^([A-Z]+)/)||["","A"])[1];
+    const { prefix, sep, next } = getNextItemSku(listings, as);
     const stubs = Array.from({length:count},(_,i)=>({
       bundleSku:  stock.bundleSku,
       name:       stock.name,
@@ -1836,7 +1865,7 @@ function StockTab({ stockData, setStockData, listings, setListings }) {
       desc:       "",
       length:     "",
       pitToPit:   "",
-      sku:        `${letter}${nextSkuNum+i}`,
+      sku:        `${prefix}${sep}${String(next+i).padStart(3,"0")}`,
       price:      stock.costPer || 0,
       listed:     false,
       sold:       false,
@@ -1866,7 +1895,7 @@ function StockTab({ stockData, setStockData, listings, setListings }) {
 
   return (
     <div>
-      {showAdd    && <AddStockModal stockData={stockData} onAdd={handleAddStock}  onClose={()=>setShowAdd(false)} />}
+      {showAdd    && <AddStockModal stockData={stockData} onAdd={handleAddStock}  onClose={()=>setShowAdd(false)} as={as} />}
       {showImport && <ImportModal   stockData={stockData} onClose={()=>setShowImport(false)} />}
       {editStock  && <EditStockDrawer
         stock={editStock}
@@ -10310,7 +10339,7 @@ export default function App() {
 
           <div className="content">
             {view==="dashboard"   && <Dashboard listings={listings} stockData={stockData} weeklyGoal={weeklyGoal} setWeeklyGoal={setWeeklyGoal} monthlyGoal={monthlyGoal} setMonthlyGoal={setMonthlyGoal} weeklyRevGoal={weeklyRevGoal} setWeeklyRevGoal={setWeeklyRevGoal} monthlyRevGoal={monthlyRevGoal} setMonthlyRevGoal={setMonthlyRevGoal} liveData={liveData} />}
-            {view==="stock"       && <StockTab stockData={stockData} setStockData={setStockData} listings={listings} setListings={setListings} />}
+            {view==="stock"       && <StockTab stockData={stockData} setStockData={setStockData} listings={listings} setListings={setListings} liveData={liveData} />}
             {view==="listings"    && <ListingsTab listings={listings} setListings={setListings} stockData={stockData} customPlatforms={customPlatforms} liveData={liveData} setLiveData={setLiveData} />}
             {view==="movement"    && <MovementTracker listings={listings} />}
             {view==="listingdata" && <ListingDataTab listings={listings} liveData={liveData} />}
