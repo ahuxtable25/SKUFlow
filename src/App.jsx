@@ -4822,8 +4822,33 @@ function MarkAsListed({ listings, setListings, customPlatforms, liveData }) {
 /* ═══════════════════════════════════════════════════════════════
    LISTING DRAFTER — Command 7 (AI-powered)
 ═══════════════════════════════════════════════════════════════ */
+const DRAFTER_TONE_INSTR = {
+  casual: "Write in a casual, relaxed, conversational tone — like texting a friend about the item.",
+  formal: "Write in a formal, professional, polished tone — no slang, no casual abbreviations.",
+  hype:   "Write in a hyped-up, energetic, exciting tone — make the item sound like a must-have.",
+};
+const DRAFTER_DIALECT_INSTR = {
+  uk: "Use UK English spelling and terminology (e.g. colour, trousers, jumper).",
+  us: "Use US English spelling and terminology (e.g. color, pants, sweater).",
+};
+const DRAFTER_LENGTH_WORDS = { short: 40, medium: 80, detailed: 150 };
+
 function ListingDrafter({ listings, setListings, liveData }) {
   const unlisted = useMemo(() => listings.filter(l => !l.sold), [listings]);
+  const as = getAS(liveData);
+
+  /* ── Style directives from Settings → Platforms → Listing Drafter Config (Pro) ── */
+  const styleDirectives = useMemo(() => {
+    const lines = [
+      DRAFTER_TONE_INSTR[as.drafterTone] || DRAFTER_TONE_INSTR.casual,
+      DRAFTER_DIALECT_INSTR[as.drafterDialect] || DRAFTER_DIALECT_INSTR.uk,
+    ];
+    if (as.alwaysInclude?.trim()) lines.push(`Always include: ${as.alwaysInclude.trim()}`);
+    if (as.neverInclude?.trim())  lines.push(`Never include or mention: ${as.neverInclude.trim()}`);
+    if (as.brandVoice?.trim())    lines.push(`Brand voice notes: ${as.brandVoice.trim()}`);
+    return lines.join("\n");
+  }, [as.drafterTone, as.drafterDialect, as.alwaysInclude, as.neverInclude, as.brandVoice]);
+  const wordLimit = DRAFTER_LENGTH_WORDS[as.drafterLength] || 80;
 
   const [selSku,      setSelSku]      = useState("");
   const [drafterSearch,setDrafterSearch]= useState("");
@@ -4885,10 +4910,13 @@ ${colourFromDesc}
 ${colourNote}
 Description/notes: ${allNotes || "none"}
 
+Style:
+${styleDirectives}
+
 Rules:
 - Start with "${it.brand} ${it.colour}" — ALL colours must be included, e.g. "Black and Red" not "Black"
 - Max 3 emojis total
-- Under 80 words total
+- Under ${wordLimit} words total
 - No hashtags
 - Return ONLY the description text${different ? "\n- Write a DIFFERENT version with varied wording and emoji choice" : ""}`;
   };
@@ -4916,6 +4944,9 @@ SKU: ${item.sku}
 IMPORTANT: The titles MUST start with exactly "${item.brand} ${item.colour}" — do not change, abbreviate or reword this prefix.
 Example correct title: "${item.brand} ${item.colour} ${item.type} Size ${item.size} Vintage Streetwear"
 Example WRONG title: "${item.brand} Black ${item.type}" — never drop any colour word.
+
+Style:
+${styleDirectives}
 
 Return exactly this JSON shape:
 {"title":"${item.brand} ${item.colour} [add: type + size + 2-3 style keywords] max 80 chars total","ebayTitle":"${item.brand} ${item.colour} [add: type + size + style keywords] max 80 chars total","hashtags":"10 relevant hashtags each starting with #","vendooCategory":"best matching Vendoo category string"}`
@@ -8225,11 +8256,11 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
         <div style={{height:10}}/>
         <SettingsHeader title="Cross-List Tracker — Platforms" sub="Choose which platforms appear in the Cross-List tab in Listing Data. Toggle off any platforms you don't actively sell on." />
         <div style={{display:"flex",flexDirection:"column",gap:0}}>
-          {PLAT_FAMILY_BASES.map((p, i) => {
+          {(as.activePlatforms||PLAT_FAMILY_BASES).map((p, i, arr) => {
             const col   = getPlatColour(p);
             const saved = as.crossListPlats || PLAT_FAMILY_BASES;
             const isOn  = saved.includes(p);
-            const isLast= i === PLAT_FAMILY_BASES.length - 1;
+            const isLast= i === arr.length - 1;
             return (
               <div key={p} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"11px 0",borderBottom:isLast?"none":"1px solid var(--bd)",gap:12}}>
                 <div style={{display:"flex",alignItems:"center",gap:10}}>
@@ -8462,7 +8493,7 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
           </SCard>
 
           <SCard icon={<IcoPlat/>} title="Cross-List Tracker Platforms" sub="Duplicated from Platforms for discoverability">
-            {PLAT_FAMILY_BASES.map((p, i) => {
+            {(as.activePlatforms||PLAT_FAMILY_BASES).map((p) => {
               const col = getPlatColour(p);
               const savedList = as.crossListPlats || PLAT_FAMILY_BASES;
               const isOn = savedList.includes(p);
@@ -9122,16 +9153,21 @@ export default function App() {
   // Falls back to old flat platforms array, then DEFAULT_PLATFORMS
   const customPlatforms = useMemo(() => {
     const pa = liveData?.platformAccounts;
+    let flat;
     if (pa && typeof pa === "object" && !Array.isArray(pa)) {
       // New two-tier structure — flatten all accounts in platform order
-      return Object.values(pa).flat().filter(Boolean);
+      flat = Object.values(pa).flat().filter(Boolean);
+    } else if (Array.isArray(liveData?.platforms) && liveData.platforms.length) {
+      // Legacy: old flat array
+      flat = liveData.platforms;
+    } else {
+      flat = DEFAULT_PLATFORMS;
     }
-    // Legacy: old flat array
-    if (Array.isArray(liveData?.platforms) && liveData.platforms.length) {
-      return liveData.platforms;
-    }
-    return DEFAULT_PLATFORMS;
-  }, [liveData?.platformAccounts, liveData?.platforms]);
+    // "Your Platforms" in Settings — null means every platform family is active
+    const active = getAS(liveData).activePlatforms;
+    if (!active) return flat;
+    return flat.filter(p => active.includes(getPlatFamily(p)));
+  }, [liveData?.platformAccounts, liveData?.platforms, liveData?.appSettings?.activePlatforms]);
 
   // Keep module-level aliases in sync so all components see the current list
   useEffect(() => {
