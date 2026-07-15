@@ -198,6 +198,7 @@ const DEFAULT_APP_SETTINGS = {
   defaultAccounts:  [],
   compactMode:      false,
   sidebarCollapsed: false,
+  theme:            "default", // "default" | "night" | "classic"
   notifSold:        true,
   notifListed:      true,
   notifReturn:      true,
@@ -211,7 +212,12 @@ const DEFAULT_APP_SETTINGS = {
   customColours:    [],
   customSizes:      [],
 };
-const getAS = (liveData) => ({ ...DEFAULT_APP_SETTINGS, ...(liveData?.appSettings||{}) });
+const getAS = (liveData) => {
+  const raw = { ...DEFAULT_APP_SETTINGS, ...(liveData?.appSettings||{}) };
+  // Migrate legacy darkMode boolean (pre-theme-picker) to the theme string
+  if (raw.darkMode === true && !liveData?.appSettings?.theme) raw.theme = "night";
+  return raw;
+};
 const copyText = (t) => { try { navigator.clipboard.writeText(t); } catch (_) {} };
 
 const getNextSku = (listings) => {
@@ -536,14 +542,6 @@ function NavItem({ label, icon, active, onClick }) {
   );
 }
 
-const NAV_ICONS = {
-  dashboard: IcoDashboard, stock: IcoStock, listings: IcoListings,
-  movement: IcoMovement, listingdata: IcoData, marklisted: IcoPin,
-  drafter: IcoDrafter, marksold: IcoSold, shipping: IcoShipping,
-  livedata: IcoLive, calculator: IcoCalc, analytics: IcoAnalytics,
-  growth: IcoGrowth, history: IcoHistory, settings: IcoSettings,
-};
-
 /* ═══════════════════════════════════════════════════════════════
    GLOBAL CSS
 ═══════════════════════════════════════════════════════════════ */
@@ -578,14 +576,31 @@ const CSS = `
   --shadow:        0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
   --shadow-md:     0 4px 12px rgba(0,0,0,.08);
 }
-[data-theme="dark"] {
+[data-theme="night"] {
   --main-bg:  #0E1015;
   --card-bg:  #16181D;
+  --sf2:      #1E2028;
   --bd:       #2A2D35;
   --tx:       #F9FAFB;
   --txm:      #9CA3AF;
   --txd:      #6B7280;
-  --sf2:      #1E2028;
+  --txs:      #374151;
+}
+[data-theme="classic"] {
+  --sidebar-bg:    #1E2A3A;
+  --sidebar-tx:    #94A3B8;
+  --sidebar-txh:   #F1F5F9;
+  --sidebar-hover: #243447;
+  --main-bg:       #F1F5F9;
+  --card-bg:       #FFFFFF;
+  --sf2:           #E2E8F0;
+  --bd:            #CBD5E1;
+  --tx:            #0F172A;
+  --txm:           #64748B;
+  --txd:           #94A3B8;
+  --ac:            #3B82F6;
+  --acl:           #EFF6FF;
+  --acd:           #2563EB;
 }
 body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--tx);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}input,select,textarea{font-size:16px !important;}input[type=checkbox],input[type=radio]{font-size:inherit !important;}
 
@@ -8587,6 +8602,16 @@ export default function App() {
     MARK_LISTED_PLATS = customPlatforms;
   }, [customPlatforms]);
 
+  // Apply the chosen interface theme (default | night | classic)
+  useEffect(() => {
+    const theme = getAS(liveData).theme || "default";
+    if (theme === "default") {
+      document.documentElement.removeAttribute("data-theme");
+    } else {
+      document.documentElement.setAttribute("data-theme", theme);
+    }
+  }, [liveData?.appSettings?.theme]);
+
   const setLiveData = (updater) => {
     setLiveDataRaw(prev => {
       const next = typeof updater === "function" ? updater(prev) : updater;
@@ -9166,22 +9191,19 @@ export default function App() {
             {Object.entries(navGroups).map(([group, items]) => (
               <div key={group}>
                 <div className="nav-group-label">{group}</div>
-                {items.map(item => {
-                  const Icon = NAV_ICONS[item.id];
-                  return (
-                    <div key={item.id} style={{position:"relative"}}>
-                      <NavItem
-                        label={item.label}
-                        icon={Icon ? <Icon/> : null}
-                        active={view===item.id}
-                        onClick={() => navigate(item.id)}
-                      />
-                      {item.id==="shipping" && toShipCount>0 && (
-                        <span className="nav-dot" title={`${toShipCount} to ship`} style={{top:"50%",transform:"translateY(-50%)"}} />
-                      )}
-                    </div>
-                  );
-                })}
+                {items.map(item => (
+                  <div key={item.id} style={{position:"relative"}}>
+                    <NavItem
+                      label={item.label}
+                      icon={item.icon}
+                      active={view===item.id}
+                      onClick={() => navigate(item.id)}
+                    />
+                    {item.id==="shipping" && toShipCount>0 && (
+                      <span className="nav-dot" title={`${toShipCount} to ship`} style={{top:"50%",transform:"translateY(-50%)"}} />
+                    )}
+                  </div>
+                ))}
               </div>
             ))}
           </nav>

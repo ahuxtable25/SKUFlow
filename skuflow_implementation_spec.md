@@ -108,6 +108,30 @@ function NavItem({ label, icon, active, onClick }) {
 }
 ```
 
+### Sidebar nav — use emojis, NOT SVG icons
+
+The main app sidebar uses **emojis** for nav icons, not SVG. The SVG icons defined above are for the **Settings sidebar only**. Replace the `Ico*` references in the sidebar JSX with emoji strings:
+
+```jsx
+// Sidebar nav items use emojis:
+<NavItem label="Dashboard"       icon="⊞"  active={view==="dashboard"}   onClick={()=>setView("dashboard")}/>
+<NavItem label="Stock"           icon="◫"  active={view==="stock"}       onClick={()=>setView("stock")}/>
+<NavItem label="Listings"        icon="☰"  active={view==="listings"}    onClick={()=>setView("listings")}/>
+<NavItem label="Movement"        icon="⚡" active={view==="movement"}    onClick={()=>setView("movement")}/>
+<NavItem label="Listing Data"    icon="📋" active={view==="listingdata"} onClick={()=>setView("listingdata")}/>
+<NavItem label="Mark as Listed"  icon="📌" active={view==="marklisted"}  onClick={()=>setView("marklisted")}/>
+<NavItem label="Listing Drafter" icon="✍️" active={view==="drafter"}     onClick={()=>setView("drafter")}/>
+<NavItem label="Mark as Sold"    icon="✓"  active={view==="marksold"}    onClick={()=>setView("marksold")}/>
+<NavItem label="Shipping"        icon="📦" active={view==="shipping"}    onClick={()=>setView("shipping")}/>
+<NavItem label="Live Data"       icon="💰" active={view==="livedata"}    onClick={()=>setView("livedata")}/>
+<NavItem label="Price Calc"      icon="🧮" active={view==="pricecalc"}   onClick={()=>setView("pricecalc")}/>
+<NavItem label="Analytics"       icon="↗"  active={view==="analytics"}   onClick={()=>setView("analytics")}/>
+<NavItem label="Growth"          icon="📈" active={view==="growth"}      onClick={()=>setView("growth")}/>
+<NavItem label="History"         icon="🗂"  active={view==="history"}     onClick={()=>setView("history")}/>
+```
+
+The SVG icon constants (`IcoDashboard`, `IcoStock`, etc.) are **only used in the Settings sidebar nav**, not in the main app sidebar.
+
 ### Sidebar JSX structure
 
 Replace the existing sidebar render. Find where the sidebar/nav is currently rendered and replace it:
@@ -415,19 +439,114 @@ const SETTINGS_TITLES = {
 
 **SettingsPreferences** — Toggles: Night Mode (`as.darkMode`), Compact Tables (`as.compactMode`). Inputs: Currency Symbol (`as.currency`), Date Format (`as.dateFormat`), Cash Buffer % (`as.cashBuffer`)
 
-Night Mode implementation: when `as.darkMode` is true, apply `data-theme="dark"` to `document.documentElement`. Add these CSS overrides at the top of the stylesheet:
+### Theme system — three modes
+
+Add `as.theme` to `DEFAULT_APP_SETTINGS` (default: `"default"`). Three options:
+
+| Value | Name | Description |
+|---|---|---|
+| `"default"` | Default | Current SKU Flow design — dark `#16181D` sidebar, `#F7F8FA` main, indigo accent |
+| `"night"` | Night Mode | Full dark interface across main content and cards |
+| `"classic"` | Classic | Original Archive District aesthetic — lighter sidebar, muted palette, original colours |
+
+Replace the old `as.darkMode` boolean with `as.theme` string throughout. Remove `as.darkMode` from `DEFAULT_APP_SETTINGS`.
+
+### Theme CSS variables
+
+Add all three theme blocks to the top of the stylesheet, after the `:root {}` block:
+
 ```css
-[data-theme="dark"] {
-  --main-bg:  #0E1015;
-  --card-bg:  #16181D;
-  --bd:       #2A2D35;
-  --tx:       #F9FAFB;
-  --txm:      #9CA3AF;
-  --txd:      #6B7280;
-  --sf2:      #1E2028;
+/* DEFAULT theme — already defined in :root, no override needed */
+
+/* NIGHT MODE */
+[data-theme="night"] {
+  --main-bg:      #0E1015;
+  --card-bg:      #16181D;
+  --sf2:          #1E2028;
+  --bd:           #2A2D35;
+  --tx:           #F9FAFB;
+  --txm:          #9CA3AF;
+  --txd:          #6B7280;
+  --txs:          #374151;
+}
+
+/* CLASSIC — original Archive District aesthetic */
+[data-theme="classic"] {
+  --sidebar-bg:   #1E2A3A;
+  --sidebar-tx:   #94A3B8;
+  --sidebar-txh:  #F1F5F9;
+  --sidebar-hover:#243447;
+  --main-bg:      #F1F5F9;
+  --card-bg:      #FFFFFF;
+  --sf2:          #E2E8F0;
+  --bd:           #CBD5E1;
+  --tx:           #0F172A;
+  --txm:          #64748B;
+  --txd:          #94A3B8;
+  --ac:           #3B82F6;
+  --acl:          #EFF6FF;
+  --acd:          #2563EB;
 }
 ```
-The sidebar already uses dark colours so needs no dark-mode overrides. Toggle writes to `as.darkMode` via `setAS` and immediately applies/removes `data-theme` on `document.documentElement`. Persist across sessions via Supabase as part of `appSettings`.
+
+### Theme application
+
+```jsx
+// In App root, apply theme on mount and whenever as.theme changes:
+useEffect(() => {
+  const theme = getAS(liveData).theme || "default";
+  if (theme === "default") {
+    document.documentElement.removeAttribute("data-theme");
+  } else {
+    document.documentElement.setAttribute("data-theme", theme);
+  }
+}, [liveData?.appSettings?.theme]);
+```
+
+### Theme picker UI in SettingsPreferences
+
+Replace the old dark mode toggle with a three-option theme picker:
+
+```jsx
+<SCard icon={<IcoPrefs/>} title="Interface Theme" sub="Choose how SKU Flow looks">
+  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,paddingTop:4}}>
+    {[
+      { value:"default", label:"Default",  desc:"Dark sidebar, light content, indigo accent" },
+      { value:"night",   label:"Night",    desc:"Full dark interface" },
+      { value:"classic", label:"Classic",  desc:"Original Archive District look" },
+    ].map(opt => (
+      <div
+        key={opt.value}
+        onClick={() => setAS("theme", opt.value)}
+        style={{
+          border: `1.5px solid ${as.theme===opt.value ? "var(--ac)" : "var(--bd)"}`,
+          background: as.theme===opt.value ? "var(--acl)" : "var(--card-bg)",
+          borderRadius: "var(--r2)", padding: "10px 12px", cursor: "pointer",
+          transition: "all .12s",
+        }}
+      >
+        <div style={{fontSize:12,fontWeight:700,color:as.theme===opt.value?"var(--ac)":"var(--tx)",marginBottom:3}}>
+          {opt.label}
+          {as.theme===opt.value && " ✓"}
+        </div>
+        <div style={{fontSize:10.5,color:"var(--txm)",lineHeight:1.4}}>{opt.desc}</div>
+      </div>
+    ))}
+  </div>
+</SCard>
+```
+
+### Migration note
+
+If any existing user data has `appSettings.darkMode: true`, treat it as `theme: "night"` on load:
+```js
+const getAS = (liveData) => {
+  const raw = { ...DEFAULT_APP_SETTINGS, ...(liveData?.appSettings||{}) };
+  // Migrate legacy darkMode boolean
+  if (raw.darkMode === true && !raw.theme) raw.theme = "night";
+  return raw;
+};
+```
 
 **SettingsPlatforms** — Three pill-toggle sections: hiddenListedPlats, hiddenSoldPlats, crossListPlats. Below: Custom Types / Colours / Sizes as removable coloured pill tags (read from `as.customTypes`, `as.customColours`, `as.customSizes`). Below: Default Condition select, Drafter default condition select (Pro only)
 
