@@ -8686,7 +8686,7 @@ function SettingsPage({
   liveData, setLiveData, customPlatforms, setListings, profile, setProfile, workspace, setWorkspace,
   onLogout, workspaceId, onRestoreVersion, listings, stockData, setStockData, handleExportData,
   weeklyGoal, setWeeklyGoal, monthlyGoal, setMonthlyGoal, weeklyRevGoal, setWeeklyRevGoal,
-  monthlyRevGoal, setMonthlyRevGoal, initialTab, listingLimit,
+  monthlyRevGoal, setMonthlyRevGoal, initialTab, listingLimit, hardSave,
 }) {
   const [sTab, setSTab] = useState(initialTab || "account");
   const as = getAS(liveData);
@@ -8721,7 +8721,7 @@ function SettingsPage({
         {sTab==="stock"         && <STabStock as={as} setAS={setAS} />}
         {sTab==="listings"      && <STabListings as={as} setAS={setAS} customPlatforms={customPlatforms} setListings={setListings} liveData={liveData} setLiveData={setLiveData} tier={tier} />}
         {sTab==="billing"       && <STabBilling workspace={workspace} listingCount={listings?.length||0} onNavContact={()=>setSTab("contact")} />}
-        {sTab==="data"          && <STabData listings={listings} stockData={stockData} setListings={setListings} setStockData={setStockData} handleExportData={handleExportData} as={as} workspaceId={workspaceId} onRestoreVersion={onRestoreVersion} />}
+        {sTab==="data"          && <STabData listings={listings} stockData={stockData} setListings={setListings} setStockData={setStockData} handleExportData={handleExportData} as={as} workspaceId={workspaceId} onRestoreVersion={onRestoreVersion} hardSave={hardSave} />}
         {sTab==="contact"       && <STabContact profile={profile} workspace={workspace} workspaceId={workspaceId} />}
       </div>
     </div>
@@ -8731,16 +8731,27 @@ function SettingsPage({
 /* ═══════════════════════════════════════════════════════════════
    SETTINGS — Data, Billing, Contact (Phase 2)
 ═══════════════════════════════════════════════════════════════ */
-function STabData({ listings, stockData, setListings, setStockData, handleExportData, as, workspaceId, onRestoreVersion }) {
-  const resetListings = () => {
+function STabData({ listings, stockData, setListings, setStockData, handleExportData, as, workspaceId, onRestoreVersion, hardSave }) {
+  const [resetMsg, setResetMsg] = useState("");
+
+  const resetListings = async () => {
     if (!window.confirm(`Delete all ${listings.length} listings? This cannot be undone — export a backup first if you need one.`)) return;
     if (!window.confirm("Are you absolutely sure? This will permanently remove every listing.")) return;
     setListings([]);
+    setResetMsg("Saving…");
+    // Force-save the empty list immediately instead of waiting on the normal
+    // debounce — otherwise a reload or manual refresh in that window can
+    // pull the pre-reset data straight back from Supabase.
+    const ok = await hardSave?.({ listings: [] });
+    setResetMsg(ok ? "✓ Listings reset" : "✗ Reset failed to save — check connection and try again");
   };
-  const resetStock = () => {
+  const resetStock = async () => {
     if (!window.confirm(`Delete all ${stockData.length} stock bundles? This cannot be undone — export a backup first if you need one.`)) return;
     if (!window.confirm("Are you absolutely sure? This will permanently remove every stock bundle.")) return;
     setStockData([]);
+    setResetMsg("Saving…");
+    const ok = await hardSave?.({ stockData: [] });
+    setResetMsg(ok ? "✓ Stock reset" : "✗ Reset failed to save — check connection and try again");
   };
   return (
     <>
@@ -8766,6 +8777,11 @@ function STabData({ listings, stockData, setListings, setStockData, handleExport
           <div><div className="s-row-label">Reset all stock</div><div className="s-row-sub">Permanently deletes all stock bundles</div></div>
           <button className="btn btn-d btn-sm" onClick={resetStock}>Reset</button>
         </div>
+        {resetMsg && (
+          <div style={{marginTop:12,fontSize:11.5,fontWeight:700,color:resetMsg.startsWith("✗")?"var(--ac)":"var(--gn)"}}>
+            {resetMsg}
+          </div>
+        )}
       </SCard>
     </>
   );
@@ -9876,8 +9892,10 @@ export default function App() {
           console.error("Supabase load error:", error);
           setStorageStatus("error");
         } else if (data) {
-          if (data.listings?.length)    setListingsRaw(data.listings);
-          if (data.stock_data?.length)  setStockDataRaw(data.stock_data);
+          // Apply whenever the field is present — an empty array is valid
+          // data (e.g. after Reset Data), not "nothing to load".
+          if (data.listings)    setListingsRaw(data.listings);
+          if (data.stock_data)  setStockDataRaw(data.stock_data);
           if (data.goals) {
             setWeeklyGoal(data.goals.weekly      || "");
             setMonthlyGoal(data.goals.monthly    || "");
@@ -9926,13 +9944,18 @@ export default function App() {
     if (localTs && remoteTs && remoteTs <= localTs) return;
     isRemoteUpdate.current = true;
     setTimeout(() => { isRemoteUpdate.current = false; }, 2000);
-    if (data.listings?.length > 0) {
-      const merged = mergeListings(listingsRef.current, data.listings);
-      setListingsRaw(merged);
+    if (data.listings) {
+      // Empty means an intentional reset on another device (we already know
+      // this payload is newer than our last save, above) — apply it outright
+      // rather than merging, since merging an empty remote against local
+      // items would just silently keep every local item.
+      if (data.listings.length === 0) setListingsRaw([]);
+      else setListingsRaw(mergeListings(listingsRef.current, data.listings));
     }
-    if (data.stock_data?.length > 0 &&
-        data.stock_data.length >= stockDataRef.current.length)
-      setStockDataRaw(data.stock_data);
+    if (data.stock_data) {
+      if (data.stock_data.length === 0) setStockDataRaw([]);
+      else if (data.stock_data.length >= stockDataRef.current.length) setStockDataRaw(data.stock_data);
+    }
     if (data.goals) {
       setWeeklyGoal(data.goals.weekly   || "");
       setMonthlyGoal(data.goals.monthly || "");
@@ -10088,8 +10111,14 @@ export default function App() {
   };
 
 
-  const hardSave = useCallback(async () => {
-    if (!workspaceId) return;
+  const hardSave = useCallback(async (overrides = {}) => {
+    if (!workspaceId) return false;
+    // Accept explicit overrides so callers (e.g. Reset Data) can force-save
+    // a value that was *just* set — React state/closures wouldn't reflect
+    // it yet on this same tick, which otherwise left a race window where a
+    // reload or realtime sync could pull back the pre-reset data.
+    const saveListings  = overrides.listings   ?? listings;
+    const saveStockData = overrides.stockData  ?? stockData;
     setHardSaving(true);
     setHardSaveMsg("");
     clearTimeout(saveTimer.current);
@@ -10097,12 +10126,13 @@ export default function App() {
     const ts = new Date().toISOString();
     lastSaveTs.current = ts;
     setTimeout(() => { isRemoteUpdate.current = false; }, 2000);
-    const ok = await saveState(workspaceId, listings, stockData, { weekly: weeklyGoal, monthly: monthlyGoal, weeklyRev: weeklyRevGoal, monthlyRev: monthlyRevGoal, liveData });
-    if (ok) saveManualSnapshot(workspaceId, listings, stockData, { weekly: weeklyGoal, monthly: monthlyGoal, weeklyRev: weeklyRevGoal, monthlyRev: monthlyRevGoal, liveData });
+    const ok = await saveState(workspaceId, saveListings, saveStockData, { weekly: weeklyGoal, monthly: monthlyGoal, weeklyRev: weeklyRevGoal, monthlyRev: monthlyRevGoal, liveData });
+    if (ok) saveManualSnapshot(workspaceId, saveListings, saveStockData, { weekly: weeklyGoal, monthly: monthlyGoal, weeklyRev: weeklyRevGoal, monthlyRev: monthlyRevGoal, liveData });
     const time = new Date().toLocaleTimeString("en-GB", { hour:"2-digit", minute:"2-digit" });
-    setHardSaveMsg(ok ? `✓ Saved at ${time} — ${listings.length} listings` : "✗ Save failed — check connection");
+    setHardSaveMsg(ok ? `✓ Saved at ${time} — ${saveListings.length} listings` : "✗ Save failed — check connection");
     setStorageStatus(ok ? "saved" : "error");
     setHardSaving(false);
+    return ok;
   }, [listings, stockData, weeklyGoal, monthlyGoal, liveData, workspaceId]);
 
   /* ── Manual refresh — SAFE: only replaces if remote is newer ── */
@@ -10118,8 +10148,10 @@ export default function App() {
         const localTs  = lastSaveTs.current;
         // Only apply if remote is newer OR we have no local timestamp
         if (!localTs || !remoteTs || remoteTs > localTs) {
-          if (data.listings?.length)    setListingsRaw(data.listings);
-          if (data.stock_data?.length)  setStockDataRaw(data.stock_data);
+          // Apply whenever the field is present — an empty array is valid
+          // data (e.g. after Reset Data), not "nothing to load".
+          if (data.listings)    setListingsRaw(data.listings);
+          if (data.stock_data)  setStockDataRaw(data.stock_data);
           if (data.goals) {
             setWeeklyGoal(data.goals.weekly      || "");
             setMonthlyGoal(data.goals.monthly    || "");
@@ -10483,7 +10515,7 @@ export default function App() {
             {view==="analytics"   && <Analytics listings={listings} stockData={stockData} customPlatforms={customPlatforms} liveData={liveData} />}
             {view==="growth"      && <Growth listings={listings} stockData={stockData} />}
             {view==="history"     && <History listings={listings} stockData={stockData} liveData={liveData} />}
-            {view==="settings"    && <SettingsPage liveData={liveData} setLiveData={setLiveData} customPlatforms={customPlatforms} setListings={setListings} profile={profile} setProfile={setProfile} workspace={workspace} setWorkspace={setWorkspace} onLogout={handleLogout} workspaceId={workspaceId} onRestoreVersion={(v)=>{ setListingsRaw(v.listings); setStockDataRaw(v.stockData); setView("dashboard"); }} listings={listings} stockData={stockData} setStockData={setStockData} handleExportData={handleExportData} weeklyGoal={weeklyGoal} setWeeklyGoal={setWeeklyGoal} monthlyGoal={monthlyGoal} setMonthlyGoal={setMonthlyGoal} weeklyRevGoal={weeklyRevGoal} setWeeklyRevGoal={setWeeklyRevGoal} monthlyRevGoal={monthlyRevGoal} setMonthlyRevGoal={setMonthlyRevGoal} initialTab={settingsInitialTab} listingLimit={listingLimit} />}
+            {view==="settings"    && <SettingsPage liveData={liveData} setLiveData={setLiveData} customPlatforms={customPlatforms} setListings={setListings} profile={profile} setProfile={setProfile} workspace={workspace} setWorkspace={setWorkspace} onLogout={handleLogout} workspaceId={workspaceId} onRestoreVersion={(v)=>{ setListingsRaw(v.listings); setStockDataRaw(v.stockData); setView("dashboard"); }} listings={listings} stockData={stockData} setStockData={setStockData} handleExportData={handleExportData} weeklyGoal={weeklyGoal} setWeeklyGoal={setWeeklyGoal} monthlyGoal={monthlyGoal} setMonthlyGoal={setMonthlyGoal} weeklyRevGoal={weeklyRevGoal} setWeeklyRevGoal={setWeeklyRevGoal} monthlyRevGoal={monthlyRevGoal} setMonthlyRevGoal={setMonthlyRevGoal} initialTab={settingsInitialTab} listingLimit={listingLimit} hardSave={hardSave} />}
           </div>
         </div>
       </div>
