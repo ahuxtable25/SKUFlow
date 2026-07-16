@@ -8655,8 +8655,6 @@ function STabListings({ as, setAS, customPlatforms, setListings, liveData, setLi
   );
 }
 
-const SETTINGS_TABS_ORDER = ["account","notifications","preferences","stock","listings","billing","data","contact"];
-
 function SettingsPage({
   liveData, setLiveData, customPlatforms, setListings, profile, setProfile, workspace, setWorkspace,
   onLogout, workspaceId, onRestoreVersion, listings, stockData, setStockData, handleExportData,
@@ -8667,19 +8665,6 @@ function SettingsPage({
   const as = getAS(liveData);
   const setAS = (key, val) => setLiveData(p => ({ ...p, appSettings: { ...getAS(p), [key]: val } }));
   const tier = workspace?.tier;
-
-  const touchStartX = useRef(null);
-  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
-  const onTouchEnd = (e) => {
-    if (touchStartX.current === null) return;
-    const diff = touchStartX.current - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 50) {
-      const idx = SETTINGS_TABS_ORDER.indexOf(sTab);
-      if (diff > 0 && idx < SETTINGS_TABS_ORDER.length - 1) setSTab(SETTINGS_TABS_ORDER[idx + 1]);
-      if (diff < 0 && idx > 0) setSTab(SETTINGS_TABS_ORDER[idx - 1]);
-    }
-    touchStartX.current = null;
-  };
 
   const TABS = [
     { id:"account",       label:"Account" },
@@ -8702,7 +8687,7 @@ function SettingsPage({
         ))}
       </div>
 
-      <div className="settings-content" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      <div className="settings-content">
         {sTab==="account"       && <STabAccount profile={profile} setProfile={setProfile} workspace={workspace} setWorkspace={setWorkspace} workspaceId={workspaceId} onLogout={onLogout} />}
         {sTab==="notifications" && <STabNotifications as={as} setAS={setAS} />}
         {sTab==="preferences"   && <STabPreferences as={as} setAS={setAS} weeklyGoal={weeklyGoal} setWeeklyGoal={setWeeklyGoal} monthlyGoal={monthlyGoal} setMonthlyGoal={setMonthlyGoal} weeklyRevGoal={weeklyRevGoal} setWeeklyRevGoal={setWeeklyRevGoal} monthlyRevGoal={monthlyRevGoal} setMonthlyRevGoal={setMonthlyRevGoal} />}
