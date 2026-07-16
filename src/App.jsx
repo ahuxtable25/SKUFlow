@@ -716,30 +716,32 @@ nav::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
 .empty-state-title{font-size:14px;font-weight:700;color:var(--tx);letter-spacing:-.2px}
 .empty-state-sub{font-size:12px;color:var(--txm);line-height:1.6;max-width:260px}
 
-/* Settings — sidebar-nav-within-settings (Phase 2) */
-.settings-layout{display:flex;flex:1;min-height:0}
-.settings-nav{width:196px;background:var(--card-bg);border-right:1px solid var(--bd);padding:14px 0;overflow-y:auto;flex-shrink:0}
-.settings-nav-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--txd);padding:12px 16px 5px}
-.settings-nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;font-size:12.5px;font-weight:500;color:var(--txm);cursor:pointer;border-left:3px solid transparent;transition:all .1s}
-.settings-nav-item:hover{background:var(--main-bg);color:var(--tx)}
-.settings-nav-item.active{background:var(--acl);color:var(--ac);border-left-color:var(--ac);font-weight:600}
-.settings-nav-icon{width:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:.75}
-.settings-nav-item.active .settings-nav-icon{opacity:1}
-.settings-content{flex:1;overflow-y:auto;padding:24px 28px}
-.settings-page-title{font-size:17px;font-weight:800;color:var(--tx);letter-spacing:-.3px;margin-bottom:20px}
-.s-card{background:var(--card-bg);border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
-.s-card-header{padding:13px 18px 13px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;box-shadow:inset 3px 0 0 var(--ac);background:linear-gradient(90deg,rgba(99,102,241,.04) 0%,transparent 60%)}
-.s-card-icon{width:30px;height:30px;border-radius:7px;background:var(--acl);color:var(--ac);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.s-card-title{font-size:13px;font-weight:700;color:var(--tx)}
+/* Settings — horizontal swipeable tab bar */
+.settings-page{display:flex;flex-direction:column;flex:1;overflow:hidden}
+.settings-tabs{display:flex;background:var(--card-bg);border-bottom:1px solid var(--bd);overflow-x:auto;flex-shrink:0;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;padding:0 6px}
+.settings-tabs::-webkit-scrollbar{display:none}
+.settings-tab{padding:11px 14px;font-size:12px;font-weight:600;color:var(--txm);white-space:nowrap;cursor:pointer;border-bottom:2.5px solid transparent;transition:all .12s;flex-shrink:0;scroll-snap-align:start}
+.settings-tab:hover{color:var(--tx)}
+.settings-tab.active{color:var(--ac);border-bottom-color:var(--ac);font-weight:700}
+.settings-content{flex:1;overflow-y:auto;padding:18px 20px;-webkit-overflow-scrolling:touch}
+.settings-content::-webkit-scrollbar{display:none}
+.s-card{background:var(--card-bg);border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden}
+.s-card-locked{opacity:.65}
+.s-card-header{padding:11px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;box-shadow:inset 3px 0 0 var(--ac);background:linear-gradient(90deg,rgba(99,102,241,.04) 0%,transparent 60%)}
+.s-card-icon{width:28px;height:28px;border-radius:7px;background:var(--acl);color:var(--ac);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.s-card-title{font-size:12.5px;font-weight:700;color:var(--tx)}
 .s-card-sub{font-size:11px;color:var(--txm);margin-top:1px}
-.s-card-body{padding:16px 18px}
-.s-form-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd)}
-.s-form-row:last-child{border-bottom:none;padding-bottom:0}
-.s-form-row:first-child{padding-top:0}
+.s-card-body{padding:12px 16px}
+.s-row,.s-form-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bd)}
+.s-row:last-child,.s-form-row:last-child{border-bottom:none;padding-bottom:0}
+.s-row:first-child,.s-form-row:first-child{padding-top:0}
 .s-row-label{font-size:12.5px;font-weight:600;color:var(--tx)}
 .s-row-sub{font-size:11px;color:var(--txm);margin-top:1px}
+.s-section-label{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--txd);display:block;margin-bottom:8px}
+.pro-badge{font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:20px;background:rgba(99,102,241,.15);color:var(--ac)}
+.btn-d{background:var(--rdl);color:var(--rd);border:1px solid rgba(220,38,38,.2)}
 .tier-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-@media(max-width:820px){.settings-layout{flex-direction:column}.settings-nav{width:100%;border-right:none;border-bottom:1px solid var(--bd);display:flex;overflow-x:auto;padding:8px}.settings-nav-label{display:none}.settings-nav-item{border-left:none;border-bottom:3px solid transparent;white-space:nowrap}.tier-grid{grid-template-columns:1fr}}
+@media(max-width:820px){.tier-grid{grid-template-columns:1fr}}
 
 /* Onboarding wizard (Phase 3) */
 .onb-screen{position:fixed;inset:0;background:var(--main-bg);display:flex;flex-direction:column;z-index:9999}
@@ -7993,174 +7995,318 @@ function Placeholder({ title, icon, note }) {
    SETTINGS — Platform management
 ═══════════════════════════════════════════════════════════════ */
 /* ── Settings helper components — top-level so React identity is stable ── */
-function SettingsHeader({ title, sub }) {
+function SToggle({ on, onChange }) {
   return (
-    <div style={{marginBottom:16}}>
-      <div style={{fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:".5px",color:"var(--txm)",marginBottom:2}}>{title}</div>
-      {sub && <div style={{fontSize:11,color:"var(--txd)",lineHeight:1.5}}>{sub}</div>}
+    <div
+      onClick={() => onChange(!on)}
+      style={{
+        width:36, height:20, borderRadius:99, position:"relative",
+        background: on ? "var(--ac)" : "#D1D5DB",
+        cursor:"pointer", transition:"background .15s", flexShrink:0,
+      }}
+    >
+      <div style={{
+        position:"absolute", top:3,
+        left: on ? 19 : 3,
+        width:14, height:14, borderRadius:"50%",
+        background:"#fff", boxShadow:"0 1px 3px rgba(0,0,0,.2)",
+        transition:"left .15s",
+      }} />
     </div>
-  );
-}
-function SettingRow({ label, children }) {
-  return (
-    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:"1px solid var(--bd)",gap:12}}>
-      <span style={{fontSize:12,color:"var(--txm)",flex:1}}>{label}</span>
-      <div style={{flexShrink:0}}>{children}</div>
-    </div>
-  );
-}
-function SettingToggle({ value, onChange }) {
-  return (
-    <div onClick={()=>onChange(!value)} style={{width:38,height:22,borderRadius:11,background:value?"var(--gn)":"var(--bdd)",position:"relative",cursor:"pointer",transition:"background .2s",flexShrink:0}}>
-      <div style={{width:16,height:16,borderRadius:"50%",background:"#fff",position:"absolute",top:3,left:value?19:3,transition:"left .2s",boxShadow:"0 1px 3px rgba(0,0,0,.2)"}}/>
-    </div>
-  );
-}
-function SettingNumInput({ value, onChange, min, max, placeholder, width=80 }) {
-  return (
-    <input type="number" min={min} max={max} placeholder={placeholder}
-      value={value||""} onChange={e=>onChange(e.target.value)}
-      style={{width,background:"var(--sf2)",border:"1px solid var(--bdd)",borderRadius:"var(--r)",padding:"5px 8px",fontFamily:"Arial,sans-serif",fontSize:12,fontWeight:700,outline:"none",textAlign:"right"}}/>
   );
 }
 
-function AccountTab({ profile, workspace, onLogout }) {
-  const [email, setEmail] = useState("");
+function SGolInput({ label, value, onChange, currency }) {
+  return (
+    <div>
+      <div style={{fontSize:11,fontWeight:600,color:"var(--txm)",marginBottom:4}}>{label}</div>
+      <div style={{display:"flex",alignItems:"center",background:"var(--card-bg)",border:"1.5px solid var(--bd)",borderRadius:"var(--r2)",overflow:"hidden",boxShadow:"var(--shadow)"}}>
+        <div style={{padding:"0 8px",height:36,display:"flex",alignItems:"center",background:"#F9FAFB",borderRight:"1px solid var(--bd)",fontSize:13,fontWeight:700,color:"var(--txm)"}}>{currency}</div>
+        <input
+          type="text" inputMode="decimal"
+          style={{flex:1,height:36,border:"none",background:"transparent",padding:"0 8px",fontSize:13,fontWeight:700,color:"var(--tx)",fontFamily:"inherit",outline:"none",fontVariantNumeric:"tabular-nums"}}
+          value={value}
+          onChange={e=>{ if(/^\d*\.?\d*$/.test(e.target.value)) onChange(e.target.value); }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function SCard({ icon, title, sub, children, proOnly, tier }) {
+  const locked = proOnly && !["pro","internal"].includes(tier);
+  return (
+    <div className={`s-card${locked ? " s-card-locked" : ""}`}>
+      <div className="s-card-header">
+        {icon && <div className="s-card-icon">{icon}</div>}
+        <div style={{flex:1}}>
+          <div className="s-card-title">{title}</div>
+          {sub && <div className="s-card-sub">{sub}</div>}
+        </div>
+        {locked && <div className="pro-badge">Pro</div>}
+      </div>
+      <div className="s-card-body">
+        {locked
+          ? <div style={{fontSize:12,color:"var(--txm)",padding:"4px 0"}}>
+              Available on Pro plan. <span style={{color:"var(--ac)",fontWeight:600,cursor:"pointer"}}>Upgrade →</span>
+            </div>
+          : children
+        }
+      </div>
+    </div>
+  );
+}
+
+function STabAccount({ profile, setProfile, workspace, setWorkspace, workspaceId, onLogout }) {
+  const [email,  setEmail]  = useState("");
+  const [userId, setUserId] = useState(null);
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setEmail(data?.user?.email || ""));
+    supabase.auth.getUser().then(({ data }) => {
+      setEmail(data?.user?.email || "");
+      setUserId(data?.user?.id || null);
+    });
   }, []);
 
-  const [pw1,     setPw1]     = useState("");
-  const [pw2,     setPw2]     = useState("");
-  const [saving,  setSaving]  = useState(false);
-  const [msg,     setMsg]     = useState("");
-  const [msgOk,   setMsgOk]   = useState(true);
+  const [name,     setName]     = useState(profile?.full_name || "");
+  const [business, setBusiness] = useState(workspace?.name || "");
+  const [saving,    setSaving]    = useState(false);
+  const [savedMsg,  setSavedMsg]  = useState("");
 
-  const updatePassword = async (e) => {
-    e.preventDefault();
-    setMsg("");
-    if (pw1.length < 6) { setMsg("Password must be at least 6 characters."); setMsgOk(false); return; }
-    if (pw1 !== pw2)    { setMsg("Passwords don't match.");                  setMsgOk(false); return; }
-    setSaving(true);
-    const { error } = await supabase.auth.updateUser({ password: pw1 });
+  const saveProfile = async () => {
+    if (!userId) return;
+    setSaving(true); setSavedMsg("");
+    const [{ error: e1 }, { error: e2 }] = await Promise.all([
+      supabase.from("profiles").update({ full_name: name }).eq("id", userId),
+      supabase.from("workspaces").update({ name: business }).eq("id", workspaceId),
+    ]);
     setSaving(false);
-    if (error) { setMsg(error.message); setMsgOk(false); return; }
+    if (e1 || e2) { setSavedMsg((e1||e2).message); return; }
+    setProfile?.(p => ({ ...p, full_name: name }));
+    setWorkspace?.(w => ({ ...w, name: business }));
+    setSavedMsg("Saved.");
+    setTimeout(() => setSavedMsg(""), 2000);
+  };
+
+  const [pw1, setPw1] = useState("");
+  const [pw2, setPw2] = useState("");
+  const [pwSaving, setPwSaving] = useState(false);
+  const [pwMsg, setPwMsg] = useState("");
+  const [pwMsgOk, setPwMsgOk] = useState(true);
+
+  const updatePassword = async () => {
+    setPwMsg("");
+    if (pw1.length < 6) { setPwMsg("Password must be at least 6 characters."); setPwMsgOk(false); return; }
+    if (pw1 !== pw2)    { setPwMsg("Passwords don't match.");                  setPwMsgOk(false); return; }
+    setPwSaving(true);
+    const { error } = await supabase.auth.updateUser({ password: pw1 });
+    setPwSaving(false);
+    if (error) { setPwMsg(error.message); setPwMsgOk(false); return; }
     setPw1(""); setPw2("");
-    setMsg("Password updated.");
-    setMsgOk(true);
+    setPwMsg("Password updated.");
+    setPwMsgOk(true);
   };
 
   return (
-    <div className="tw" style={{padding:"18px 20px",marginBottom:14}}>
-      <SettingsHeader title="Account" sub="Your login and workspace details." />
-      <SettingRow label="Name">
-        <span style={{fontSize:12,fontWeight:700}}>{profile?.full_name || "—"}</span>
-      </SettingRow>
-      <SettingRow label="Email">
-        <span style={{fontSize:12,fontWeight:700}}>{email || "—"}</span>
-      </SettingRow>
-      <SettingRow label="Workspace">
-        <span style={{fontSize:12,fontWeight:700}}>{workspace?.name || "—"}</span>
-      </SettingRow>
-      <SettingRow label="Plan">
-        <span style={{fontSize:12,fontWeight:700,textTransform:"capitalize"}}>{workspace?.tier || "—"}</span>
-      </SettingRow>
-
-      <div style={{height:10}}/>
-      <SettingsHeader title="Set / Change Password" sub="Use this if you signed in via an email link and haven't set a password yet, or want to change your existing one." />
-      <form onSubmit={updatePassword}>
-        <div style={{marginBottom:10}}>
-          <PasswordField autoComplete="new-password" placeholder="New password"
-            value={pw1} onChange={e=>setPw1(e.target.value)} />
+    <>
+      <SCard icon={<IcoUser/>} title="Profile">
+        <div className="s-row">
+          <div className="s-row-label">Full name</div>
+          <input className="finp" style={{width:160}} value={name} onChange={e=>setName(e.target.value)} />
         </div>
-        <div style={{marginBottom:10}}>
-          <PasswordField autoComplete="new-password" placeholder="Confirm new password"
-            value={pw2} onChange={e=>setPw2(e.target.value)} />
+        <div className="s-row">
+          <div className="s-row-label">Business name</div>
+          <input className="finp" style={{width:160}} value={business} onChange={e=>setBusiness(e.target.value)} />
         </div>
-        {msg && (
-          <div style={{fontSize:11.5, marginBottom:10, color: msgOk ? "var(--gn)" : "var(--ac)"}}>{msg}</div>
-        )}
-        <button type="submit" className="btn btn-p" disabled={saving || !pw1 || !pw2}>
-          {saving ? "Saving…" : "Update Password"}
-        </button>
-      </form>
+        <div className="s-row" style={{borderBottom:"none",paddingBottom:0}}>
+          {savedMsg ? <div style={{fontSize:11.5,color:"var(--gn)"}}>{savedMsg}</div> : <div/>}
+          <button className="btn btn-p btn-sm" onClick={saveProfile} disabled={saving}>
+            {saving ? "Saving…" : "Save changes"}
+          </button>
+        </div>
+      </SCard>
 
-      <div style={{height:16}}/>
-      <SettingsHeader title="Sign Out" />
-      <button onClick={onLogout} className="btn btn-o">Sign Out</button>
-    </div>
+      <SCard icon={<IcoMail/>} title="Email address">
+        <div className="s-row" style={{borderBottom:"none",paddingBottom:0}}>
+          <div><div className="s-row-label">Current email</div><div className="s-row-sub">{email || "—"}</div></div>
+        </div>
+      </SCard>
+
+      <SCard icon={<IcoSettings/>} title="Password" sub="Use this if you signed in via an email link and haven't set a password yet">
+        <div className="s-row">
+          <div className="s-row-label">New password</div>
+          <PasswordField autoComplete="new-password" placeholder="••••••••" value={pw1} onChange={e=>setPw1(e.target.value)} />
+        </div>
+        <div className="s-row">
+          <div className="s-row-label">Confirm password</div>
+          <PasswordField autoComplete="new-password" placeholder="••••••••" value={pw2} onChange={e=>setPw2(e.target.value)} />
+        </div>
+        <div className="s-row" style={{borderBottom:"none",paddingBottom:0}}>
+          {pwMsg ? <div style={{fontSize:11.5,color:pwMsgOk?"var(--gn)":"var(--ac)"}}>{pwMsg}</div> : <div/>}
+          <button className="btn btn-p btn-sm" onClick={updatePassword} disabled={pwSaving||!pw1||!pw2}>
+            {pwSaving ? "Saving…" : "Update password"}
+          </button>
+        </div>
+      </SCard>
+
+      <SCard icon={<IcoUser/>} title="Session">
+        <div className="s-row" style={{borderBottom:"none",paddingBottom:0}}>
+          <div><div className="s-row-label">Signed in as {workspace?.name}</div><div className="s-row-sub" style={{textTransform:"capitalize"}}>{workspace?.tier} plan</div></div>
+          <button className="btn btn-o btn-sm" onClick={onLogout}>Sign out</button>
+        </div>
+      </SCard>
+    </>
   );
 }
 
-function SCard({ icon, title, sub, children }) {
-  return (
-    <div className="s-card">
-      <div className="s-card-header">
-        <div className="s-card-icon">{icon}</div>
-        <div><div className="s-card-title">{title}</div>{sub&&<div className="s-card-sub">{sub}</div>}</div>
-      </div>
-      <div className="s-card-body">{children}</div>
-    </div>
-  );
-}
-
-function SettingsSidebar({ active, onChange, isPro }) {
-  const groups = [
-    { label: "Account", items: [
-      { id:"account",        label:"Account",        icon:<IcoUser/> },
-      { id:"notifications",  label:"Notifications",  icon:<IcoBell/> },
-    ]},
-    { label: "App", items: [
-      { id:"preferences",    label:"Preferences",    icon:<IcoPrefs/> },
-      { id:"platforms",      label:"Platforms",      icon:<IcoPlat/> },
-      { id:"goals",          label:"Goals",          icon:<IcoGoals/> },
-      { id:"stock",          label:"Stock",          icon:<IcoStock/> },
-      { id:"listings",       label:"Listings",       icon:<IcoListings/> },
-    ]},
-    { label: "System", items: [
-      { id:"data",           label:"Data",           icon:<IcoDataMgmt/> },
-      { id:"billing",        label:"Billing & Plan", icon:<IcoBilling/> },
-      { id:"contact",        label:"Contact Us",     icon:<IcoMail/> },
-      { id:"versions",       label:"Version History",icon:<IcoVersion/> },
-    ]},
+function STabNotifications({ as, setAS }) {
+  const rows = [
+    { key:"notifSold",         label:"Item sold",            sub:"When you mark an item as sold" },
+    { key:"notifListed",       label:"Item listed",          sub:"When you mark an item as listed" },
+    { key:"notifReturn",       label:"Return raised",        sub:"When a return is logged" },
+    { key:"notifShipped",      label:"Item shipped",         sub:"When an item is marked as shipped" },
+    { key:"notifNotes",        label:"Notes updated",        sub:"45 seconds after you stop typing" },
+    { key:"notifSundayBackup", label:"Sunday backup",        sub:"Weekly auto-save reminder" },
   ];
+
   return (
-    <div className="settings-nav">
-      {groups.map(g=>(
-        <div key={g.label}>
-          <div className="settings-nav-label">{g.label}</div>
-          {g.items.map(item=>(
-            <div key={item.id}
-              className={`settings-nav-item${active===item.id?" active":""}`}
-              onClick={()=>onChange(item.id)}
+    <SCard icon={<IcoBell/>} title="Push Notifications" sub="Delivered to your device via browser">
+      {rows.map((r,i) => (
+        <div key={r.key} className="s-row" style={i===rows.length-1?{borderBottom:"none",paddingBottom:0}:{}}>
+          <div>
+            <div className="s-row-label">{r.label}</div>
+            <div className="s-row-sub">{r.sub}</div>
+          </div>
+          <SToggle on={as[r.key]!==false} onChange={v=>setAS(r.key,v)} />
+        </div>
+      ))}
+    </SCard>
+  );
+}
+
+function STabPreferences({ as, setAS, weeklyGoal, setWeeklyGoal, monthlyGoal, setMonthlyGoal, weeklyRevGoal, setWeeklyRevGoal, monthlyRevGoal, setMonthlyRevGoal }) {
+  return (
+    <>
+      {/* ── GOALS ── */}
+      <SCard icon={<IcoGoals/>} title="Goals" sub="Shown as progress bars on your dashboard">
+        <div style={{marginBottom:14}}>
+          <div className="s-section-label">Weekly targets</div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+            <SGolInput label="Profit" value={weeklyGoal||""} onChange={setWeeklyGoal} currency={as.currency||"£"} />
+            <SGolInput label="Revenue" value={weeklyRevGoal||""} onChange={setWeeklyRevGoal} currency={as.currency||"£"} />
+          </div>
+        </div>
+        <div>
+          <div className="s-section-label">Monthly targets</div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+            <SGolInput label="Profit" value={monthlyGoal||""} onChange={setMonthlyGoal} currency={as.currency||"£"} />
+            <SGolInput label="Revenue" value={monthlyRevGoal||""} onChange={setMonthlyRevGoal} currency={as.currency||"£"} />
+          </div>
+        </div>
+      </SCard>
+
+      {/* ── THEME ── */}
+      <SCard icon={<IcoPrefs/>} title="Interface Theme" sub="Choose how SKU Flow looks">
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
+          {[
+            { value:"default", label:"Default",  desc:"Dark sidebar, light content" },
+            { value:"night",   label:"Night",    desc:"Full dark interface" },
+            { value:"classic", label:"Classic",  desc:"Original Archive District" },
+          ].map(opt => (
+            <div
+              key={opt.value}
+              onClick={() => setAS("theme", opt.value)}
+              style={{
+                border:`1.5px solid ${(as.theme||"default")===opt.value?"var(--ac)":"var(--bd)"}`,
+                background:(as.theme||"default")===opt.value?"var(--acl)":"var(--card-bg)",
+                borderRadius:"var(--r2)", padding:"10px 10px", cursor:"pointer",
+              }}
             >
-              <span className="settings-nav-icon">{item.icon}</span>
-              {item.label}
+              <div style={{fontSize:11.5,fontWeight:700,color:(as.theme||"default")===opt.value?"var(--ac)":"var(--tx)",marginBottom:3}}>
+                {opt.label}{(as.theme||"default")===opt.value&&" ✓"}
+              </div>
+              <div style={{fontSize:10,color:"var(--txm)",lineHeight:1.4}}>{opt.desc}</div>
             </div>
           ))}
         </div>
-      ))}
-    </div>
+      </SCard>
+
+      {/* ── DISPLAY ── */}
+      <SCard icon={<IcoPrefs/>} title="Display">
+        <div className="s-row">
+          <div><div className="s-row-label">Compact tables</div><div className="s-row-sub">Smaller row height in all tables</div></div>
+          <SToggle on={as.compactMode||false} onChange={v=>setAS("compactMode",v)} />
+        </div>
+        <div className="s-row">
+          <div><div className="s-row-label">Sidebar collapsed by default</div><div className="s-row-sub">On mobile</div></div>
+          <SToggle on={as.sidebarCollapsed||false} onChange={v=>setAS("sidebarCollapsed",v)} />
+        </div>
+        <div className="s-row">
+          <div className="s-row-label">Currency symbol</div>
+          <select className="fsel" style={{width:90}} value={as.currency||"£"} onChange={e=>setAS("currency",e.target.value)}>
+            <option value="£">£ GBP</option>
+            <option value="€">€ EUR</option>
+            <option value="$">$ USD</option>
+          </select>
+        </div>
+        <div className="s-row">
+          <div className="s-row-label">Date format</div>
+          <select className="fsel" style={{width:130}} value={as.dateFormat||"DD/MM"} onChange={e=>setAS("dateFormat",e.target.value)}>
+            <option value="DD/MM">DD/MM/YY</option>
+            <option value="MM/DD">MM/DD/YY</option>
+          </select>
+        </div>
+        <div className="s-row" style={{borderBottom:"none",paddingBottom:0}}>
+          <div><div className="s-row-label">Cash buffer target</div><div className="s-row-sub">Highlighted in Live Data</div></div>
+          <div style={{display:"flex",alignItems:"center",gap:4}}>
+            <input className="finp" style={{width:55,textAlign:"center"}} value={as.cashBuffer||"85"} onChange={e=>setAS("cashBuffer",e.target.value)} />
+            <span style={{fontSize:12,color:"var(--txm)"}}>%</span>
+          </div>
+        </div>
+      </SCard>
+    </>
   );
 }
 
-const SETTINGS_TITLES = {
-  account:"Account", notifications:"Notifications", preferences:"Preferences",
-  platforms:"Platforms & Listing Defaults", goals:"Goals", stock:"Stock",
-  listings:"Listings", data:"Data Management", billing:"Billing & Plan",
-  contact:"Contact Us", versions:"Version History",
-};
+function STabStock({ as, setAS }) {
+  return (
+    <>
+      <SCard icon={<IcoStock/>} title="Stock Thresholds">
+        <div className="s-row">
+          <div><div className="s-row-label">Sell-through warning</div><div className="s-row-sub">Highlight bundles below this %</div></div>
+          <div style={{display:"flex",alignItems:"center",gap:4}}>
+            <input className="finp" style={{width:55,textAlign:"center"}} value={as.sellThruWarning||"60"} onChange={e=>setAS("sellThruWarning",e.target.value)} />
+            <span style={{fontSize:12,color:"var(--txm)"}}>%</span>
+          </div>
+        </div>
+        <div className="s-row" style={{borderBottom:"none",paddingBottom:0}}>
+          <div><div className="s-row-label">Slow mover threshold</div><div className="s-row-sub">Days listed before flagged slow</div></div>
+          <div style={{display:"flex",alignItems:"center",gap:4}}>
+            <input className="finp" style={{width:55,textAlign:"center"}} value={as.slowMoverDays||"14"} onChange={e=>setAS("slowMoverDays",e.target.value)} />
+            <span style={{fontSize:12,color:"var(--txm)"}}>days</span>
+          </div>
+        </div>
+      </SCard>
 
-function Settings({ liveData, setLiveData, customPlatforms, setListings, profile, workspace, onLogout, workspaceId, onRestoreVersion, listings, stockData, setStockData, handleExportData, weeklyGoal, setWeeklyGoal, monthlyGoal, setMonthlyGoal, weeklyRevGoal, setWeeklyRevGoal, monthlyRevGoal, setMonthlyRevGoal, initialTab }) {
+      <SCard icon={<IcoAnalytics/>} title="Velocity Tags" sub="NEW / slow mover badges on stock bundles">
+        <div className="s-row" style={{borderBottom:"none",paddingBottom:0}}>
+          <div><div className="s-row-label">Show velocity tags</div></div>
+          <SToggle on={as.velocityTags!==false} onChange={v=>setAS("velocityTags",v)} />
+        </div>
+      </SCard>
+    </>
+  );
+}
+
+function STabListings({ as, setAS, customPlatforms, setListings, liveData, setLiveData, tier }) {
+  const activePlats = as.activePlatforms || PLAT_FAMILY_BASES;
+
   // platformAccounts shape: { Vinted: ["Vinted 1","Vinted 2"], Depop: ["Depop"], ... }
   const initAccounts = () => {
     const pa = liveData?.platformAccounts;
     if (pa && typeof pa === "object" && !Array.isArray(pa)) return pa;
-    // Migrate from old flat array OR build from scratch
     const flat = Array.isArray(liveData?.platforms) ? liveData.platforms : [];
     const result = {};
     PLAT_FAMILY_BASES.forEach(base => {
-      // Find any accounts in old flat list belonging to this base
       const matches = flat.filter(p => getPlatFamily(p) === base);
       result[base] = matches.length ? matches : [base];
     });
@@ -8168,12 +8314,12 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
   };
 
   const [accounts,  setAccounts]  = useState(initAccounts);
-  const [expanded,  setExpanded]  = useState({});   // { platform: true/false }
-  const [editKey,   setEditKey]   = useState(null);  // { platform, idx }
+  const [expanded,  setExpanded]  = useState({});
+  const [editKey,   setEditKey]   = useState(null);
   const [editVal,   setEditVal]   = useState("");
-  const [newAccVal, setNewAccVal] = useState({});    // { platform: inputValue }
+  const [newAccVal, setNewAccVal] = useState({});
   const [saved,     setSaved]     = useState(false);
-  const pendingRenames = useRef({});                 // { oldAccountName: newAccountName }
+  const pendingRenames = useRef({});
 
   const toggleExpand = (plat) => setExpanded(p => ({ ...p, [plat]: !p[plat] }));
 
@@ -8181,7 +8327,7 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
     const v = (newAccVal[plat] || "").trim();
     if (!v) return;
     const allAccounts = Object.values(accounts).flat();
-    if (allAccounts.includes(v)) return; // duplicate
+    if (allAccounts.includes(v)) return;
     setAccounts(prev => ({ ...prev, [plat]: [...(prev[plat]||[]), v] }));
     setNewAccVal(prev => ({ ...prev, [plat]: "" }));
   };
@@ -8189,7 +8335,6 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
   const deleteAccount = (plat, idx) => {
     setAccounts(prev => {
       const updated = prev[plat].filter((_,i) => i !== idx);
-      // Always keep at least one account per platform (the platform name itself)
       return { ...prev, [plat]: updated.length ? updated : [plat] };
     });
   };
@@ -8206,7 +8351,6 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
     const { plat, idx } = editKey;
     const oldName = accounts[plat][idx];
     if (oldName !== v) {
-      // Chain renames correctly
       const existingOrig = Object.keys(pendingRenames.current).find(
         k => pendingRenames.current[k] === oldName
       );
@@ -8220,10 +8364,8 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
     setEditKey(null); setEditVal("");
   };
 
-  const save = () => {
-    // Derive flat account list for customPlatforms
+  const saveAccounts = () => {
     const flatAccounts = Object.values(accounts).flat();
-    // Cascade renames into listing data
     const renames = pendingRenames.current;
     if (Object.keys(renames).length > 0 && setListings) {
       setListings(prev => prev.map(l => {
@@ -8252,71 +8394,51 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
     pendingRenames.current = {};
   };
 
-  const [settingsTab, setSettingsTab] = useState(initialTab || "platforms");
-  const as = getAS(liveData);
-  const setAS = (key, val) => setLiveData(p => ({ ...p, appSettings: { ...getAS(p), [key]: val } }));
-
-  const isPro = ["pro","internal"].includes(workspace?.tier);
-
   return (
-    <div className="settings-layout">
-      <SettingsSidebar active={settingsTab} onChange={setSettingsTab} isPro={isPro} />
-      <div className="settings-content">
-        <div className="settings-page-title">{SETTINGS_TITLES[settingsTab]}</div>
-
-      {/* ── ACCOUNT TAB ── */}
-      {settingsTab==="account" && <AccountTab profile={profile} workspace={workspace} onLogout={onLogout} />}
-
-      {/* ── PLATFORMS TAB ── */}
-      {settingsTab==="platforms" && (
-      <>
-      <SCard icon={<IcoPlat/>} title="Your Platforms" sub="Platforms you don't sell on are hidden from every flow in the app">
+    <>
+      {/* ── YOUR PLATFORMS ── */}
+      <SCard icon={<IcoPlat/>} title="Your Platforms" sub="Platforms you don't sell on are hidden from every flow">
         <div style={{display:"flex",flexWrap:"wrap",gap:7}}>
           {PLAT_FAMILY_BASES.map(p => {
-            const activeList = as.activePlatforms || PLAT_FAMILY_BASES;
-            const isActive = activeList.includes(p);
+            const active = activePlats.includes(p);
             const col = getPlatColour(p);
             return (
               <button key={p} onClick={()=>{
-                const cur = as.activePlatforms || PLAT_FAMILY_BASES;
-                const next = isActive ? cur.filter(x=>x!==p) : [...cur,p];
+                const next = active ? activePlats.filter(x=>x!==p) : [...activePlats,p];
                 if (next.length > 0) setAS("activePlatforms", next);
               }} style={{
-                padding:"7px 14px", fontSize:11, fontWeight:700, borderRadius:20, cursor:"pointer",
-                border:`1.5px solid ${isActive?col:"var(--bd)"}`,
-                background: isActive?col+"18":"var(--sf2)",
-                color: isActive?col:"var(--txm)", transition:"all .12s",
-              }}>{p}{isActive?" ✓":""}</button>
+                padding:"5px 12px",fontSize:11,fontWeight:700,borderRadius:20,cursor:"pointer",
+                border:`1.5px solid ${active?col:"var(--bd)"}`,
+                background:active?col+"18":"var(--card-bg)",
+                color:active?col:"var(--txm)",transition:"all .12s",
+              }}>{p}{active&&" ✓"}</button>
             );
           })}
         </div>
       </SCard>
-      <div className="tw" style={{padding:"18px 20px",marginBottom:14}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-          <div style={{fontWeight:900,fontSize:12,textTransform:"uppercase",letterSpacing:".5px",color:"var(--txm)"}}>Sales Platforms & Accounts</div>
+
+      {/* ── SALES PLATFORMS & ACCOUNTS ── */}
+      <SCard icon={<IcoPlat/>} title="Sales Platforms & Accounts" sub="Add named accounts under each platform to track multiple accounts separately — e.g. Vinted Main + Vinted 2">
+        <div style={{display:"flex",justifyContent:"flex-end",marginBottom:6}}>
           <button onClick={resetToDefaults}
             style={{fontSize:10,color:"var(--txd)",background:"none",border:"none",cursor:"pointer",textDecoration:"underline"}}>
             Reset to defaults
           </button>
         </div>
-        <div style={{fontSize:11,color:"var(--txd)",marginBottom:16,lineHeight:1.6}}>
-          Platforms are fixed. Add named accounts under each platform to track multiple accounts separately — e.g. Vinted Main + Vinted 2. All data groups by platform globally.
-        </div>
-
         {PLAT_FAMILY_BASES.map(plat => {
           const col   = getPlatColour(plat);
           const accs  = accounts[plat] || [plat];
           const isOpen = !!expanded[plat];
           return (
             <div key={plat} style={{marginBottom:8,border:"1px solid var(--bd)",borderRadius:"var(--r2)",overflow:"hidden"}}>
-              <div onClick={() => toggleExpand(plat)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",background:"var(--sf2)",cursor:"pointer",userSelect:"none",borderBottom:isOpen?"1px solid var(--bd)":"none"}}>
+              <div onClick={() => toggleExpand(plat)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",background:"var(--main-bg)",cursor:"pointer",userSelect:"none",borderBottom:isOpen?"1px solid var(--bd)":"none"}}>
                 <span style={{width:10,height:10,borderRadius:"50%",background:col,flexShrink:0,display:"inline-block"}}/>
                 <span style={{flex:1,fontWeight:700,fontSize:13}}>{plat}</span>
                 <span style={{fontSize:11,color:"var(--txd)"}}>{accs.length} account{accs.length!==1?"s":""}</span>
                 <span style={{fontSize:11,color:"var(--txd)",marginLeft:4}}>{isOpen?"▲":"▼"}</span>
               </div>
               {isOpen && (
-                <div style={{padding:"10px 14px",background:"var(--sf)"}}>
+                <div style={{padding:"10px 14px",background:"var(--card-bg)"}}>
                   {accs.map((acc, idx) => {
                     const isEditing = editKey?.plat === plat && editKey?.idx === idx;
                     return (
@@ -8325,15 +8447,15 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
                           <>
                             <input value={editVal} onChange={e=>setEditVal(e.target.value)}
                               onKeyDown={e=>{if(e.key==="Enter")saveEdit();if(e.key==="Escape"){setEditKey(null);setEditVal("");}}}
-                              autoFocus style={{flex:1,background:"var(--sf2)",border:"1px solid var(--ac)",borderRadius:"var(--r)",padding:"4px 8px",fontFamily:"Arial,sans-serif",fontSize:12,outline:"none"}}/>
+                              autoFocus style={{flex:1,background:"var(--main-bg)",border:"1px solid var(--ac)",borderRadius:"var(--r)",padding:"4px 8px",fontFamily:"Arial,sans-serif",fontSize:12,outline:"none"}}/>
                             <button onClick={saveEdit} style={{background:"var(--gn)",color:"#fff",border:"none",borderRadius:"var(--r)",padding:"4px 10px",cursor:"pointer",fontSize:11,fontWeight:700}}>Save</button>
-                            <button onClick={()=>{setEditKey(null);setEditVal("");}} style={{background:"var(--sf2)",color:"var(--txm)",border:"1px solid var(--bdd)",borderRadius:"var(--r)",padding:"4px 8px",cursor:"pointer",fontSize:11}}>✕</button>
+                            <button onClick={()=>{setEditKey(null);setEditVal("");}} style={{background:"var(--main-bg)",color:"var(--txm)",border:"1px solid var(--bd)",borderRadius:"var(--r)",padding:"4px 8px",cursor:"pointer",fontSize:11}}>✕</button>
                           </>
                         ) : (
                           <>
                             <span style={{flex:1,fontSize:12,fontWeight:500,padding:"2px 8px",borderRadius:20,background:col+"15",color:col,border:`1px solid ${col}44`,display:"inline-block"}}>{acc}</span>
-                            <button onClick={()=>startEdit(plat,idx)} style={{background:"var(--sf2)",border:"1px solid var(--bdd)",borderRadius:"var(--r)",padding:"3px 10px",cursor:"pointer",fontSize:11,color:"var(--txm)",flexShrink:0}}>Rename</button>
-                            {accs.length>1 && <button onClick={()=>deleteAccount(plat,idx)} style={{background:"var(--acl)",border:"1px solid var(--ac2)",borderRadius:"var(--r)",padding:"3px 8px",cursor:"pointer",fontSize:11,color:"var(--ac)",fontWeight:700,flexShrink:0}}>✕</button>}
+                            <button onClick={()=>startEdit(plat,idx)} style={{background:"var(--main-bg)",border:"1px solid var(--bd)",borderRadius:"var(--r)",padding:"3px 10px",cursor:"pointer",fontSize:11,color:"var(--txm)",flexShrink:0}}>Rename</button>
+                            {accs.length>1 && <button onClick={()=>deleteAccount(plat,idx)} style={{background:"var(--acl)",border:"1px solid var(--ac)",borderRadius:"var(--r)",padding:"3px 8px",cursor:"pointer",fontSize:11,color:"var(--ac)",fontWeight:700,flexShrink:0}}>✕</button>}
                           </>
                         )}
                       </div>
@@ -8343,7 +8465,7 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
                     <input value={newAccVal[plat]||""} onChange={e=>setNewAccVal(prev=>({...prev,[plat]:e.target.value}))}
                       onKeyDown={e=>e.key==="Enter"&&addAccount(plat)}
                       placeholder={`Add ${plat} account name…`}
-                      style={{flex:1,background:"var(--sf2)",border:"1px solid var(--bdd)",borderRadius:"var(--r)",padding:"5px 9px",fontFamily:"Arial,sans-serif",fontSize:12,outline:"none"}}/>
+                      style={{flex:1,background:"var(--main-bg)",border:"1px solid var(--bd)",borderRadius:"var(--r)",padding:"5px 9px",fontFamily:"Arial,sans-serif",fontSize:12,outline:"none"}}/>
                     <button onClick={()=>addAccount(plat)} style={{background:col,color:"#fff",border:"none",borderRadius:"var(--r)",padding:"5px 12px",cursor:"pointer",fontSize:11,fontWeight:700,flexShrink:0}}>+ Add</button>
                   </div>
                 </div>
@@ -8351,136 +8473,15 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
             </div>
           );
         })}
-
-        <div style={{marginTop:16,display:"flex",justifyContent:"flex-end",gap:10,alignItems:"center"}}>
+        <div style={{marginTop:12,display:"flex",justifyContent:"flex-end",gap:10,alignItems:"center"}}>
           {saved && <span style={{fontSize:11,color:"var(--gn)",fontWeight:700}}>✓ Saved — changes applied globally</span>}
-          <button onClick={save} style={{background:"var(--gn)",color:"#fff",border:"none",borderRadius:"var(--r)",padding:"8px 20px",cursor:"pointer",fontSize:12,fontWeight:700}}>Save Platforms</button>
+          <button onClick={saveAccounts} style={{background:"var(--gn)",color:"#fff",border:"none",borderRadius:"var(--r)",padding:"8px 20px",cursor:"pointer",fontSize:12,fontWeight:700}}>Save Platforms</button>
         </div>
-        <div style={{fontSize:10,color:"var(--txd)",lineHeight:1.6,marginTop:10}}>
-          Renaming an account updates all matching listing data on Save. Data always groups by platform globally.
-        </div>
-      </div>
-      </>
-      )}
+      </SCard>
 
-      {/* ── GOALS TAB ── */}
-      {settingsTab==="goals" && (
-      <div className="tw" style={{padding:"18px 20px",marginBottom:14}}>
-        <SettingsHeader title="Weekly & Monthly Goals" sub="Set default targets — shown on the Dashboard. These persist across sessions." />
-        <SettingRow label="Weekly profit target £"><SettingNumInput value={weeklyGoal} onChange={setWeeklyGoal} placeholder="e.g. 250" /></SettingRow>
-        <SettingRow label="Weekly revenue target £"><SettingNumInput value={weeklyRevGoal} onChange={setWeeklyRevGoal} placeholder="e.g. 500" /></SettingRow>
-        <SettingRow label="Monthly profit target £"><SettingNumInput value={monthlyGoal} onChange={setMonthlyGoal} placeholder="e.g. 1000" /></SettingRow>
-        <SettingRow label="Monthly revenue target £"><SettingNumInput value={monthlyRevGoal} onChange={setMonthlyRevGoal} placeholder="e.g. 2000" /></SettingRow>
-      </div>
-      )}
-
-      {/* ── LISTINGS TAB ── */}
-      {settingsTab==="platforms" && (
-      <div className="tw" style={{padding:"18px 20px",marginBottom:14}}>
-        <SettingsHeader title="Listing Drafter" sub="Pre-fills the condition field when you open the Drafter." />
-        <SettingRow label="Default condition">
-          <select value={as.defaultCondition||"Excellent"} onChange={e=>setAS("defaultCondition",e.target.value)}
-            style={{background:"var(--sf2)",border:"1px solid var(--bdd)",borderRadius:"var(--r)",padding:"5px 9px",fontFamily:"Arial,sans-serif",fontSize:12,outline:"none"}}>
-            {["Excellent","Very Good","Good","Fair"].map(c=><option key={c}>{c}</option>)}
-          </select>
-        </SettingRow>
-        <div style={{height:10}}/>
-        {isPro && (
-          <>
-            <SettingsHeader title="Listing Drafter Config" sub="Personalizes AI-generated descriptions to your brand voice. Pro only." />
-            <div style={{fontSize:10.5,fontWeight:700,textTransform:"uppercase",color:"var(--txm)",marginBottom:6}}>Tone</div>
-            <div style={{display:"flex",gap:8,marginBottom:12}}>
-              {["casual","formal","hype"].map(v => (
-                <button key={v} onClick={()=>setAS("drafterTone",v)} style={{
-                  padding:"7px 14px",fontSize:11,fontWeight:700,borderRadius:20,cursor:"pointer",textTransform:"capitalize",
-                  border:`1.5px solid ${as.drafterTone===v?"var(--ac)":"var(--bd)"}`,
-                  background:as.drafterTone===v?"var(--acl)":"var(--sf2)",
-                  color:as.drafterTone===v?"var(--ac)":"var(--txm)",
-                }}>{v}</button>
-              ))}
-            </div>
-            <div style={{fontSize:10.5,fontWeight:700,textTransform:"uppercase",color:"var(--txm)",marginBottom:6}}>Dialect</div>
-            <div style={{display:"flex",gap:8,marginBottom:12}}>
-              {[{v:"uk",l:"UK"},{v:"us",l:"US"}].map(o => (
-                <button key={o.v} onClick={()=>setAS("drafterDialect",o.v)} style={{
-                  padding:"7px 14px",fontSize:11,fontWeight:700,borderRadius:20,cursor:"pointer",
-                  border:`1.5px solid ${as.drafterDialect===o.v?"var(--ac)":"var(--bd)"}`,
-                  background:as.drafterDialect===o.v?"var(--acl)":"var(--sf2)",
-                  color:as.drafterDialect===o.v?"var(--ac)":"var(--txm)",
-                }}>{o.l}</button>
-              ))}
-            </div>
-            <div style={{fontSize:10.5,fontWeight:700,textTransform:"uppercase",color:"var(--txm)",marginBottom:6}}>Description length</div>
-            <div style={{display:"flex",gap:8,marginBottom:12}}>
-              {["short","medium","detailed"].map(v => (
-                <button key={v} onClick={()=>setAS("drafterLength",v)} style={{
-                  padding:"7px 14px",fontSize:11,fontWeight:700,borderRadius:20,cursor:"pointer",textTransform:"capitalize",
-                  border:`1.5px solid ${as.drafterLength===v?"var(--ac)":"var(--bd)"}`,
-                  background:as.drafterLength===v?"var(--acl)":"var(--sf2)",
-                  color:as.drafterLength===v?"var(--ac)":"var(--txm)",
-                }}>{v}</button>
-              ))}
-            </div>
-            <label style={{display:"block",fontSize:10.5,fontWeight:700,textTransform:"uppercase",color:"var(--txm)",marginBottom:5}}>Always include</label>
-            <textarea value={as.alwaysInclude} onChange={e=>setAS("alwaysInclude",e.target.value)}
-              placeholder="e.g. shipping timeframe, bundle discount offer"
-              style={{width:"100%",boxSizing:"border-box",background:"var(--sf2)",border:"1px solid var(--bdd)",borderRadius:"var(--r)",padding:"8px 10px",fontFamily:"Arial,sans-serif",fontSize:12.5,marginBottom:10,height:44,resize:"vertical"}} />
-            <label style={{display:"block",fontSize:10.5,fontWeight:700,textTransform:"uppercase",color:"var(--txm)",marginBottom:5}}>Never include</label>
-            <textarea value={as.neverInclude} onChange={e=>setAS("neverInclude",e.target.value)}
-              placeholder="e.g. exact measurements in the title"
-              style={{width:"100%",boxSizing:"border-box",background:"var(--sf2)",border:"1px solid var(--bdd)",borderRadius:"var(--r)",padding:"8px 10px",fontFamily:"Arial,sans-serif",fontSize:12.5,marginBottom:10,height:44,resize:"vertical"}} />
-            <label style={{display:"block",fontSize:10.5,fontWeight:700,textTransform:"uppercase",color:"var(--txm)",marginBottom:5}}>Brand voice notes</label>
-            <textarea value={as.brandVoice} onChange={e=>setAS("brandVoice",e.target.value)}
-              placeholder="Anything else the Drafter should know about your brand"
-              style={{width:"100%",boxSizing:"border-box",background:"var(--sf2)",border:"1px solid var(--bdd)",borderRadius:"var(--r)",padding:"8px 10px",fontFamily:"Arial,sans-serif",fontSize:12.5,marginBottom:14,height:44,resize:"vertical"}} />
-          </>
-        )}
-        <SettingsHeader title="Mark as Listed" sub="These accounts will be pre-ticked when you open Mark as Listed." />
-        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:7,marginTop:4}}>
-          {(customPlatforms||DEFAULT_PLATFORMS).map(p => {
-            const sel = (as.defaultAccounts||[]).includes(p);
-            const col = getPlatColour(p);
-            return (
-              <button key={p} onClick={()=>{ const cur=as.defaultAccounts||[]; setAS("defaultAccounts",sel?cur.filter(x=>x!==p):[...cur,p]); }}
-                style={{padding:"7px 4px",fontSize:11,fontWeight:700,textAlign:"center",border:`1.5px solid ${sel?col:"var(--bd)"}`,borderRadius:"var(--r)",cursor:"pointer",background:sel?col+"18":"var(--sf2)",color:sel?col:"var(--txm)",transition:"all .12s"}}>
-                {p}{sel?" ✓":""}
-              </button>
-            );
-          })}
-        </div>
-        <div style={{height:10}}/>
-        <SettingsHeader title="Cross-List Tracker — Platforms" sub="Choose which platforms appear in the Cross-List tab in Listing Data. Toggle off any platforms you don't actively sell on." />
-        <div style={{display:"flex",flexDirection:"column",gap:0}}>
-          {(as.activePlatforms||PLAT_FAMILY_BASES).map((p, i, arr) => {
-            const col   = getPlatColour(p);
-            const saved = as.crossListPlats || PLAT_FAMILY_BASES;
-            const isOn  = saved.includes(p);
-            const isLast= i === arr.length - 1;
-            return (
-              <div key={p} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"11px 0",borderBottom:isLast?"none":"1px solid var(--bd)",gap:12}}>
-                <div style={{display:"flex",alignItems:"center",gap:10}}>
-                  <div style={{width:10,height:10,borderRadius:"50%",background:col,flexShrink:0}}/>
-                  <span style={{fontSize:13,color:"var(--tx)",fontWeight:500}}>{p}</span>
-                </div>
-                <div onClick={()=>{
-                    const cur = as.crossListPlats || PLAT_FAMILY_BASES;
-                    const next = isOn ? cur.filter(x=>x!==p) : [...cur, p];
-                    if (next.length > 0) setAS("crossListPlats", next);
-                  }}
-                  style={{width:38,height:22,borderRadius:11,background:isOn?"var(--gn)":"var(--bdd)",position:"relative",cursor:"pointer",transition:"background .2s",flexShrink:0}}>
-                  <div style={{width:16,height:16,borderRadius:"50%",background:"#fff",position:"absolute",top:3,left:isOn?19:3,transition:"left .2s",boxShadow:"0 1px 3px rgba(0,0,0,.2)"}}/>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        <div style={{marginTop:10,padding:"9px 12px",background:"var(--nvl)",borderRadius:"var(--r)",fontSize:11,color:"var(--nv)"}}>
-          {(as.crossListPlats||PLAT_FAMILY_BASES).length} platform{(as.crossListPlats||PLAT_FAMILY_BASES).length!==1?"s":""} visible in Cross-List tab
-        </div>
-        <div style={{height:14}}/>
-        <div style={{height:6}}/>
-        <SettingsHeader title="Mark as Listed — Hidden Platforms" sub="These platforms will not appear in the Mark as Listed flow." />
-        <div style={{display:"flex",flexWrap:"wrap",gap:7,marginBottom:4}}>
+      {/* ── MARK AS LISTED — HIDDEN ── */}
+      <SCard icon={<IcoPin/>} title="Mark as Listed — Hidden Platforms" sub="These won't appear in the Mark as Listed flow">
+        <div style={{display:"flex",flexWrap:"wrap",gap:7}}>
           {(customPlatforms||DEFAULT_PLATFORMS).map(p => {
             const hidden = (as.hiddenListedPlats||[]).includes(p);
             return (
@@ -8490,17 +8491,18 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
               }} style={{
                 padding:"5px 12px",fontSize:11,fontWeight:700,borderRadius:20,cursor:"pointer",
                 border:`1.5px solid ${hidden?"var(--ac)":"var(--bd)"}`,
-                background:hidden?"var(--acl)":"var(--sf2)",
+                background:hidden?"var(--acl)":"var(--card-bg)",
                 color:hidden?"var(--ac)":"var(--txm)",transition:"all .12s",
               }}>{hidden?"🚫 ":""}{p}</button>
             );
           })}
         </div>
-        <div style={{fontSize:10,color:"var(--txd)",marginBottom:14,lineHeight:1.6}}>
-          Highlighted = hidden from Mark as Listed. Tap to toggle.
-        </div>
-        <SettingsHeader title="Mark as Sold — Hidden Platforms" sub="These platforms will not appear in the Mark as Sold flow." />
-        <div style={{display:"flex",flexWrap:"wrap",gap:7,marginBottom:4}}>
+        <div style={{fontSize:10.5,color:"var(--txd)",marginTop:8}}>Highlighted = hidden. Tap to toggle.</div>
+      </SCard>
+
+      {/* ── MARK AS SOLD — HIDDEN ── */}
+      <SCard icon={<IcoSold/>} title="Mark as Sold — Hidden Platforms" sub="These won't appear in the Mark as Sold flow">
+        <div style={{display:"flex",flexWrap:"wrap",gap:7}}>
           {(customPlatforms||DEFAULT_PLATFORMS).map(p => {
             const hidden = (as.hiddenSoldPlats||[]).includes(p);
             return (
@@ -8510,232 +8512,205 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
               }} style={{
                 padding:"5px 12px",fontSize:11,fontWeight:700,borderRadius:20,cursor:"pointer",
                 border:`1.5px solid ${hidden?"var(--ac)":"var(--bd)"}`,
-                background:hidden?"var(--acl)":"var(--sf2)",
+                background:hidden?"var(--acl)":"var(--card-bg)",
                 color:hidden?"var(--ac)":"var(--txm)",transition:"all .12s",
               }}>{hidden?"🚫 ":""}{p}</button>
             );
           })}
         </div>
-        <div style={{fontSize:10,color:"var(--txd)",marginBottom:14,lineHeight:1.6}}>
-          Highlighted = hidden from Mark as Sold. Tap to toggle.
+        <div style={{fontSize:10.5,color:"var(--txd)",marginTop:8}}>Highlighted = hidden. Tap to toggle.</div>
+      </SCard>
+
+      {/* ── CROSS-LIST TRACKER ── */}
+      <SCard icon={<IcoData/>} title="Cross-List Tracker — Visible Platforms" sub="Controls which platforms appear in the Cross-List tab" proOnly tier={tier}>
+        <div style={{display:"flex",flexWrap:"wrap",gap:7}}>
+          {activePlats.map(p => {
+            const crossPlats = as.crossListPlats || activePlats;
+            const visible = crossPlats.includes(p);
+            return (
+              <button key={p} onClick={()=>{
+                const cur = as.crossListPlats || activePlats;
+                setAS("crossListPlats", visible ? cur.filter(x=>x!==p) : [...cur,p]);
+              }} style={{
+                padding:"5px 12px",fontSize:11,fontWeight:700,borderRadius:20,cursor:"pointer",
+                border:`1.5px solid ${visible?"var(--ac)":"var(--bd)"}`,
+                background:visible?"var(--acl)":"var(--card-bg)",
+                color:visible?"var(--ac)":"var(--txm)",transition:"all .12s",
+              }}>{visible?"✓ ":""}{p}</button>
+            );
+          })}
         </div>
-        <SettingsHeader title="Custom Dropdown Options" sub="Manage types, colours, and sizes you've added via the dropdowns. Built-in defaults cannot be removed." />
+      </SCard>
+
+      {/* ── CUSTOM DROPDOWNS ── */}
+      <SCard icon={<IcoListings/>} title="Custom Dropdown Options" sub="Manage types, colours, and sizes you've added">
         {[
-          { field:"customTypes",   label:"Types",   colour:"#1a5276" },
-          { field:"customColours", label:"Colours", colour:"#1a6b3a" },
-          { field:"customSizes",   label:"Sizes",   colour:"#6b3a1a" },
+          { field:"customTypes",   label:"Types",   colour:"#4338CA" },
+          { field:"customColours", label:"Colours", colour:"#15803D" },
+          { field:"customSizes",   label:"Sizes",   colour:"#B45309" },
         ].map(({ field, label, colour }) => {
           const items = as[field] || [];
           return (
-            <div key={field} style={{marginBottom:14,border:"1px solid var(--bd)",borderRadius:"var(--r2)",overflow:"hidden"}}>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"9px 14px",background:"var(--sf2)",borderBottom:items.length?"1px solid var(--bd)":"none"}}>
-                <span style={{fontWeight:700,fontSize:12,color:"var(--tx)"}}>{label}</span>
-                <span style={{fontSize:11,color:"var(--txd)"}}>{items.length} custom</span>
-              </div>
-              {items.length === 0 ? (
-                <div style={{padding:"12px 14px",fontSize:11,color:"var(--txd)"}}>No custom {label.toLowerCase()} added yet.</div>
-              ) : (
-                <div style={{padding:"8px 14px",display:"flex",flexWrap:"wrap",gap:7}}>
-                  {items.map((item, idx) => (
-                    <div key={idx} style={{display:"inline-flex",alignItems:"center",gap:5,background:colour+"12",border:`1px solid ${colour}44`,borderRadius:20,padding:"3px 10px",fontSize:11}}>
-                      <span style={{fontWeight:600,color:colour}}>{item}</span>
-                      <button
-                        onClick={() => {
-                          const next = items.filter((_,i) => i !== idx);
-                          setAS(field, next);
-                        }}
-                        title={`Remove ${item}`}
-                        style={{background:"none",border:"none",cursor:"pointer",color:colour,fontSize:13,lineHeight:1,padding:"0 0 0 2px",fontWeight:700,opacity:.7,transition:"opacity .12s"}}
-                        onMouseEnter={e=>e.target.style.opacity=1}
-                        onMouseLeave={e=>e.target.style.opacity=.7}
-                      >×</button>
-                    </div>
-                  ))}
-                </div>
-              )}
+            <div key={field} style={{marginBottom:10}}>
+              <div style={{fontSize:10.5,fontWeight:700,color:"var(--txd)",textTransform:"uppercase",letterSpacing:".05em",marginBottom:6}}>{label}</div>
+              {items.length === 0
+                ? <div style={{fontSize:11.5,color:"var(--txd)"}}>None added yet</div>
+                : <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                    {items.map((item,idx) => (
+                      <div key={idx} style={{display:"inline-flex",alignItems:"center",gap:5,padding:"3px 10px",borderRadius:20,border:`1px solid ${colour}44`,background:`${colour}12`,fontSize:11,fontWeight:600,color:colour}}>
+                        {item}
+                        <button onClick={()=>setAS(field,items.filter((_,i)=>i!==idx))} style={{background:"none",border:"none",cursor:"pointer",color:colour,fontSize:13,fontWeight:700,lineHeight:1,padding:0,opacity:.7}}>×</button>
+                      </div>
+                    ))}
+                  </div>
+              }
             </div>
           );
         })}
-        <div style={{fontSize:10,color:"var(--txd)",lineHeight:1.6}}>
-          Custom options are removed from the dropdowns immediately. Any listings already using a removed value keep it.
+      </SCard>
+
+      {/* ── SKU FORMAT ── */}
+      <SCard icon={<IcoListings/>} title="SKU Format" sub="How new item SKUs are auto-generated">
+        <div className="s-row">
+          <div className="s-row-label">Format</div>
+          <select className="fsel" style={{width:150}} value={as.skuFormat||"A001"} onChange={e=>setAS("skuFormat",e.target.value)}>
+            <option value="A001">Prefix + number</option>
+            <option value="001">001 — Numbers only</option>
+            <option value="CUSTOM-001">Custom prefix + dash</option>
+            <option value="AD-001">Initials + dash + number</option>
+          </select>
         </div>
-      </div>
-      )}
-
-      {/* ── STOCK TAB ── */}
-      {settingsTab==="stock" && (
-      <div className="tw" style={{padding:"18px 20px",marginBottom:14}}>
-        <SettingsHeader title="Thresholds" sub="Used throughout the app to flag underperformance." />
-        <SettingRow label="Sell-through warning %"><SettingNumInput value={as.sellThruWarning} onChange={v=>setAS("sellThruWarning",+v)} min={1} max={100} placeholder="60" /></SettingRow>
-        <SettingRow label="Slow mover threshold (days unsold)"><SettingNumInput value={as.slowMoverDays} onChange={v=>setAS("slowMoverDays",+v)} min={1} max={365} placeholder="14" /></SettingRow>
-        <SettingRow label="Show velocity tags (NEW / slow mover badges)"><SettingToggle value={as.velocityTags!==undefined?!!as.velocityTags:true} onChange={v=>setAS("velocityTags",v)} /></SettingRow>
-      </div>
-      )}
-
-      {/* ── PREFERENCES TAB ── */}
-      {settingsTab==="preferences" && (
-      <>
-        <SCard icon={<IcoPrefs/>} title="Interface Theme" sub="Choose how SKU Flow looks">
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,paddingTop:4}}>
-            {[
-              { value:"default", label:"Default", desc:"Dark sidebar, light content, indigo accent" },
-              { value:"night",   label:"Night",   desc:"Full dark interface" },
-              { value:"classic", label:"Classic", desc:"Original Archive District look" },
-            ].map(opt => (
-              <div key={opt.value} onClick={()=>setAS("theme",opt.value)}
-                style={{
-                  border:`1.5px solid ${as.theme===opt.value?"var(--ac)":"var(--bd)"}`,
-                  background: as.theme===opt.value?"var(--acl)":"var(--card-bg)",
-                  borderRadius:"var(--r2)", padding:"10px 12px", cursor:"pointer", transition:"all .12s",
-                }}>
-                <div style={{fontSize:12,fontWeight:700,color:as.theme===opt.value?"var(--ac)":"var(--tx)",marginBottom:3}}>
-                  {opt.label}{as.theme===opt.value?" ✓":""}
-                </div>
-                <div style={{fontSize:10.5,color:"var(--txm)",lineHeight:1.4}}>{opt.desc}</div>
-              </div>
-            ))}
-          </div>
-        </SCard>
-        <div className="tw" style={{padding:"18px 20px",marginBottom:14}}>
-          <SettingsHeader title="Currency & Dates" />
-          <SettingRow label="Currency symbol">
-            <select value={as.currency||"£"} onChange={e=>setAS("currency",e.target.value)}
-              style={{background:"var(--sf2)",border:"1px solid var(--bdd)",borderRadius:"var(--r)",padding:"5px 9px",fontFamily:"Arial,sans-serif",fontSize:12,outline:"none"}}>
-              {["£","$","€","¥","₹","A$","C$"].map(c=><option key={c} value={c}>{c}</option>)}
-            </select>
-          </SettingRow>
-          <SettingRow label="Date format">
-            <select value={as.dateFormat||"DD/MM"} onChange={e=>setAS("dateFormat",e.target.value)}
-              style={{background:"var(--sf2)",border:"1px solid var(--bdd)",borderRadius:"var(--r)",padding:"5px 9px",fontFamily:"Arial,sans-serif",fontSize:12,outline:"none"}}>
-              <option value="DD/MM">DD/MM/YY</option>
-              <option value="MM/DD">MM/DD/YY</option>
-            </select>
-          </SettingRow>
-          <SettingRow label="Cash buffer guideline %"><SettingNumInput value={as.cashBuffer} onChange={v=>setAS("cashBuffer",+v)} min={1} max={100} placeholder="85" /></SettingRow>
-          <div style={{fontSize:11,color:"var(--txd)",marginTop:8,lineHeight:1.6}}>
-            Cash buffer example: at 85%, if your liquid cash is £500 the highlighted tile shows £425 as your safe spending limit.
-          </div>
-          <div style={{height:10}}/>
-          <SettingsHeader title="Appearance" />
-          <SettingRow label="Compact mode — smaller table rows"><SettingToggle value={!!as.compactMode} onChange={v=>setAS("compactMode",v)} /></SettingRow>
-          <SettingRow label="Sidebar collapsed by default (mobile)"><SettingToggle value={!!as.sidebarCollapsed} onChange={v=>setAS("sidebarCollapsed",v)} /></SettingRow>
+        <div className="s-row" style={{borderBottom:"none",paddingBottom:0}}>
+          <div><div className="s-row-label">Prefix</div><div className="s-row-sub">Used for prefix-based formats</div></div>
+          <input className="finp" style={{width:70,textAlign:"center",fontFamily:"monospace",fontWeight:700}} value={as.skuPrefix||"A"} onChange={e=>setAS("skuPrefix",e.target.value.toUpperCase())} maxLength={6} />
         </div>
-      </>
-      )}
+      </SCard>
 
-      {/* ── NOTIFICATIONS TAB ── */}
-      {settingsTab==="notifications" && (
-      <div className="tw" style={{padding:"18px 20px",marginBottom:14}}>
-        <SettingsHeader title="Push Notifications" sub="Choose which events trigger a push notification." />
-        {[
-          {key:"notifSold",         label:"Item sold",                  def:true },
-          {key:"notifListed",       label:"Item marked as listed",      def:true},
-          {key:"notifReturn",       label:"Return raised",              def:true },
-          {key:"notifShipped",      label:"Item shipped",               def:false},
-          {key:"notifSundayBackup", label:"Sunday backup reminder",     def:true },
-          {key:"notifNotes",        label:"Global notes updated",       def:true},
-        ].map(({key,label,def}) => (
-          <SettingRow key={key} label={label}>
-            <SettingToggle value={as[key]!==undefined?!!as[key]:def} onChange={v=>setAS(key,v)} />
-          </SettingRow>
+      {/* ── BUNDLE SKU FORMAT ── */}
+      <SCard icon={<IcoStock/>} title="Bundle SKU Format" sub="How new bundle SKUs are auto-generated">
+        <div className="s-row">
+          <div className="s-row-label">Format</div>
+          <select className="fsel" style={{width:150}} value={as.bundleFormat||"BDL-001"} onChange={e=>setAS("bundleFormat",e.target.value)}>
+            <option value="BDL-001">BDL-001 — BDL prefix</option>
+            <option value="BATCH-01">BATCH-01 — BATCH prefix</option>
+            <option value="B001">B001 — Short B</option>
+            <option value="CUSTOM-001">Custom prefix</option>
+          </select>
+        </div>
+        <div className="s-row" style={{borderBottom:"none",paddingBottom:0}}>
+          <div><div className="s-row-label">Prefix</div><div className="s-row-sub">Used for custom format</div></div>
+          <input className="finp" style={{width:70,textAlign:"center",fontFamily:"monospace",fontWeight:700}} value={as.bundlePrefix||"BDL"} onChange={e=>setAS("bundlePrefix",e.target.value.toUpperCase())} maxLength={8} />
+        </div>
+      </SCard>
+
+      {/* ── DEFAULT CONDITION ── */}
+      <SCard icon={<IcoDrafter/>} title="Listing Defaults">
+        <div className="s-row" style={{borderBottom:"none",paddingBottom:0}}>
+          <div><div className="s-row-label">Default condition</div><div className="s-row-sub">Pre-fills when adding listings</div></div>
+          <select className="fsel" style={{width:140}} value={as.defaultCondition||"Excellent"} onChange={e=>setAS("defaultCondition",e.target.value)}>
+            {["Excellent","Very Good","Good","Fair"].map(c=><option key={c} value={c}>{c}</option>)}
+          </select>
+        </div>
+      </SCard>
+
+      {/* ── LISTING DRAFTER CONFIG (Pro) ── */}
+      <SCard icon={<IcoDrafter/>} title="Listing Drafter Config" sub="AI description personalisation" proOnly tier={tier}>
+        <div className="s-row">
+          <div className="s-row-label">Tone</div>
+          <select className="fsel" style={{width:110}} value={as.drafterTone||"casual"} onChange={e=>setAS("drafterTone",e.target.value)}>
+            <option value="casual">Casual</option>
+            <option value="hype">Hype</option>
+            <option value="formal">Formal</option>
+          </select>
+        </div>
+        <div className="s-row">
+          <div className="s-row-label">Dialect</div>
+          <select className="fsel" style={{width:110}} value={as.drafterDialect||"uk"} onChange={e=>setAS("drafterDialect",e.target.value)}>
+            <option value="uk">UK English</option>
+            <option value="us">US English</option>
+          </select>
+        </div>
+        <div className="s-row">
+          <div className="s-row-label">Length</div>
+          <select className="fsel" style={{width:110}} value={as.drafterLength||"medium"} onChange={e=>setAS("drafterLength",e.target.value)}>
+            <option value="short">Short (~40 words)</option>
+            <option value="medium">Medium (~80 words)</option>
+            <option value="detailed">Detailed (~150 words)</option>
+          </select>
+        </div>
+        <div style={{marginTop:8}}>
+          <div style={{fontSize:11,fontWeight:600,color:"var(--txm)",marginBottom:4}}>Always include</div>
+          <textarea className="fta" style={{minHeight:52,fontSize:12}} value={as.alwaysInclude||""} onChange={e=>setAS("alwaysInclude",e.target.value)} placeholder="e.g. shipping timeframe, bundle discount offer" />
+        </div>
+        <div style={{marginTop:8}}>
+          <div style={{fontSize:11,fontWeight:600,color:"var(--txm)",marginBottom:4}}>Never include</div>
+          <textarea className="fta" style={{minHeight:52,fontSize:12}} value={as.neverInclude||""} onChange={e=>setAS("neverInclude",e.target.value)} placeholder="e.g. exact measurements in the title" />
+        </div>
+        <div style={{marginTop:8}}>
+          <div style={{fontSize:11,fontWeight:600,color:"var(--txm)",marginBottom:4}}>Brand voice notes</div>
+          <textarea className="fta" style={{minHeight:64,fontSize:12}} value={as.brandVoice||""} onChange={e=>setAS("brandVoice",e.target.value)} placeholder="Tell the AI what makes your shop distinctive…" />
+        </div>
+      </SCard>
+    </>
+  );
+}
+
+const SETTINGS_TABS_ORDER = ["account","notifications","preferences","stock","listings","billing","data","contact"];
+
+function SettingsPage({
+  liveData, setLiveData, customPlatforms, setListings, profile, setProfile, workspace, setWorkspace,
+  onLogout, workspaceId, onRestoreVersion, listings, stockData, setStockData, handleExportData,
+  weeklyGoal, setWeeklyGoal, monthlyGoal, setMonthlyGoal, weeklyRevGoal, setWeeklyRevGoal,
+  monthlyRevGoal, setMonthlyRevGoal, initialTab, listingLimit,
+}) {
+  const [sTab, setSTab] = useState(initialTab || "account");
+  const as = getAS(liveData);
+  const setAS = (key, val) => setLiveData(p => ({ ...p, appSettings: { ...getAS(p), [key]: val } }));
+  const tier = workspace?.tier;
+
+  const touchStartX = useRef(null);
+  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
+  const onTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+      const idx = SETTINGS_TABS_ORDER.indexOf(sTab);
+      if (diff > 0 && idx < SETTINGS_TABS_ORDER.length - 1) setSTab(SETTINGS_TABS_ORDER[idx + 1]);
+      if (diff < 0 && idx > 0) setSTab(SETTINGS_TABS_ORDER[idx - 1]);
+    }
+    touchStartX.current = null;
+  };
+
+  const TABS = [
+    { id:"account",       label:"Account" },
+    { id:"notifications", label:"Notifications" },
+    { id:"preferences",   label:"Preferences" },
+    { id:"stock",         label:"Stock" },
+    { id:"listings",      label:"Listings" },
+    { id:"billing",       label:"Billing" },
+    { id:"data",          label:"Data" },
+    { id:"contact",       label:"Contact Us" },
+  ];
+
+  return (
+    <div className="settings-page">
+      <div className="settings-tabs">
+        {TABS.map(t => (
+          <div key={t.id} className={`settings-tab${sTab===t.id?" active":""}`} onClick={()=>setSTab(t.id)}>
+            {t.label}
+          </div>
         ))}
-        <div style={{fontSize:11,color:"var(--txd)",marginTop:12,lineHeight:1.6}}>
-          Push notifications require browser permission. Tap the 🔔 icon in the top bar to enable.
-        </div>
       </div>
-      )}
 
-      {/* ── VERSION HISTORY TAB ── */}
-      {/* ── LISTINGS TAB (SKU/Bundle format) ── */}
-      {settingsTab==="listings" && (
-        <>
-          <SCard icon={<IcoListings/>} title="Item SKU Format" sub="How new item SKUs are auto-generated">
-            <div className="s-form-row">
-              <div><div className="s-row-label">Format</div></div>
-              <select className="fsel" value={as.skuFormat||"A001"} onChange={e=>setAS("skuFormat",e.target.value)}
-                style={{background:"var(--sf2)",border:"1px solid var(--bdd)",borderRadius:"var(--r)",padding:"5px 9px",fontFamily:"Arial,sans-serif",fontSize:12,outline:"none"}}>
-                <option value="A001">A001 — Letter + number</option>
-                <option value="001">001 — Numbers only</option>
-                <option value="CUSTOM-001">Custom prefix + number</option>
-                <option value="AD-001">Initials + number</option>
-              </select>
-            </div>
-            <div className="s-form-row">
-              <div><div className="s-row-label">Custom prefix</div><div className="s-row-sub">Used when format is "Custom prefix"</div></div>
-              <input className="finp" style={{width:80,textAlign:"center"}} value={as.skuPrefix||"A"} onChange={e=>setAS("skuPrefix",e.target.value.toUpperCase())} maxLength={6} />
-            </div>
-          </SCard>
-
-          <SCard icon={<IcoStock/>} title="Bundle SKU Format" sub="How new bundle SKUs are auto-generated">
-            <div className="s-form-row">
-              <div><div className="s-row-label">Format</div></div>
-              <select className="fsel" value={as.bundleFormat||"BDL-001"} onChange={e=>setAS("bundleFormat",e.target.value)}
-                style={{background:"var(--sf2)",border:"1px solid var(--bdd)",borderRadius:"var(--r)",padding:"5px 9px",fontFamily:"Arial,sans-serif",fontSize:12,outline:"none"}}>
-                <option value="BDL-001">BDL-001 — BDL prefix</option>
-                <option value="BATCH-01">BATCH-01 — BATCH prefix</option>
-                <option value="B001">B001 — Short B prefix</option>
-                <option value="CUSTOM-001">Custom prefix</option>
-              </select>
-            </div>
-            <div className="s-form-row">
-              <div><div className="s-row-label">Custom prefix</div></div>
-              <input className="finp" style={{width:80,textAlign:"center"}} value={as.bundlePrefix||"BDL"} onChange={e=>setAS("bundlePrefix",e.target.value.toUpperCase())} maxLength={8} />
-            </div>
-          </SCard>
-
-          <SCard icon={<IcoGoals/>} title="Slow Mover Threshold" sub="Duplicated from Stock for discoverability">
-            <SettingRow label="Days unsold before flagged slow"><SettingNumInput value={as.slowMoverDays} onChange={v=>setAS("slowMoverDays",+v)} min={1} max={365} placeholder="14" /></SettingRow>
-          </SCard>
-
-          <SCard icon={<IcoPlat/>} title="Cross-List Tracker Platforms" sub="Duplicated from Platforms for discoverability">
-            {(as.activePlatforms||PLAT_FAMILY_BASES).map((p) => {
-              const col = getPlatColour(p);
-              const savedList = as.crossListPlats || PLAT_FAMILY_BASES;
-              const isOn = savedList.includes(p);
-              return (
-                <div key={p} className="s-form-row">
-                  <div style={{display:"flex",alignItems:"center",gap:10}}>
-                    <div style={{width:10,height:10,borderRadius:"50%",background:col,flexShrink:0}}/>
-                    <span style={{fontSize:13,color:"var(--tx)",fontWeight:500}}>{p}</span>
-                  </div>
-                  <div onClick={()=>{
-                      const cur = as.crossListPlats || PLAT_FAMILY_BASES;
-                      const next = isOn ? cur.filter(x=>x!==p) : [...cur, p];
-                      if (next.length > 0) setAS("crossListPlats", next);
-                    }}
-                    style={{width:38,height:22,borderRadius:11,background:isOn?"var(--gn)":"var(--bdd)",position:"relative",cursor:"pointer",transition:"background .2s",flexShrink:0}}>
-                    <div style={{width:16,height:16,borderRadius:"50%",background:"#fff",position:"absolute",top:3,left:isOn?19:3,transition:"left .2s",boxShadow:"0 1px 3px rgba(0,0,0,.2)"}}/>
-                  </div>
-                </div>
-              );
-            })}
-          </SCard>
-        </>
-      )}
-
-      {/* ── DATA TAB ── */}
-      {settingsTab==="data" && (
-        <SettingsData
-          listings={listings} stockData={stockData}
-          setListings={setListings} setStockData={setStockData}
-          handleExportData={handleExportData} as={as}
-        />
-      )}
-
-      {/* ── BILLING TAB ── */}
-      {settingsTab==="billing" && (
-        <SettingsBilling workspace={workspace} listingCount={listings?.length||0} onNavContact={()=>setSettingsTab("contact")} />
-      )}
-
-      {/* ── CONTACT TAB ── */}
-      {settingsTab==="contact" && (
-        <SettingsContact profile={profile} workspace={workspace} workspaceId={workspaceId} />
-      )}
-
-      {settingsTab==="versions" && (
-        <VersionHistory workspaceId={workspaceId} onRestore={onRestoreVersion} />
-      )}
-
+      <div className="settings-content" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+        {sTab==="account"       && <STabAccount profile={profile} setProfile={setProfile} workspace={workspace} setWorkspace={setWorkspace} workspaceId={workspaceId} onLogout={onLogout} />}
+        {sTab==="notifications" && <STabNotifications as={as} setAS={setAS} />}
+        {sTab==="preferences"   && <STabPreferences as={as} setAS={setAS} weeklyGoal={weeklyGoal} setWeeklyGoal={setWeeklyGoal} monthlyGoal={monthlyGoal} setMonthlyGoal={setMonthlyGoal} weeklyRevGoal={weeklyRevGoal} setWeeklyRevGoal={setWeeklyRevGoal} monthlyRevGoal={monthlyRevGoal} setMonthlyRevGoal={setMonthlyRevGoal} />}
+        {sTab==="stock"         && <STabStock as={as} setAS={setAS} />}
+        {sTab==="listings"      && <STabListings as={as} setAS={setAS} customPlatforms={customPlatforms} setListings={setListings} liveData={liveData} setLiveData={setLiveData} tier={tier} />}
+        {sTab==="billing"       && <STabBilling workspace={workspace} listingCount={listings?.length||0} onNavContact={()=>setSTab("contact")} />}
+        {sTab==="data"          && <STabData listings={listings} stockData={stockData} setListings={setListings} setStockData={setStockData} handleExportData={handleExportData} as={as} workspaceId={workspaceId} onRestoreVersion={onRestoreVersion} />}
+        {sTab==="contact"       && <STabContact profile={profile} workspace={workspace} workspaceId={workspaceId} />}
       </div>
     </div>
   );
@@ -8744,7 +8719,7 @@ function Settings({ liveData, setLiveData, customPlatforms, setListings, profile
 /* ═══════════════════════════════════════════════════════════════
    SETTINGS — Data, Billing, Contact (Phase 2)
 ═══════════════════════════════════════════════════════════════ */
-function SettingsData({ listings, stockData, setListings, setStockData, handleExportData, as }) {
+function STabData({ listings, stockData, setListings, setStockData, handleExportData, as, workspaceId, onRestoreVersion }) {
   const resetListings = () => {
     if (!window.confirm(`Delete all ${listings.length} listings? This cannot be undone — export a backup first if you need one.`)) return;
     if (!window.confirm("Are you absolutely sure? This will permanently remove every listing.")) return;
@@ -8757,38 +8732,27 @@ function SettingsData({ listings, stockData, setListings, setStockData, handleEx
   };
   return (
     <>
-      <SCard icon={<IcoDataMgmt/>} title="Export Data" sub="Download a full copy of your data as JSON and XLSX">
-        <div className="s-form-row">
+      <SCard icon={<IcoDataMgmt/>} title="Export Data" sub="Downloads JSON + XLSX simultaneously">
+        <div className="s-row">
           <div>
             <div className="s-row-label">Export all data</div>
-            <div className="s-row-sub">Downloads JSON + XLSX — listings, stock, settings</div>
+            <div className="s-row-sub">Listings, stock, settings · {as.lastExported ? `Last: ${as.lastExported}` : "Never exported"}</div>
           </div>
           <button className="btn btn-o btn-sm" onClick={handleExportData}>↓ Export</button>
         </div>
-        <div className="s-form-row">
-          <div>
-            <div className="s-row-label">Last exported</div>
-            <div className="s-row-sub">{as.lastExported || "Never"}</div>
-          </div>
-        </div>
       </SCard>
 
-      <SCard icon={<IcoDataMgmt/>} title="Danger Zone" sub="These actions permanently delete data and cannot be undone">
-        <div className="s-form-row">
-          <div>
-            <div className="s-row-label">Reset all listings</div>
-            <div className="s-row-sub">{listings.length} listings will be permanently deleted</div>
-          </div>
-          <button className="btn btn-o btn-sm" onClick={resetListings}
-            style={{color:"var(--rd)",borderColor:"var(--rd)"}}>Reset Listings</button>
+      {/* ── VERSION HISTORY ── */}
+      <VersionHistory workspaceId={workspaceId} onRestore={onRestoreVersion} />
+
+      <SCard icon={<IcoDataMgmt/>} title="Reset Data">
+        <div className="s-row">
+          <div><div className="s-row-label">Reset all listings</div><div className="s-row-sub">Permanently deletes all listing data</div></div>
+          <button className="btn btn-d btn-sm" onClick={resetListings}>Reset</button>
         </div>
-        <div className="s-form-row">
-          <div>
-            <div className="s-row-label">Reset all stock</div>
-            <div className="s-row-sub">{stockData.length} stock bundles will be permanently deleted</div>
-          </div>
-          <button className="btn btn-o btn-sm" onClick={resetStock}
-            style={{color:"var(--rd)",borderColor:"var(--rd)"}}>Reset Stock</button>
+        <div className="s-row" style={{borderBottom:"none",paddingBottom:0}}>
+          <div><div className="s-row-label">Reset all stock</div><div className="s-row-sub">Permanently deletes all stock bundles</div></div>
+          <button className="btn btn-d btn-sm" onClick={resetStock}>Reset</button>
         </div>
       </SCard>
     </>
@@ -8822,7 +8786,7 @@ const TIER_FEATURES = [
 // will open Stripe checkout instead of showing "Coming Soon".
 const STRIPE_LINKS = { plus: null, pro: null };
 
-function SettingsBilling({ workspace, listingCount, onNavContact }) {
+function STabBilling({ workspace, listingCount, onNavContact }) {
   const [comingSoon, setComingSoon] = useState(false);
   const tier = workspace?.tier || "core";
   const isInternal = tier === "internal";
@@ -8933,7 +8897,7 @@ function SettingsBilling({ workspace, listingCount, onNavContact }) {
   );
 }
 
-function SettingsContact({ profile, workspace, workspaceId }) {
+function STabContact({ profile, workspace, workspaceId }) {
   const [type,    setType]    = useState("question");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
@@ -9638,7 +9602,7 @@ export default function App() {
   }, []);
 
   const [onboardingDone, setOnboardingDone] = useState(true); // default true to avoid a flash
-  const [settingsInitialTab, setSettingsInitialTab] = useState("platforms");
+  const [settingsInitialTab, setSettingsInitialTab] = useState("account");
   const handleOnboardingComplete = useCallback(async (formData) => {
     setLiveData(prev => ({
       ...prev,
@@ -10459,7 +10423,7 @@ export default function App() {
             {view==="analytics"   && <Analytics listings={listings} stockData={stockData} customPlatforms={customPlatforms} liveData={liveData} />}
             {view==="growth"      && <Growth listings={listings} stockData={stockData} />}
             {view==="history"     && <History listings={listings} stockData={stockData} liveData={liveData} />}
-            {view==="settings"    && <Settings liveData={liveData} setLiveData={setLiveData} customPlatforms={customPlatforms} setListings={setListings} profile={profile} workspace={workspace} onLogout={handleLogout} workspaceId={workspaceId} onRestoreVersion={(v)=>{ setListingsRaw(v.listings); setStockDataRaw(v.stockData); setView("dashboard"); }} listings={listings} stockData={stockData} setStockData={setStockData} handleExportData={handleExportData} weeklyGoal={weeklyGoal} setWeeklyGoal={setWeeklyGoal} monthlyGoal={monthlyGoal} setMonthlyGoal={setMonthlyGoal} weeklyRevGoal={weeklyRevGoal} setWeeklyRevGoal={setWeeklyRevGoal} monthlyRevGoal={monthlyRevGoal} setMonthlyRevGoal={setMonthlyRevGoal} initialTab={settingsInitialTab} />}
+            {view==="settings"    && <SettingsPage liveData={liveData} setLiveData={setLiveData} customPlatforms={customPlatforms} setListings={setListings} profile={profile} setProfile={setProfile} workspace={workspace} setWorkspace={setWorkspace} onLogout={handleLogout} workspaceId={workspaceId} onRestoreVersion={(v)=>{ setListingsRaw(v.listings); setStockDataRaw(v.stockData); setView("dashboard"); }} listings={listings} stockData={stockData} setStockData={setStockData} handleExportData={handleExportData} weeklyGoal={weeklyGoal} setWeeklyGoal={setWeeklyGoal} monthlyGoal={monthlyGoal} setMonthlyGoal={setMonthlyGoal} weeklyRevGoal={weeklyRevGoal} setWeeklyRevGoal={setWeeklyRevGoal} monthlyRevGoal={monthlyRevGoal} setMonthlyRevGoal={setMonthlyRevGoal} initialTab={settingsInitialTab} listingLimit={listingLimit} />}
           </div>
         </div>
       </div>
