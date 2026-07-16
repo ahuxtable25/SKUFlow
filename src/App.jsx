@@ -615,7 +615,8 @@ const CSS = `
   --sb-w:212px;--tb-h:50px;--r:6px;--r2:8px;
 
   --sidebar-w:     220px;
-  --sidebar-bg:    #16181D;
+  --sidebar-bg:        #16181D;
+  --sidebar-header-bg: #16181D;
   --main-bg:       #F7F8FA;
   --card-bg:       #FFFFFF;
   --border-dark:   #2A2D35;
@@ -623,6 +624,7 @@ const CSS = `
   --acd:           #4F46E5;
   --sidebar-tx:    #9CA3AF;
   --sidebar-txh:   #F9FAFB;
+  --sidebar-header-tx: #F9FAFB;
   --sidebar-hover: #1E2028;
   --sidebar-active-bg: rgba(99,102,241,.12);
   --sidebar-active-tx: #fff;
@@ -646,8 +648,9 @@ const CSS = `
   --txs:      #374151;
 }
 [data-theme="classic"] {
-  /* True Archive District look — white sidebar, warm cream content, red accent */
+  /* White sidebar, navy header strip, warm cream content, red accent */
   --sidebar-bg:        #FFFFFF;
+  --sidebar-header-bg: #1A2840;
   --sidebar-tx:        #5C584F;
   --sidebar-txh:       #0F0F0E;
   --sidebar-hover:     #EEEDE9;
@@ -679,7 +682,7 @@ body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--tx)
 
 /* Sidebar */
 .sidebar{background:var(--sidebar-bg);border-right:1px solid var(--border-dark);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
-.logo-area{padding:15px 13px 13px;border-bottom:1px solid var(--border-dark);display:flex;align-items:center;gap:10px;overflow:hidden;background:var(--sidebar-bg);flex-shrink:0}
+.logo-area{padding:15px 13px 13px;border-bottom:1px solid var(--border-dark);display:flex;align-items:center;gap:10px;overflow:hidden;background:var(--sidebar-header-bg);flex-shrink:0}
 .logo-badge{flex-shrink:0;background:#f0ebdb;border-radius:5px;padding:5px 7px 4px;display:flex;flex-direction:column;line-height:1.15}
 .logo-badge span{font-size:6.5px;font-weight:900;color:var(--nv);letter-spacing:.4px;display:block;white-space:nowrap;text-transform:uppercase}
 .logo-badge .since{font-size:5px;color:var(--ac);letter-spacing:1px;margin-top:2px}
@@ -700,7 +703,7 @@ nav::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
 
 /* Redesigned nav items (Phase 1 visual overhaul) */
 .logo-mark{width:30px;height:30px;background:var(--ac);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0}
-.logo-name2{font-size:13px;font-weight:700;color:var(--sidebar-txh);letter-spacing:-.2px;line-height:1.2}
+.logo-name2{font-size:13px;font-weight:700;color:var(--sidebar-header-tx);letter-spacing:-.2px;line-height:1.2}
 .logo-sub2{font-size:10px;color:#4B5563;font-weight:500}
 .nav-item2{display:flex;align-items:center;gap:9px;padding:7px 18px;color:var(--sidebar-tx);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;border-left:3px solid transparent;cursor:pointer;transition:all .12s;white-space:nowrap;position:relative}
 .nav-item2:hover{background:var(--sidebar-hover);color:var(--sidebar-txh)}
@@ -8042,13 +8045,13 @@ function SToggle({ on, onChange }) {
 
 function SGolInput({ label, value, onChange, currency }) {
   return (
-    <div>
+    <div style={{minWidth:0}}>
       <div style={{fontSize:11,fontWeight:600,color:"var(--txm)",marginBottom:4}}>{label}</div>
-      <div style={{display:"flex",alignItems:"center",background:"var(--card-bg)",border:"1.5px solid var(--bd)",borderRadius:"var(--r2)",overflow:"hidden",boxShadow:"var(--shadow)"}}>
+      <div style={{display:"flex",alignItems:"center",background:"var(--card-bg)",border:"1.5px solid var(--bd)",borderRadius:"var(--r2)",overflow:"hidden",boxShadow:"var(--shadow)",minWidth:0}}>
         <div style={{padding:"0 8px",height:36,display:"flex",alignItems:"center",background:"#F9FAFB",borderRight:"1px solid var(--bd)",fontSize:13,fontWeight:700,color:"var(--txm)"}}>{currency}</div>
         <input
           type="text" inputMode="decimal"
-          style={{flex:1,height:36,border:"none",background:"transparent",padding:"0 8px",fontSize:13,fontWeight:700,color:"var(--tx)",fontFamily:"inherit",outline:"none",fontVariantNumeric:"tabular-nums"}}
+          style={{flex:1,minWidth:0,width:"100%",height:36,border:"none",background:"transparent",padding:"0 8px",fontSize:13,fontWeight:700,color:"var(--tx)",fontFamily:"inherit",outline:"none",fontVariantNumeric:"tabular-nums"}}
           value={value}
           onChange={e=>{ if(/^\d*\.?\d*$/.test(e.target.value)) onChange(e.target.value); }}
         />
@@ -8234,7 +8237,7 @@ function STabPreferences({ as, setAS, weeklyGoal, setWeeklyGoal, monthlyGoal, se
           {[
             { value:"default", label:"Default",         desc:"Dark sidebar, light content" },
             { value:"night",   label:"Night",           desc:"Full dark interface" },
-            { value:"classic", label:"Archive District", desc:"White sidebar, warm red accents" },
+            { value:"classic", label:"Classic",  desc:"White sidebar, warm red accents" },
           ].map(opt => (
             <div
               key={opt.value}
@@ -8988,7 +8991,7 @@ function STabContact({ profile, workspace, workspaceId }) {
 /* ═══════════════════════════════════════════════════════════════
    AUTH — Login screen + status gates
 ═══════════════════════════════════════════════════════════════ */
-function PasswordField({ value, onChange, placeholder, autoComplete, required }) {
+function PasswordField({ value, onChange, placeholder, autoComplete, required, inputStyle }) {
   const [visible, setVisible] = useState(false);
   return (
     <div style={{position:"relative"}}>
@@ -8996,15 +8999,15 @@ function PasswordField({ value, onChange, placeholder, autoComplete, required })
         className="finp" type={visible ? "text" : "password"}
         autoComplete={autoComplete} required={required}
         value={value} onChange={onChange} placeholder={placeholder}
-        style={{paddingRight:36}}
+        style={{paddingRight:40, ...inputStyle}}
       />
       <button
         type="button" onClick={() => setVisible(v => !v)}
         title={visible ? "Hide password" : "Show password"}
         style={{
-          position:"absolute", right:6, top:"50%", transform:"translateY(-50%)",
-          background:"none", border:"none", cursor:"pointer", padding:4,
-          fontSize:13, color:"var(--txd)", lineHeight:1,
+          position:"absolute", right:8, top:"50%", transform:"translateY(-50%)",
+          background:"none", border:"none", cursor:"pointer", padding:6,
+          fontSize:16, color:"var(--txd)", lineHeight:1,
         }}>
         {visible ? "🙈" : "👁"}
       </button>
@@ -9014,8 +9017,8 @@ function PasswordField({ value, onChange, placeholder, autoComplete, required })
 
 function FieldLabel({ children }) {
   return (
-    <label style={{display:"block", fontSize:10.5, fontWeight:700, textTransform:"uppercase",
-      letterSpacing:".4px", color:"var(--txm)", marginBottom:5}}>{children}</label>
+    <label style={{display:"block", fontSize:11, fontWeight:700, textTransform:"uppercase",
+      letterSpacing:".4px", color:"var(--txm)", marginBottom:6}}>{children}</label>
   );
 }
 
@@ -9091,26 +9094,44 @@ function LoginScreen({ onLoggedIn }) {
     );
   }
 
+  const loginInputStyle = { fontSize:16, padding:"13px 14px" };
+
   return (
+    <>
+    <style>{CSS}</style>
     <div style={{
-      minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center",
-      background:"var(--bg)", fontFamily:"Arial, sans-serif", padding:16, boxSizing:"border-box",
+      minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center",
+      background:"var(--bg)", fontFamily:"Arial, sans-serif", boxSizing:"border-box",
     }}>
+      <div style={{width:"100%", background:"var(--ac)", display:"flex", flexDirection:"column",
+        alignItems:"center", padding:"40px 16px 32px", boxSizing:"border-box"}}>
+        <div style={{
+          width:52, height:52, borderRadius:14, background:"#fff", color:"var(--ac)",
+          display:"flex", alignItems:"center", justifyContent:"center",
+          fontSize:20, fontWeight:800, boxShadow:"0 6px 20px rgba(0,0,0,.18)", marginBottom:14,
+        }}>SF</div>
+        <div style={{fontSize:24, fontWeight:800, letterSpacing:"-.5px", color:"#fff"}}>SKUFlow</div>
+        <div style={{fontSize:11.5, fontWeight:700, letterSpacing:"1.2px", textTransform:"uppercase", color:"rgba(255,255,255,.75)", marginTop:3}}>
+          Reseller OS
+        </div>
+      </div>
+
+      <div style={{flex:1, width:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:16, boxSizing:"border-box"}}>
+
       <form onSubmit={mode === "signin" ? submitSignIn : submitSignUp} style={{
         width:"100%", maxWidth:360, background:"var(--sf)", border:"1px solid var(--bdd)",
-        borderRadius:"var(--r2)", padding:"32px 28px", boxShadow:"0 4px 24px rgba(0,0,0,.06)",
-        boxSizing:"border-box",
+        borderRadius:"var(--r2)", padding:"28px 24px", boxShadow:"0 12px 32px rgba(0,0,0,.14)",
+        boxSizing:"border-box", marginTop:-40,
       }}>
-        <div style={{textAlign:"center", marginBottom:24}}>
-          <div style={{fontSize:22, fontWeight:800, letterSpacing:"-.5px", color:"var(--tx)"}}>SKUFlow</div>
-          <div style={{fontSize:11.5, color:"var(--txd)", marginTop:4}}>
+        <div style={{textAlign:"center", marginBottom:22}}>
+          <div style={{fontSize:15, fontWeight:800, color:"var(--tx)"}}>
             {mode === "signin" ? "Sign in to your workspace" : "Create your workspace"}
           </div>
         </div>
 
         {error && (
           <div style={{
-            background:"var(--acl)", color:"var(--ac)", fontSize:12, padding:"8px 12px",
+            background:"var(--acl)", color:"var(--ac)", fontSize:12.5, padding:"10px 12px",
             borderRadius:"var(--r)", marginBottom:16,
           }}>{error}</div>
         )}
@@ -9122,7 +9143,7 @@ function LoginScreen({ onLoggedIn }) {
               <input
                 className="finp" type="text" autoComplete="name" required
                 value={fullName} onChange={e => setFullName(e.target.value)}
-                placeholder="Jane Smith"
+                placeholder="Jane Smith" style={loginInputStyle}
               />
             </div>
             <div style={{marginBottom:14}}>
@@ -9130,7 +9151,7 @@ function LoginScreen({ onLoggedIn }) {
               <input
                 className="finp" type="text" autoComplete="organization" required
                 value={wsName} onChange={e => setWsName(e.target.value)}
-                placeholder="Jane's Vintage Co"
+                placeholder="Jane's Vintage Co" style={loginInputStyle}
               />
             </div>
           </>
@@ -9141,7 +9162,7 @@ function LoginScreen({ onLoggedIn }) {
           <input
             className="finp" type="email" autoComplete="username" required
             value={email} onChange={e => setEmail(e.target.value)}
-            placeholder="you@company.com"
+            placeholder="you@company.com" style={loginInputStyle}
           />
         </div>
 
@@ -9150,18 +9171,18 @@ function LoginScreen({ onLoggedIn }) {
           <PasswordField
             autoComplete={mode === "signin" ? "current-password" : "new-password"} required
             value={password} onChange={e => setPassword(e.target.value)}
-            placeholder="••••••••"
+            placeholder="••••••••" inputStyle={loginInputStyle}
           />
         </div>
 
         <button type="submit" className="btn btn-p" disabled={loading}
-          style={{width:"100%", justifyContent:"center", padding:"10px 0", fontSize:12}}>
+          style={{width:"100%", justifyContent:"center", padding:"13px 0", fontSize:13}}>
           {loading
             ? (mode === "signin" ? "Signing in…" : "Creating account…")
             : (mode === "signin" ? "Sign In" : "Create Account")}
         </button>
 
-        <div style={{textAlign:"center", fontSize:11, color:"var(--txd)", marginTop:18}}>
+        <div style={{textAlign:"center", fontSize:11.5, color:"var(--txd)", marginTop:18}}>
           {mode === "signin" ? (
             <>Don't have an account?{" "}
               <a href="#" onClick={e => { e.preventDefault(); switchMode("signup"); }}
@@ -9175,12 +9196,16 @@ function LoginScreen({ onLoggedIn }) {
           )}
         </div>
       </form>
+      </div>
     </div>
+    </>
   );
 }
 
 function AuthStatusScreen({ message, showLogout, onLogout }) {
   return (
+    <>
+    <style>{CSS}</style>
     <div style={{
       minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
       background:"var(--bg)", fontFamily:"Arial, sans-serif", padding:16, gap:16, textAlign:"center",
@@ -9192,6 +9217,7 @@ function AuthStatusScreen({ message, showLogout, onLogout }) {
         <button className="btn btn-o btn-sm" onClick={onLogout}>Sign out</button>
       )}
     </div>
+    </>
   );
 }
 
@@ -9809,6 +9835,21 @@ export default function App() {
     };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  /* Keep the focused field visible above the mobile on-screen keyboard —
+     applies everywhere (search boxes, forms, login) via one listener rather
+     than scrolling logic in every individual input. */
+  useEffect(() => {
+    const handleFocusIn = (e) => {
+      const tag = e.target?.tagName;
+      if (tag !== "INPUT" && tag !== "TEXTAREA" && tag !== "SELECT") return;
+      setTimeout(() => {
+        e.target.scrollIntoView({ block: "center", behavior: "smooth" });
+      }, 300); // wait for the keyboard's open animation to finish
+    };
+    document.addEventListener("focusin", handleFocusIn);
+    return () => document.removeEventListener("focusin", handleFocusIn);
   }, []);
 
   /* ── Load from Supabase once the workspace is known ── */
