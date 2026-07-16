@@ -91,7 +91,12 @@ const MONTH_START = getMonthStart();
 const IS_SUNDAY   = getIsSunday();
 
 /* ─── PUSH NOTIFICATIONS ─── */
-/* ── OneSignal — send push to all subscribed devices ── */
+/* Kept in sync with the signed-in workspace so this module-scope function
+   (called from deep inside components with no workspaceId prop) can still
+   target the right OneSignal external_user_id — same pattern as PLATFORMS. */
+let CURRENT_WORKSPACE_ID = null;
+
+/* ── OneSignal — send push to this workspace's subscribed devices only ── */
 async function sendPushNotification(payload) {
   // Check notification preferences from appSettings
   if (payload.notifKey !== undefined) {
@@ -105,13 +110,15 @@ async function sendPushNotification(payload) {
       }
     } catch (_) {}
   }
+  if (!CURRENT_WORKSPACE_ID) return; // no signed-in workspace to target yet
   try {
     await fetch("/api/push", {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
       body:    JSON.stringify({
-        title:   payload.title || "SKUFlow",
-        message: payload.body  || "",
+        title:       payload.title || "SKUFlow",
+        message:     payload.body  || "",
+        workspaceId: CURRENT_WORKSPACE_ID,
       }),
     });
   } catch (e) { console.warn("[OneSignal] push failed:", e); }
@@ -9970,7 +9977,7 @@ export default function App() {
     window.OneSignalDeferred = window.OneSignalDeferred || [];
     window.OneSignalDeferred.push(async function(OneSignal) {
       await OneSignal.init({
-        appId: "a7fd8f7a-3c30-4f13-8a76-8d31fcb64e5f",
+        appId: import.meta.env.VITE_ONESIGNAL_APP_ID,
         notifyButton: { enable: false },
         allowLocalhostAsSecureOrigin: true,
       });
@@ -10002,8 +10009,18 @@ export default function App() {
     scheduleSundayReminder();
   }, []);
 
-
-
+  /* Tag this device's push subscription with the signed-in workspace's ID
+     (OneSignal external_user_id) so /api/push can target only that
+     workspace's devices instead of broadcasting to every SKUFlow customer. */
+  useEffect(() => {
+    CURRENT_WORKSPACE_ID = workspaceId;
+    if (typeof window === "undefined") return;
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    window.OneSignalDeferred.push(async function(OneSignal) {
+      if (workspaceId) await OneSignal.login(String(workspaceId));
+      else await OneSignal.logout();
+    });
+  }, [workspaceId]);
 
   const requestNotifPermission = () => {
     window.OneSignalDeferred = window.OneSignalDeferred || [];
