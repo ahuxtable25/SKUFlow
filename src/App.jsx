@@ -624,6 +624,12 @@ const CSS = `
   --sidebar-tx:    #9CA3AF;
   --sidebar-txh:   #F9FAFB;
   --sidebar-hover: #1E2028;
+  --sidebar-active-bg: rgba(99,102,241,.12);
+  --sidebar-active-tx: #fff;
+  --sidebar-badge-bg:  rgba(255,255,255,.04);
+  --sidebar-badge-tx:  #E5E7EB;
+  --sidebar-pill-bg:   rgba(99,102,241,.2);
+  --sidebar-pill-tx:   #A5B4FC;
   --rd:            #DC2626;
   --rdl:           #FEF2F2;
   --shadow:        0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
@@ -640,20 +646,31 @@ const CSS = `
   --txs:      #374151;
 }
 [data-theme="classic"] {
-  --sidebar-bg:    #1E2A3A;
-  --sidebar-tx:    #94A3B8;
-  --sidebar-txh:   #F1F5F9;
-  --sidebar-hover: #243447;
-  --main-bg:       #F1F5F9;
-  --card-bg:       #FFFFFF;
-  --sf2:           #E2E8F0;
-  --bd:            #CBD5E1;
-  --tx:            #0F172A;
-  --txm:           #64748B;
-  --txd:           #94A3B8;
-  --ac:            #3B82F6;
-  --acl:           #EFF6FF;
-  --acd:           #2563EB;
+  /* True Archive District look — white sidebar, warm cream content, red accent */
+  --sidebar-bg:        #FFFFFF;
+  --sidebar-tx:        #5C584F;
+  --sidebar-txh:       #0F0F0E;
+  --sidebar-hover:     #EEEDE9;
+  --sidebar-active-bg: #FAEBEC;
+  --sidebar-active-tx: #C0273A;
+  --sidebar-badge-bg:  #F4F3F0;
+  --sidebar-badge-tx:  #0F0F0E;
+  --sidebar-pill-bg:   #FAEBEC;
+  --sidebar-pill-tx:   #C0273A;
+  --border-dark:       #DEDAD2;
+  --main-bg:           #F4F3F0;
+  --card-bg:           #FFFFFF;
+  --sf2:               #EEEDE9;
+  --bd:                #DEDAD2;
+  --bdd:               #CBC7BD;
+  --tx:                #0F0F0E;
+  --txm:               #5C584F;
+  --txd:               #A8A49B;
+  --ac:                #C0273A;
+  --acl:               #FAEBEC;
+  --ach:               #A31F30;
+  --ac2:               #E8C4C8;
+  --acd:               #C0273A;
 }
 body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--tx);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}input,select,textarea{font-size:16px !important;}input[type=checkbox],input[type=radio]{font-size:inherit !important;}
 
@@ -685,16 +702,16 @@ nav::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
 .logo-mark{width:30px;height:30px;background:var(--ac);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0}
 .logo-name2{font-size:13px;font-weight:700;color:var(--sidebar-txh);letter-spacing:-.2px;line-height:1.2}
 .logo-sub2{font-size:10px;color:#4B5563;font-weight:500}
-.nav-item2{display:flex;align-items:center;gap:9px;padding:7px 18px;color:var(--sidebar-tx);font-size:12.5px;font-weight:500;border-left:3px solid transparent;cursor:pointer;transition:all .12s;white-space:nowrap;position:relative}
+.nav-item2{display:flex;align-items:center;gap:9px;padding:7px 18px;color:var(--sidebar-tx);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;border-left:3px solid transparent;cursor:pointer;transition:all .12s;white-space:nowrap;position:relative}
 .nav-item2:hover{background:var(--sidebar-hover);color:var(--sidebar-txh)}
-.nav-item2.active{color:#fff;background:rgba(99,102,241,.12);border-left-color:var(--ac)}
+.nav-item2.active{color:var(--sidebar-active-tx);background:var(--sidebar-active-bg);border-left-color:var(--ac)}
 .nav-icon2{width:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .nav-icon2 svg{opacity:.75}
 .nav-item2.active .nav-icon2 svg{opacity:1}
-.workspace-badge{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,.04);border-radius:var(--r2);border:1px solid var(--border-dark);cursor:pointer}
+.workspace-badge{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--sidebar-badge-bg);border-radius:var(--r2);border:1px solid var(--border-dark);cursor:pointer}
 .ws-avatar{width:26px;height:26px;border-radius:6px;background:linear-gradient(135deg,#6366F1,#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0}
-.ws-name{font-size:11.5px;font-weight:600;color:#E5E7EB;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tier-pill{display:inline-flex;font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:1px 7px;border-radius:20px;background:rgba(99,102,241,.2);color:#A5B4FC;margin-top:1px}
+.ws-name{font-size:11.5px;font-weight:600;color:var(--sidebar-badge-tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tier-pill{display:inline-flex;font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:1px 7px;border-radius:20px;background:var(--sidebar-pill-bg);color:var(--sidebar-pill-tx);margin-top:1px}
 
 /* Main */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
@@ -8215,9 +8232,9 @@ function STabPreferences({ as, setAS, weeklyGoal, setWeeklyGoal, monthlyGoal, se
       <SCard icon={<IcoPrefs/>} title="Interface Theme" sub="Choose how SKU Flow looks">
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
           {[
-            { value:"default", label:"Default",  desc:"Dark sidebar, light content" },
-            { value:"night",   label:"Night",    desc:"Full dark interface" },
-            { value:"classic", label:"Classic",  desc:"Original Archive District" },
+            { value:"default", label:"Default",         desc:"Dark sidebar, light content" },
+            { value:"night",   label:"Night",           desc:"Full dark interface" },
+            { value:"classic", label:"Archive District", desc:"White sidebar, warm red accents" },
           ].map(opt => (
             <div
               key={opt.value}
