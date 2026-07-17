@@ -10303,18 +10303,22 @@ export default function App() {
     reader.onload = async (ev) => {
       try {
         const d = JSON.parse(ev.target.result);
-        if (d.listings) setListingsRaw(d.listings);
-        if (d.stock)    setStockDataRaw(d.stock);
+        // Accept both the real export shape (top-level "stockData", matching
+        // exportRawJSON below) and a bare "stock" key some import files use.
+        const importedStock = d.stockData || d.stock;
+        if (d.listings)   setListingsRaw(d.listings);
+        if (importedStock) setStockDataRaw(importedStock);
         if (d.goals?.weekly)     setWeeklyGoal(d.goals.weekly);
         if (d.goals?.monthly)    setMonthlyGoal(d.goals.monthly);
         if (d.goals?.weeklyRev)  setWeeklyRevGoal(d.goals.weeklyRev);
         if (d.goals?.monthlyRev) setMonthlyRevGoal(d.goals.monthlyRev);
-        if (d.liveData)       setLiveData(d.liveData);
+        if (d.liveData)          setLiveData(d.liveData);
+        else if (d.appSettings) setLiveData(prev => ({ ...prev, appSettings: { ...getAS(prev), ...d.appSettings } }));
         setStorageStatus("loading");
         const ok = await saveState(
           workspaceId,
-          d.listings || listings,
-          d.stock    || stockData,
+          d.listings    || listings,
+          importedStock || stockData,
           { weekly: d.goals?.weekly || weeklyGoal, monthly: d.goals?.monthly || monthlyGoal, weeklyRev: d.goals?.weeklyRev || weeklyRevGoal, monthlyRev: d.goals?.monthlyRev || monthlyRevGoal }
         );
         if (ok) {
