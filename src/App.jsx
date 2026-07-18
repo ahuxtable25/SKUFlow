@@ -8733,26 +8733,30 @@ function SettingsPage({
 ═══════════════════════════════════════════════════════════════ */
 function STabData({ listings, stockData, setListings, setStockData, handleExportData, as, workspaceId, onRestoreVersion, hardSave }) {
   const [resetMsg, setResetMsg] = useState("");
+  // Which reset is pending confirmation — null | "listings" | "stock".
+  // Chained window.confirm() calls are unreliable on mobile browsers (the
+  // second dialog can get silently auto-blocked as dialog spam), so this
+  // uses one in-app confirmation modal instead of two native confirms.
+  const [confirmReset, setConfirmReset] = useState(null);
 
-  const resetListings = async () => {
-    if (!window.confirm(`Delete all ${listings.length} listings? This cannot be undone — export a backup first if you need one.`)) return;
-    if (!window.confirm("Are you absolutely sure? This will permanently remove every listing.")) return;
-    setListings([]);
+  const runReset = async () => {
+    const type = confirmReset;
+    setConfirmReset(null);
     setResetMsg("Saving…");
-    // Force-save the empty list immediately instead of waiting on the normal
-    // debounce — otherwise a reload or manual refresh in that window can
-    // pull the pre-reset data straight back from Supabase.
-    const ok = await hardSave?.({ listings: [] });
-    setResetMsg(ok ? "✓ Listings reset" : "✗ Reset failed to save — check connection and try again");
+    if (type === "listings") {
+      setListings([]);
+      // Force-save immediately instead of waiting on the normal debounce —
+      // otherwise a reload or manual refresh in that window can pull the
+      // pre-reset data straight back from Supabase.
+      const ok = await hardSave?.({ listings: [] });
+      setResetMsg(ok ? "✓ Listings reset" : "✗ Reset failed to save — check connection and try again");
+    } else if (type === "stock") {
+      setStockData([]);
+      const ok = await hardSave?.({ stockData: [] });
+      setResetMsg(ok ? "✓ Stock reset" : "✗ Reset failed to save — check connection and try again");
+    }
   };
-  const resetStock = async () => {
-    if (!window.confirm(`Delete all ${stockData.length} stock bundles? This cannot be undone — export a backup first if you need one.`)) return;
-    if (!window.confirm("Are you absolutely sure? This will permanently remove every stock bundle.")) return;
-    setStockData([]);
-    setResetMsg("Saving…");
-    const ok = await hardSave?.({ stockData: [] });
-    setResetMsg(ok ? "✓ Stock reset" : "✗ Reset failed to save — check connection and try again");
-  };
+
   return (
     <>
       <SCard icon={<IcoDataMgmt/>} title="Export Data" sub="Downloads JSON + XLSX simultaneously">
@@ -8771,11 +8775,11 @@ function STabData({ listings, stockData, setListings, setStockData, handleExport
       <SCard icon={<IcoDataMgmt/>} title="Reset Data">
         <div className="s-row">
           <div><div className="s-row-label">Reset all listings</div><div className="s-row-sub">Permanently deletes all listing data</div></div>
-          <button className="btn btn-d btn-sm" onClick={resetListings}>Reset</button>
+          <button className="btn btn-d btn-sm" onClick={()=>setConfirmReset("listings")}>Reset</button>
         </div>
         <div className="s-row" style={{borderBottom:"none",paddingBottom:0}}>
           <div><div className="s-row-label">Reset all stock</div><div className="s-row-sub">Permanently deletes all stock bundles</div></div>
-          <button className="btn btn-d btn-sm" onClick={resetStock}>Reset</button>
+          <button className="btn btn-d btn-sm" onClick={()=>setConfirmReset("stock")}>Reset</button>
         </div>
         {resetMsg && (
           <div style={{marginTop:12,fontSize:11.5,fontWeight:700,color:resetMsg.startsWith("✗")?"var(--ac)":"var(--gn)"}}>
@@ -8783,6 +8787,33 @@ function STabData({ listings, stockData, setListings, setStockData, handleExport
           </div>
         )}
       </SCard>
+
+      {confirmReset && (
+        <div className="overlay" onClick={()=>setConfirmReset(null)}>
+          <div className="modal" style={{width:380}} onClick={e=>e.stopPropagation()}>
+            <div className="mh" style={{background:"var(--ac)"}}>
+              <div>
+                <div className="mh-title">
+                  {confirmReset==="listings" ? `Delete all ${listings.length} listings?` : `Delete all ${stockData.length} stock bundles?`}
+                </div>
+                <div className="mh-sub">This cannot be undone</div>
+              </div>
+              <button className="mh-close" onClick={()=>setConfirmReset(null)}>✕</button>
+            </div>
+            <div className="mb">
+              <div style={{fontSize:13,color:"var(--txm)",lineHeight:1.6}}>
+                {confirmReset==="listings"
+                  ? "Every listing will be permanently removed. Export a backup first if you need one."
+                  : "Every stock bundle will be permanently removed. Export a backup first if you need one."}
+              </div>
+            </div>
+            <div className="mf">
+              <button className="btn btn-o btn-sm" onClick={()=>setConfirmReset(null)}>Cancel</button>
+              <button className="btn btn-d btn-sm" onClick={runReset}>Yes, delete everything</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
