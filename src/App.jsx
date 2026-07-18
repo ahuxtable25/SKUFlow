@@ -289,7 +289,7 @@ const getNextItemSku = (listings, as = {}) => {
 
 const getTag = (name, type, brand, listings) => {
   const items = listings.filter(l=>l.name===name&&l.type===type&&l.brand===brand&&l.listed);
-  const sold  = items.filter(l=>l.sold&&l.days!==null);
+  const sold  = items.filter(l=>l.sold&&l.days!=null);
   if (!sold.length) return "UNKNOWN";          // 0 sold — no data
   if (sold.length < 3 && sold.length < items.length) return "NEW"; // too early only if unsold items remain
   const t = items.length;
@@ -3983,7 +3983,7 @@ function MovementTracker({ listings }) {
       map[k].items.push(l);
     });
     return Object.values(map).map(g => {
-      const sold = g.items.filter(l => l.sold && l.days !== null);
+      const sold = g.items.filter(l => l.sold && l.days != null);
       const t    = g.items.length;
       const p    = (n) => t ? Math.round(sold.filter(l => l.days <= n).length / t * 100) : 0;
       const tag  = getTag(g.name, g.type, g.brand, listings);
@@ -10563,8 +10563,19 @@ export default function App() {
         // Accept both the real export shape (top-level "stockData", matching
         // exportRawJSON below) and a bare "stock" key some import files use.
         const importedStock = d.stockData || d.stock;
-        if (d.listings)   setListingsRaw(d.listings);
-        if (importedStock) setStockDataRaw(importedStock);
+        // Imported listings marked sold often carry dayListed/daySold but not
+        // the derived "days to sell" field (the app only computes that itself
+        // when those dates are edited interactively) — fill it in here so
+        // Movement Tracker etc. don't silently choke on a missing value.
+        const importedListings = d.listings ? d.listings.map(l => {
+          if (l.sold && l.days == null && l.dayListed && l.daySold) {
+            const days = Math.floor((new Date(l.daySold) - new Date(l.dayListed)) / 86400000);
+            if (!isNaN(days)) return { ...l, days: Math.max(0, days) };
+          }
+          return l;
+        }) : null;
+        if (importedListings) setListingsRaw(importedListings);
+        if (importedStock)    setStockDataRaw(importedStock);
         if (d.goals?.weekly)     setWeeklyGoal(d.goals.weekly);
         if (d.goals?.monthly)    setMonthlyGoal(d.goals.monthly);
         if (d.goals?.weeklyRev)  setWeeklyRevGoal(d.goals.weeklyRev);
@@ -10574,8 +10585,8 @@ export default function App() {
         setStorageStatus("loading");
         const ok = await saveState(
           workspaceId,
-          d.listings    || listings,
-          importedStock || stockData,
+          importedListings || listings,
+          importedStock     || stockData,
           { weekly: d.goals?.weekly || weeklyGoal, monthly: d.goals?.monthly || monthlyGoal, weeklyRev: d.goals?.weeklyRev || weeklyRevGoal, monthlyRev: d.goals?.monthlyRev || monthlyRevGoal }
         );
         if (ok) {
