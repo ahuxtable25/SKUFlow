@@ -1073,6 +1073,58 @@ function exportToCSV(rows, colDefs, filename) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   SHARED — Export button
+   One "↓ Export" affordance per table instead of separate CSV/Sheets
+   buttons. Pass every relevant format for that table as `options`;
+   renders a plain button for a single option, a dropdown otherwise.
+═══════════════════════════════════════════════════════════════ */
+function ExportMenu({ options }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onClick = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, [open]);
+
+  if (!options || options.length === 0) return null;
+
+  if (options.length === 1) {
+    return <button className="btn btn-o btn-sm" onClick={options[0].onClick}>↓ Export</button>;
+  }
+
+  return (
+    <div style={{position:"relative"}} ref={ref}>
+      <button className="btn btn-o btn-sm" onClick={()=>setOpen(v=>!v)}>↓ Export ▾</button>
+      {open && (
+        <div style={{
+          position:"absolute", top:"calc(100% + 4px)", right:0, zIndex:50,
+          background:"var(--card-bg)", border:"1px solid var(--bd)", borderRadius:"var(--r)",
+          boxShadow:"var(--shadow-md)", minWidth:210, overflow:"hidden",
+        }}>
+          {options.map((o,i) => (
+            <button key={i} onClick={()=>{ o.onClick(); setOpen(false); }}
+              style={{
+                display:"block", width:"100%", textAlign:"left", padding:"9px 14px",
+                background:"none", border:"none", borderBottom:i<options.length-1?"1px solid var(--bd)":"none",
+                cursor:"pointer", fontSize:12, fontWeight:600, color:"var(--tx)", fontFamily:"inherit",
+              }}
+              onMouseEnter={e=>e.currentTarget.style.background="var(--sf2)"}
+              onMouseLeave={e=>e.currentTarget.style.background="none"}
+            >
+              {o.label}
+              {o.sub && <div style={{fontSize:10,fontWeight:500,color:"var(--txd)",marginTop:1}}>{o.sub}</div>}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
    SHARED — Column filter hook
    Returns applyFilters (fn) and the management functions.
    Pass activeFilters + toggle + clearCol to each FilterBtn.
@@ -1989,12 +2041,10 @@ function StockTab({ stockData, setStockData, listings, setListings, liveData }) 
           <button className="btn btn-o btn-sm" onClick={()=>setShowColPanel(v=>!v)}>⚙ Columns</button>
           {showColPanel && <ColPanel cols={cols} setCols={setCols} onClose={()=>setShowColPanel(false)} />}
         </div>
-        <button className="btn btn-o btn-sm" onClick={()=>exportToCSV(filtered, cols, "stock")}>↓ CSV</button>
-        <button className="btn btn-o btn-sm" title="Export in exact column order for Google Sheets STOCK tab"
-          onClick={()=>exportStockForSheets(stockData)}
-          style={{background:"var(--gnl)",borderColor:"var(--gn)",color:"var(--gn)",fontWeight:700}}>
-          → Sheets
-        </button>
+        <ExportMenu options={[
+          { label:"Download CSV", onClick:()=>exportToCSV(filtered, cols, "stock") },
+          { label:"Download for Google Sheets", sub:"Exact column order for the Sheets STOCK tab", onClick:()=>exportStockForSheets(stockData) },
+        ]} />
         <button className="btn btn-o btn-sm" onClick={()=>setShowImport(true)}>↓ Import</button>
         <button className="btn btn-p btn-sm" onClick={()=>setShowAdd(true)}>+ Add Stock</button>
       </div>
@@ -3390,10 +3440,9 @@ function ListingsTab({ listings, setListings, stockData, customPlatforms, liveDa
                 clearAll={clearColAll} onClose={()=>setShowFilterPanel(false)} anchorRef={filterBtnRef} />
             )}
           </div>
-          <button className="btn btn-o btn-sm"
-            onClick={()=>exportToCSV(rows, cols, `listings_${activeTab}`)}>
-            ↓ CSV
-          </button>
+          <ExportMenu options={[
+            { label:"Download CSV", onClick:()=>exportToCSV(rows, cols, `listings_${activeTab}`) },
+          ]} />
         </div>
       </div>
 
@@ -3843,10 +3892,9 @@ function MovementTracker({ listings }) {
           <button className="btn btn-o btn-sm" onClick={()=>setShowColPanel(v=>!v)}>⚙ Columns</button>
           {showColPanel && <ColPanel cols={cols} setCols={setCols} onClose={()=>setShowColPanel(false)} />}
         </div>
-        <button className="btn btn-o btn-sm"
-          onClick={()=>exportToCSV(sorted, cols, "movement_tracker")}>
-          ↓ CSV
-        </button>
+        <ExportMenu options={[
+          { label:"Download CSV", onClick:()=>exportToCSV(sorted, cols, "movement_tracker") },
+        ]} />
       </div>
 
 
@@ -4276,10 +4324,9 @@ function ListingDataTab({ listings, liveData }) {
             <button className="btn btn-o btn-sm" onClick={()=>setShowCP(v=>!v)}>⚙ Columns</button>
             {showCP && <ColPanel cols={cols} setCols={setCols} onClose={()=>setShowCP(false)} />}
           </div>
-          <button className="btn btn-o btn-sm"
-            onClick={()=>exportToCSV(fHook.filtered, cols, exportName)}>
-            ↓ CSV
-          </button>
+          <ExportMenu options={[
+            { label:"Download CSV", onClick:()=>exportToCSV(fHook.filtered, cols, exportName) },
+          ]} />
         </div>
         <FilterChips colDefs={cols} activeFilters={fHook.activeFilters} clearFilter={fHook.clearFilter} clearAll={fHook.clearAll} />
         <div className="tw">
@@ -6019,10 +6066,9 @@ function ShippingTab({ listings, setListings }) {
                 <button className="btn btn-o btn-sm" onClick={()=>setShowColPanel(v=>!v)}>⚙ Columns</button>
                 {showColPanel && <ColPanel cols={cols} setCols={setCols} onClose={()=>setShowColPanel(false)} />}
               </div>
-              <button className="btn btn-o btn-sm"
-                onClick={()=>exportToCSV(shippedF.filtered, cols, "shipped_today")}>
-                ↓ CSV
-              </button>
+              <ExportMenu options={[
+                { label:"Download CSV", onClick:()=>exportToCSV(shippedF.filtered, cols, "shipped_today") },
+              ]} />
             </div>
             <FilterChips colDefs={cols} activeFilters={shippedF.activeFilters} clearFilter={shippedF.clearFilter} clearAll={shippedF.clearAll} />
             <div className="tw"><div className="ts">
@@ -7101,7 +7147,9 @@ function Analytics({ listings, stockData, customPlatforms: cpArg, liveData }) {
             <button className="btn btn-o btn-sm" onClick={()=>setShowSlowCP(v=>!v)}>⚙ Columns</button>
             {showSlowCP&&<ColPanel cols={slowCols} setCols={setSlowCols} onClose={()=>setShowSlowCP(false)}/>}
           </div>
-          <button className="btn btn-o btn-sm" onClick={()=>exportToCSV(slowSorted,slowCols,"slow_movers")}>↓ CSV</button>
+          <ExportMenu options={[
+            { label:"Download CSV", onClick:()=>exportToCSV(slowSorted,slowCols,"slow_movers") },
+          ]} />
         </div>
 
         <FilterChips colDefs={slowCols} activeFilters={slowF.activeFilters} clearFilter={slowF.clearFilter} clearAll={slowF.clearAll}/>
@@ -7942,7 +7990,9 @@ function History({ listings, stockData, liveData }) {
             <button className="btn btn-o btn-sm" onClick={()=>setShowCP(v=>!v)}>⚙ Columns</button>
             {showCP && <ColPanel cols={cols} setCols={setCols} onClose={()=>setShowCP(false)} />}
           </div>
-          <button className="btn btn-o btn-sm" onClick={()=>exportToCSV(fHook.filtered, cols, exportName)}>↓ CSV</button>
+          <ExportMenu options={[
+            { label:"Download CSV", onClick:()=>exportToCSV(fHook.filtered, cols, exportName) },
+          ]} />
         </div>
         <FilterChips colDefs={cols} activeFilters={fHook.activeFilters} clearFilter={fHook.clearFilter} clearAll={fHook.clearAll} />
         <div className="tw"><div className="ts" style={{maxHeight:"none"}}>
