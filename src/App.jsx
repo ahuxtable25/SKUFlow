@@ -1072,6 +1072,168 @@ function exportToCSV(rows, colDefs, filename) {
   a.click();
 }
 
+/* Shared cell formatting so CSV/XLSX/PDF exports of the same table agree */
+function formatExportCell(row, c) {
+  const v = row[c.id];
+  if (v == null)              return "";
+  if (typeof v === "boolean") return v ? "Yes" : "No";
+  if (c.id === "sellThru")    return `${v}%`;
+  if (["costPer","totalCost","totalProfit","netProceeds","stockValLeft",
+       "avgSoldPrice","avgProfit","price","soldPrice","profit"].includes(c.id))
+    return (+(v)||0).toFixed(2);
+  return String(v);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Single-sheet XLSX export — hand-rolled OOXML/ZIP, no library or
+   CDN needed (same technique as the full-workbook backup export).
+═══════════════════════════════════════════════════════════════ */
+function exportToXLSX(rows, colDefs, filename) {
+  if (!rows.length) { alert("Nothing to export — check your filters."); return; }
+  const visCols = colDefs.filter(c => c.id !== "sel" && c.id !== "photo");
+  const esc = (s) => String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  const enc = (s) => new TextEncoder().encode(s);
+  const crc32 = (data) => { const t=new Uint32Array(256); for(let i=0;i<256;i++){let k=i;for(let j=0;j<8;j++)k=k&1?(0xEDB88320^(k>>>1)):k>>>1;t[i]=k;} let c=0xFFFFFFFF; for(let i=0;i<data.length;i++)c=t[(c^data[i])&0xFF]^(c>>>8); return(c^0xFFFFFFFF)>>>0; };
+  const u32le = (n) => { const b=new Uint8Array(4); new DataView(b.buffer).setUint32(0,n,true); return b; };
+  const u16le = (n) => { const b=new Uint8Array(2); new DataView(b.buffer).setUint16(0,n,true); return b; };
+  const cat = (...arrays) => { const total=arrays.reduce((a,b)=>a+b.length,0); const out=new Uint8Array(total); let off=0; arrays.forEach(a=>{out.set(a,off);off+=a.length;}); return out; };
+  const allStrings = []; const allMap = {};
+  const si = (val) => { const k=String(val??""); if(allMap[k]===undefined){allMap[k]=allStrings.length;allStrings.push(k);} return allMap[k]; };
+  const toCol = (i) => { let s="",n=i+1; while(n>0){s=String.fromCharCode(65+(n-1)%26)+s;n=Math.floor((n-1)/26);} return s; };
+
+  const headers  = visCols.map(c => c.label || c.id);
+  const dataRows = rows.map(r => visCols.map(c => {
+    const raw = r[c.id];
+    if (["costPer","totalCost","totalProfit","netProceeds","stockValLeft",
+         "avgSoldPrice","avgProfit","price","soldPrice","profit"].includes(c.id) && raw != null)
+      return +Number(raw).toFixed(2);
+    return formatExportCell(r, c);
+  }));
+
+  let xml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>`;
+  xml += `<row r="1">`; headers.forEach((h,ci)=>{xml+=`<c r="${toCol(ci)}1" t="s"><v>${si(h)}</v></c>`;}); xml += `</row>`;
+  dataRows.forEach((row,ri) => {
+    xml += `<row r="${ri+2}">`;
+    row.forEach((val,ci) => {
+      const ref = `${toCol(ci)}${ri+2}`;
+      if (val==="" || val==null)          xml += `<c r="${ref}"/>`;
+      else if (typeof val === "number")   xml += `<c r="${ref}"><v>${val}</v></c>`;
+      else                                xml += `<c r="${ref}" t="s"><v>${si(String(val))}</v></c>`;
+    });
+    xml += `</row>`;
+  });
+  xml += `</sheetData></worksheet>`;
+  const sheetXml = enc(xml);
+
+  const makeEntry = (name, content) => {
+    const nb = enc(name); const crc = crc32(content);
+    const local = cat(new Uint8Array([0x50,0x4B,0x03,0x04,0x14,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00]), u32le(crc), u32le(content.length), u32le(content.length), u16le(nb.length), u16le(0), nb, content);
+    return { nb, local, crc, size: content.length };
+  };
+
+  const ssXml    = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${allStrings.length}" uniqueCount="${allStrings.length}">${allStrings.map(s=>`<si><t xml:space="preserve">${esc(s)}</t></si>`).join("")}</sst>`;
+  const wbXml    = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/></sheets></workbook>`;
+  const wbRels   = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/></Relationships>`;
+  const ctXml    = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/></Types>`;
+  const rootRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`;
+
+  const files = [
+    makeEntry("[Content_Types].xml", enc(ctXml)),
+    makeEntry("_rels/.rels", enc(rootRels)),
+    makeEntry("xl/workbook.xml", enc(wbXml)),
+    makeEntry("xl/_rels/workbook.xml.rels", enc(wbRels)),
+    makeEntry("xl/worksheets/sheet1.xml", sheetXml),
+    makeEntry("xl/sharedStrings.xml", enc(ssXml)),
+  ];
+  const locals = files.map(f => f.local);
+  let cdOff = 0; locals.forEach(l => cdOff += l.length);
+  const centralDir = files.map((f,i) => {
+    const off = files.slice(0,i).reduce((a,x)=>a+x.local.length,0);
+    return cat(new Uint8Array([0x50,0x4B,0x01,0x02,0x14,0x00,0x14,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00]), u32le(f.crc), u32le(f.size), u32le(f.size), u16le(f.nb.length), u16le(0), u16le(0), u16le(0), u16le(0), u32le(0), u32le(off), f.nb);
+  });
+  const cdSize = centralDir.reduce((a,b)=>a+b.length,0);
+  const eocd = cat(new Uint8Array([0x50,0x4B,0x05,0x06,0x00,0x00,0x00,0x00]), u16le(files.length), u16le(files.length), u32le(cdSize), u32le(cdOff), u16le(0));
+  const zip = cat(...locals, ...centralDir, eocd);
+  const blob = new Blob([zip], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename + ".xlsx";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Table PDF export — hand-rolled PDF (Courier monospace table),
+   no library or CDN needed. Landscape A4, paginates automatically.
+═══════════════════════════════════════════════════════════════ */
+function exportToPDF(rows, colDefs, filename) {
+  if (!rows.length) { alert("Nothing to export — check your filters."); return; }
+  const visCols = colDefs.filter(c => c.id !== "sel" && c.id !== "photo");
+  const headers = visCols.map(c => c.label || c.id);
+
+  const MAXW = 16, MINW = 6;
+  const colWidths = visCols.map((c,i) => {
+    let w = headers[i].length;
+    rows.forEach(r => { const s = formatExportCell(r,c); if (s.length > w) w = s.length; });
+    return Math.max(MINW, Math.min(MAXW, w));
+  });
+  const padCell = (s, w) => { s = String(s); return s.length > w ? s.slice(0, Math.max(0,w-1)) + "…" : s + " ".repeat(w - s.length); };
+  // Courier is a standard PDF base-14 font (no embedding needed) and
+  // monospace, which keeps hand-aligned columns simple; anything outside
+  // printable ASCII gets swapped for "?" since we're not embedding a font.
+  const escPdf = (s) => String(s).replace(/\\/g,"\\\\").replace(/\(/g,"\\(").replace(/\)/g,"\\)").replace(/[^\x20-\x7E]/g,"?");
+  const lineFor = (cells) => escPdf(cells.map((v,i) => padCell(v, colWidths[i])).join(" "));
+  const lines = [lineFor(headers), ...rows.map(r => lineFor(visCols.map(c => formatExportCell(r,c))))];
+
+  const pageW = 842, pageH = 595, marginX = 28, marginTop = 36, marginBottom = 28; // landscape A4
+  const fontSize = 7, lineHeight = 10;
+  const linesPerPage = Math.max(1, Math.floor((pageH - marginTop - marginBottom) / lineHeight));
+  const pages = [];
+  for (let i = 0; i < lines.length; i += linesPerPage) pages.push(lines.slice(i, i + linesPerPage));
+  if (!pages.length) pages.push([]);
+
+  const fontObjNum    = 3;
+  const pageObjNums    = pages.map((_,i) => 4 + i*2);
+  const contentObjNums = pages.map((_,i) => 5 + i*2);
+  const totalObjs = 3 + pages.length*2;
+
+  const objStrs = new Array(totalObjs + 1);
+  objStrs[1] = `<< /Type /Catalog /Pages 2 0 R >>`;
+  objStrs[2] = `<< /Type /Pages /Kids [${pageObjNums.map(n=>`${n} 0 R`).join(" ")}] /Count ${pages.length} >>`;
+  objStrs[3] = `<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>`;
+  pages.forEach((pageLines,i) => {
+    const pageObjNum = pageObjNums[i], contentObjNum = contentObjNums[i];
+    let content = `BT /F1 ${fontSize} Tf ${marginX} ${pageH - marginTop} Td\n`;
+    pageLines.forEach((line,li) => {
+      if (li > 0) content += `0 -${lineHeight} Td\n`;
+      content += `(${line}) Tj\n`;
+    });
+    content += `ET`;
+    objStrs[pageObjNum]    = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageW} ${pageH}] /Resources << /Font << /F1 ${fontObjNum} 0 R >> >> /Contents ${contentObjNum} 0 R >>`;
+    objStrs[contentObjNum] = `<< /Length ${content.length} >>\nstream\n${content}\nendstream`;
+  });
+
+  // Everything above is ASCII-only (escPdf strips non-ASCII), so JS string
+  // .length matches UTF-8 byte length — safe to use directly as xref offsets.
+  let pdf = `%PDF-1.4\n`;
+  const offsets = new Array(totalObjs + 1);
+  for (let n = 1; n <= totalObjs; n++) {
+    offsets[n] = pdf.length;
+    pdf += `${n} 0 obj\n${objStrs[n]}\nendobj\n`;
+  }
+  const xrefOffset = pdf.length;
+  pdf += `xref\n0 ${totalObjs+1}\n0000000000 65535 f \n`;
+  for (let n = 1; n <= totalObjs; n++) pdf += `${String(offsets[n]).padStart(10,"0")} 00000 n \n`;
+  pdf += `trailer\n<< /Size ${totalObjs+1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+
+  const blob = new Blob([pdf], { type: "application/pdf" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename + ".pdf";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
 /* ═══════════════════════════════════════════════════════════════
    SHARED — Export button
    One "↓ Export" affordance per table instead of separate CSV/Sheets
@@ -2043,6 +2205,8 @@ function StockTab({ stockData, setStockData, listings, setListings, liveData }) 
         </div>
         <ExportMenu options={[
           { label:"Download CSV", onClick:()=>exportToCSV(filtered, cols, "stock") },
+          { label:"Download XLSX", onClick:()=>exportToXLSX(filtered, cols, "stock") },
+          { label:"Download PDF", onClick:()=>exportToPDF(filtered, cols, "stock") },
           { label:"Download for Google Sheets", sub:"Exact column order for the Sheets STOCK tab", onClick:()=>exportStockForSheets(stockData) },
         ]} />
         <button className="btn btn-o btn-sm" onClick={()=>setShowImport(true)}>↓ Import</button>
@@ -3442,6 +3606,8 @@ function ListingsTab({ listings, setListings, stockData, customPlatforms, liveDa
           </div>
           <ExportMenu options={[
             { label:"Download CSV", onClick:()=>exportToCSV(rows, cols, `listings_${activeTab}`) },
+            { label:"Download XLSX", onClick:()=>exportToXLSX(rows, cols, `listings_${activeTab}`) },
+            { label:"Download PDF", onClick:()=>exportToPDF(rows, cols, `listings_${activeTab}`) },
           ]} />
         </div>
       </div>
@@ -3894,6 +4060,8 @@ function MovementTracker({ listings }) {
         </div>
         <ExportMenu options={[
           { label:"Download CSV", onClick:()=>exportToCSV(sorted, cols, "movement_tracker") },
+          { label:"Download XLSX", onClick:()=>exportToXLSX(sorted, cols, "movement_tracker") },
+          { label:"Download PDF", onClick:()=>exportToPDF(sorted, cols, "movement_tracker") },
         ]} />
       </div>
 
@@ -4326,6 +4494,8 @@ function ListingDataTab({ listings, liveData }) {
           </div>
           <ExportMenu options={[
             { label:"Download CSV", onClick:()=>exportToCSV(fHook.filtered, cols, exportName) },
+            { label:"Download XLSX", onClick:()=>exportToXLSX(fHook.filtered, cols, exportName) },
+            { label:"Download PDF", onClick:()=>exportToPDF(fHook.filtered, cols, exportName) },
           ]} />
         </div>
         <FilterChips colDefs={cols} activeFilters={fHook.activeFilters} clearFilter={fHook.clearFilter} clearAll={fHook.clearAll} />
@@ -6068,6 +6238,8 @@ function ShippingTab({ listings, setListings }) {
               </div>
               <ExportMenu options={[
                 { label:"Download CSV", onClick:()=>exportToCSV(shippedF.filtered, cols, "shipped_today") },
+                { label:"Download XLSX", onClick:()=>exportToXLSX(shippedF.filtered, cols, "shipped_today") },
+                { label:"Download PDF", onClick:()=>exportToPDF(shippedF.filtered, cols, "shipped_today") },
               ]} />
             </div>
             <FilterChips colDefs={cols} activeFilters={shippedF.activeFilters} clearFilter={shippedF.clearFilter} clearAll={shippedF.clearAll} />
@@ -7149,6 +7321,8 @@ function Analytics({ listings, stockData, customPlatforms: cpArg, liveData }) {
           </div>
           <ExportMenu options={[
             { label:"Download CSV", onClick:()=>exportToCSV(slowSorted,slowCols,"slow_movers") },
+            { label:"Download XLSX", onClick:()=>exportToXLSX(slowSorted,slowCols,"slow_movers") },
+            { label:"Download PDF", onClick:()=>exportToPDF(slowSorted,slowCols,"slow_movers") },
           ]} />
         </div>
 
@@ -7992,6 +8166,8 @@ function History({ listings, stockData, liveData }) {
           </div>
           <ExportMenu options={[
             { label:"Download CSV", onClick:()=>exportToCSV(fHook.filtered, cols, exportName) },
+            { label:"Download XLSX", onClick:()=>exportToXLSX(fHook.filtered, cols, exportName) },
+            { label:"Download PDF", onClick:()=>exportToPDF(fHook.filtered, cols, exportName) },
           ]} />
         </div>
         <FilterChips colDefs={cols} activeFilters={fHook.activeFilters} clearFilter={fHook.clearFilter} clearAll={fHook.clearAll} />
