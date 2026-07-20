@@ -10742,8 +10742,16 @@ export default function App() {
                 disabled={refreshing} style={{padding:"4px 8px"}}>
                 {refreshing ? "…" : "↻"}
               </button>
-              <button className="btn btn-o btn-sm" onClick={handleExportData}
-                style={{whiteSpace:"nowrap"}}>↓ Export Data</button>
+              <ExportMenu options={[
+                { label:"Full Backup", sub:"JSON + XLSX together — everything, for restore/migration", onClick:handleExportData },
+                { label:"All Listings — CSV",  onClick:()=>exportToCSV(listings, DEFAULT_COLS, "listings_all") },
+                { label:"All Listings — XLSX", onClick:()=>exportToXLSX(listings, DEFAULT_COLS, "listings_all") },
+                { label:"All Listings — PDF",  onClick:()=>exportToPDF(listings, DEFAULT_COLS, "listings_all") },
+                { label:"All Stock — CSV",     onClick:()=>exportToCSV(deriveStock(stockData, listings), STOCK_COLS, "stock_all") },
+                { label:"All Stock — XLSX",    onClick:()=>exportToXLSX(deriveStock(stockData, listings), STOCK_COLS, "stock_all") },
+                { label:"All Stock — PDF",     onClick:()=>exportToPDF(deriveStock(stockData, listings), STOCK_COLS, "stock_all") },
+                { label:"Stock for Google Sheets", sub:"Exact column order for the Sheets STOCK tab", onClick:()=>exportStockForSheets(stockData) },
+              ]} />
               {"Notification" in window && Notification.permission !== "granted" && (
                 <button className="notif-btn" onClick={requestNotifPermission}
                   title="Enable push notifications">
