@@ -1490,13 +1490,19 @@ function ColPanel({ cols, setCols, onClose }) {
 /* ═══════════════════════════════════════════════════════════════
    STOCK — Edit Stock Drawer (click any row)
 ═══════════════════════════════════════════════════════════════ */
-function EditStockDrawer({ stock, derived, onSave, onDelete, onClose, onAddListings }) {
+function EditStockDrawer({ stock, derived, onSave, onDelete, onClose, onAddListings, listings, stockData }) {
   const [form, setForm] = useState({ ...stock });
   const [totalPaid, setTotalPaid] = useState(
     stock.costPer && stock.sellable
       ? (stock.costPer * stock.sellable).toFixed(2)
       : ""
   );
+  // Delete flow — when this bundle has related listings, ask what should
+  // happen to them instead of silently orphaning them.
+  const [deleteChoice, setDeleteChoice] = useState(null); // null | "picking" | "reassign"
+  const [reassignTo, setReassignTo] = useState("");
+  const relatedListings = (listings||[]).filter(l => l.bundleSku === stock.bundleSku);
+  const otherBundles = (stockData||[]).filter(s => s.bundleSku !== stock.bundleSku);
 
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
 
@@ -1682,11 +1688,64 @@ function EditStockDrawer({ stock, derived, onSave, onDelete, onClose, onAddListi
           );
         })()}
 
+        {deleteChoice && (
+          <div style={{margin:"0 18px 14px",padding:"14px",background:"var(--acl)",border:"1px solid var(--ac2)",borderRadius:"var(--r)"}}>
+            <div style={{fontSize:12,fontWeight:700,color:"var(--ac)",marginBottom:8}}>
+              ⚠ {relatedListings.length} SKU{relatedListings.length!==1?"s":""} reference{relatedListings.length===1?"s":""} this bundle
+            </div>
+            <div style={{fontSize:11,color:"var(--txm)",marginBottom:12,lineHeight:1.5}}>
+              Deleting {stock.bundleSku} won't delete those SKUs automatically. Choose what happens to them:
+            </div>
+
+            {deleteChoice === "reassign" ? (
+              <>
+                <select className="fsel" style={{width:"100%",marginBottom:10}} value={reassignTo} onChange={e=>setReassignTo(e.target.value)}>
+                  <option value="">— Select a bundle —</option>
+                  {otherBundles.map(b => (
+                    <option key={b.bundleSku} value={b.bundleSku}>{b.bundleSku} — {b.name}</option>
+                  ))}
+                </select>
+                <div style={{display:"flex",gap:8}}>
+                  <button className="btn btn-o btn-sm" onClick={()=>setDeleteChoice("picking")}>Back</button>
+                  <button className="btn btn-p btn-sm" style={{flex:1,justifyContent:"center"}} disabled={!reassignTo}
+                    onClick={() => onDelete(stock.bundleSku, stock.name, "reassign", reassignTo)}>
+                    Reassign {relatedListings.length} SKU{relatedListings.length!==1?"s":""} & Delete Bundle
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                <button className="btn btn-o btn-sm" style={{justifyContent:"flex-start"}}
+                  disabled={!otherBundles.length}
+                  onClick={()=>setDeleteChoice("reassign")}>
+                  ↪ Reassign SKUs to another bundle
+                </button>
+                <button className="btn btn-del btn-sm" style={{justifyContent:"flex-start"}}
+                  onClick={() => {
+                    if (window.confirm(`Delete bundle ${stock.bundleSku} AND all ${relatedListings.length} of its SKUs? This cannot be undone.`))
+                      onDelete(stock.bundleSku, stock.name, "cascade");
+                  }}>
+                  🗑 Delete bundle + all {relatedListings.length} SKUs
+                </button>
+                <button className="btn btn-o btn-sm" style={{justifyContent:"flex-start"}}
+                  onClick={() => {
+                    if (window.confirm(`Delete bundle ${stock.bundleSku} only? Its ${relatedListings.length} SKUs will stay, flagged as unassigned.`))
+                      onDelete(stock.bundleSku, stock.name, "orphan");
+                  }}>
+                  ⚠ Delete bundle only — flag SKUs as unassigned
+                </button>
+                <button className="btn btn-o btn-sm" onClick={()=>setDeleteChoice(null)}>Cancel</button>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="drw-f">
           <button className="btn btn-o btn-sm" onClick={onClose}>Cancel</button>
           <button className="btn btn-del btn-sm" onClick={() => {
+            if (relatedListings.length > 0) { setDeleteChoice("picking"); return; }
             if (window.confirm(`Delete bundle ${stock.bundleSku} — ${stock.name}? This cannot be undone.`))
-              onDelete(stock.bundleSku, stock.name);
+              onDelete(stock.bundleSku, stock.name, "simple");
           }}>🗑 Delete</button>
           <button className="btn btn-p btn-sm" onClick={() => { onSave({ ...form, sellable: parseInt(form.sellable)||0, received: parseInt(form.received)||0, _originalName: stock.name }); onClose(); }}>
             Save Changes
@@ -2012,7 +2071,7 @@ function exportStockForSheets(stockData) {
   a.click();
 }
 
-function StockTab({ stockData, setStockData, listings, setListings, liveData }) {
+function StockTab({ stockData, setStockData, listings, setListings, liveData, hardSave }) {
   const as = getAS(liveData);
   const [cols,         setCols]        = useState(STOCK_COLS);
   const [showColPanel, setShowColPanel]= useState(false);
@@ -2076,9 +2135,30 @@ function StockTab({ stockData, setStockData, listings, setListings, liveData }) 
     const safeSku = hasDupe ? getNextBundleSku([...stockData, {bundleSku: ns.bundleSku}], as) : ns.bundleSku;
     setStockData(p => [...p, { ...ns, bundleSku: safeSku }]);
   };
-  const handleDeleteStock = (bsku, originalName) => {
-    setStockData(prev => prev.filter(s => !(s.bundleSku === bsku && s.name === originalName)));
+  const handleDeleteStock = (bsku, originalName, mode="simple", reassignToBundleSku=null) => {
+    let newListings = listings;
+    if (mode === "cascade") {
+      newListings = listings.filter(l => l.bundleSku !== bsku);
+    } else if (mode === "reassign" && reassignToBundleSku) {
+      const target = stockData.find(s => s.bundleSku === reassignToBundleSku);
+      newListings = listings.map(l =>
+        l.bundleSku === bsku ? { ...l, bundleSku: reassignToBundleSku, name: target?.name ?? l.name } : l
+      );
+    }
+    // mode "orphan" (or "simple" with no related listings) leaves listings
+    // untouched — they're flagged wherever bundleSku no longer matches any
+    // stock row (see the Listings tab's "isOrphaned" check).
+    // Match on bundleSku alone (the canonical unique key used everywhere
+    // else) — matching on name too made deletion silently no-op whenever
+    // the drawer's snapshot name had drifted from the live stockData row.
+    const newStockData = stockData.filter(s => s.bundleSku !== bsku);
+    if (newListings !== listings) setListings(newListings);
+    setStockData(newStockData);
     setEditStock(null);
+    // Force-save immediately instead of waiting on the normal debounce —
+    // otherwise a reload right after deleting/reassigning could pull the
+    // pre-delete data straight back from Supabase.
+    hardSave?.({ listings: newListings, stockData: newStockData });
   };
   const handleSaveStock = (updated) => {
     const oldName = updated._originalName;
@@ -2148,7 +2228,7 @@ function StockTab({ stockData, setStockData, listings, setListings, liveData }) 
         stock={editStock}
         derived={filtered.find(s=>s.bundleSku===editStock.bundleSku&&s.name===editStock.name)||editStock}
         onSave={handleSaveStock} onDelete={handleDeleteStock} onClose={()=>setEditStock(null)}
-        onAddListings={handleAutoImport} />}
+        onAddListings={handleAutoImport} listings={listings} stockData={stockData} />}
 
       {/* Summary KPIs */}
       <div className="kg kg4" style={{marginBottom:14}}>
@@ -2697,7 +2777,7 @@ function EditListingDrawer({ listing, stockData, onSave, onDelete, onClose, live
 /* ═══════════════════════════════════════════════════════════════
    LISTINGS — render one table cell by column id
 ═══════════════════════════════════════════════════════════════ */
-function ListingCell({ colId, l, onShipToggle, onSelect, selected }) {
+function ListingCell({ colId, l, onShipToggle, onSelect, selected, stockBundleSkus }) {
   if (colId === "sel") return (
     <input
       type="checkbox"
@@ -2718,7 +2798,15 @@ function ListingCell({ colId, l, onShipToggle, onSelect, selected }) {
     );
     return <span className="thumb-ph">—</span>;
   }
-  if (colId === "bundleSku") return <span className="bsku">{l.bundleSku}</span>;
+  if (colId === "bundleSku") {
+    const orphaned = l.bundleSku && stockBundleSkus && !stockBundleSkus.has(l.bundleSku);
+    return (
+      <span className="bsku" title={orphaned ? "This bundle no longer exists — reassign or the SKU will stay unlinked" : undefined}
+        style={orphaned ? {background:"var(--acl)",color:"var(--ac)",border:"1px solid var(--ac2)"} : undefined}>
+        {orphaned ? "⚠ " : ""}{l.bundleSku}
+      </span>
+    );
+  }
   if (colId === "name")      return (
     <span style={{fontWeight:600}}>
       {l.name}
@@ -3318,7 +3406,8 @@ function ListingLimitBanner({ listingCount, limit, tier, onUpgrade }) {
   );
 }
 
-function ListingsTab({ listings, setListings, stockData, customPlatforms, liveData, setLiveData, tier, listingLimit, onUpgrade }) {
+function ListingsTab({ listings, setListings, stockData, customPlatforms, liveData, setLiveData, tier, listingLimit, onUpgrade, hardSave }) {
+  const stockBundleSkus = useMemo(() => new Set(stockData.map(s => s.bundleSku)), [stockData]);
   const [cols,         setCols]        = useState(DEFAULT_COLS);
   const [showColPanel, setShowColPanel]= useState(false);
   const [showAdd,      setShowAdd]     = useState(false);
@@ -3480,8 +3569,13 @@ function ListingsTab({ listings, setListings, stockData, customPlatforms, liveDa
             setEditListing(null);
           }}
           onDelete={(sku) => {
-            setListings(prev => prev.filter(l => l.sku !== sku));
+            const newListings = listings.filter(l => l.sku !== sku);
+            setListings(newListings);
             setEditListing(null);
+            // Force-save immediately — otherwise a reload right after
+            // deleting could pull the pre-delete listing straight back
+            // from Supabase before the normal debounce fires.
+            hardSave?.({ listings: newListings });
           }}
           onClose={() => setEditListing(null)}
         />
@@ -3687,6 +3781,7 @@ function ListingsTab({ listings, setListings, stockData, customPlatforms, liveDa
                           onShipToggle={toggleShip}
                           onSelect={()=>toggleOne(l.sku)}
                           selected={isSel}
+                          stockBundleSkus={stockBundleSkus}
                         />
                       </td>
                     ))}
@@ -4123,16 +4218,6 @@ function MovementTracker({ listings }) {
 /* ═══════════════════════════════════════════════════════════════
    LISTING DATA COLS
 ═══════════════════════════════════════════════════════════════ */
-const TOLIST_COLS = [
-  {id:"sku",     label:"SKU",        visible:true },
-  {id:"name",    label:"Stock Name", visible:true },
-  {id:"type",    label:"Type",       visible:true },
-  {id:"brand",   label:"Brand",      visible:true },
-  {id:"colour",  label:"Colour",     visible:true },
-  {id:"size",    label:"Size",       visible:true },
-  {id:"tag",     label:"Mover",      visible:true },
-  {id:"bundleSku",label:"Bundle",    visible:false},
-];
 
 const ACTIVE_COLS = [
   {id:"sku",      label:"SKU",       visible:true },
@@ -4397,7 +4482,7 @@ function CrossListTab({ listings, visiblePlats }) {
 }
 
 function ListingDataTab({ listings, liveData }) {
-  const [toListCols, setToListCols]   = useState(TOLIST_COLS);
+  const [toListCols, setToListCols]   = useState(ACTIVE_COLS);
   const [activeCols, setActiveCols]   = useState(ACTIVE_COLS);
   const [showToListCP,  setShowToListCP]  = useState(false);
   const [showActiveCP,  setShowActiveCP]  = useState(false);
@@ -4439,18 +4524,6 @@ function ListingDataTab({ listings, liveData }) {
       m[k].count++;
     });
     return Object.values(m).sort((a,b)=>b.count-a.count);
-  };
-
-  const renderToListCell = (col, l) => {
-    if (col==="sku")      return <span className="sku">{l.sku}</span>;
-    if (col==="name")     return <span style={{fontWeight:600,fontSize:11,whiteSpace:"normal",wordBreak:"break-word"}}>{l.name}</span>;
-    if (col==="type")     return <span className="badge b-0">{l.type}</span>;
-    if (col==="brand")    return <span style={{color:"var(--txm)"}}>{l.brand}</span>;
-    if (col==="colour")   return l.colour;
-    if (col==="size")     return <span style={{color:"var(--txm)"}}>{l.size}</span>;
-    if (col==="tag")      return <MovTag tag={l.tag} />;
-    if (col==="bundleSku")return <span className="bsku">{l.bundleSku}</span>;
-    return "—";
   };
 
   const renderActiveCell = (col, l) => {
@@ -4547,7 +4620,6 @@ function ListingDataTab({ listings, liveData }) {
           </div>
         ))}
       </div>
-
       {/* Tab bar */}
       <div className="tab-bar">
         <div className={`tab ${ldTab==="tolist"?"active":""}`} onClick={()=>setLdTab("tolist")}>
@@ -4568,7 +4640,47 @@ function ListingDataTab({ listings, liveData }) {
       {ldTab === "tolist" && (
         <>
           {/* Breakdowns */}
-          <div className="ld-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:11,marginBottom:4}}>
+          <div className="ld-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:11,marginBottom:4}}>
+            <div className="sc">
+              <div className="st" style={{marginBottom:8}}>To Be Listed by Mover Tag</div>
+              {[["FAST","mt-f"],["MEDIUM","mt-m"],["SLOW","mt-s"],["NEW","mt-n"],["UNKNOWN","mt-u"],["DEAD","mt-d"]].map(([tag,cls])=>(
+                <div key={tag} className="sr">
+                  <span className={`mt ${cls}`}>{tag}</span>
+                  <span className="srv">{byTag(toBeListed,tag)}</span>
+                </div>
+              ))}
+            </div>
+            <div className="sc">
+              <div className="st" style={{marginBottom:8}}>To Be Listed by Bundle</div>
+              {byNameSku(toBeListed).length===0
+                ? <div style={{fontSize:12,color:"var(--txd)",padding:"8px 0"}}>All items are listed.</div>
+                : byNameSku(toBeListed).map(b=>(
+                  <div key={`${b.bsku}-${b.name}`} className="sr">
+                    <span className="srl"><span className="bsku" style={{marginRight:5}}>{b.bsku}</span>{b.name}</span>
+                    <span className="srv">{b.count}</span>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+          <TableSection
+            title="To Be Listed"
+            subtitle={`${toListF.filtered.length} items`}
+            fHook={toListF}
+            cols={toListCols} setCols={setToListCols}
+            showCP={showToListCP} setShowCP={setShowToListCP}
+            renderCell={renderActiveCell}
+            exportName="to_be_listed"
+            zoom={toListZoom}
+          />
+        </>
+      )}
+
+      {/* Active tab */}
+      {ldTab === "active" && (
+        <>
+          {/* Breakdowns */}
+          <div className="ld-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:11,marginBottom:4}}>
             <div className="sc">
               <div className="st" style={{marginBottom:8}}>Active by Mover Tag</div>
               {[["FAST","mt-f"],["MEDIUM","mt-m"],["SLOW","mt-s"],["NEW","mt-n"],["UNKNOWN","mt-u"],["DEAD","mt-d"]].map(([tag,cls])=>(
@@ -4590,44 +4702,18 @@ function ListingDataTab({ listings, liveData }) {
                 ))
               }
             </div>
-            <div className="sc">
-              <div className="st" style={{marginBottom:8}}>To Be Listed by Bundle</div>
-              {byNameSku(toBeListed).length===0
-                ? <div style={{fontSize:12,color:"var(--txd)",padding:"8px 0"}}>All items are listed.</div>
-                : byNameSku(toBeListed).map(b=>(
-                  <div key={`${b.bsku}-${b.name}`} className="sr">
-                    <span className="srl"><span className="bsku" style={{marginRight:5}}>{b.bsku}</span>{b.name}</span>
-                    <span className="srv">{b.count}</span>
-                  </div>
-                ))
-              }
-            </div>
           </div>
           <TableSection
-            title="To Be Listed"
-            subtitle={`${toListF.filtered.length} items`}
-            fHook={toListF}
-            cols={toListCols} setCols={setToListCols}
-            showCP={showToListCP} setShowCP={setShowToListCP}
-            renderCell={renderToListCell}
-            exportName="to_be_listed"
-            zoom={toListZoom}
+            title="Active Listings"
+            subtitle={`${activeF.filtered.length} items`}
+            fHook={activeF}
+            cols={activeCols} setCols={setActiveCols}
+            showCP={showActiveCP} setShowCP={setShowActiveCP}
+            renderCell={renderActiveCell}
+            exportName="active_listings"
+            zoom={activeZoom}
           />
         </>
-      )}
-
-      {/* Active tab */}
-      {ldTab === "active" && (
-        <TableSection
-          title="Active Listings"
-          subtitle={`${activeF.filtered.length} items`}
-          fHook={activeF}
-          cols={activeCols} setCols={setActiveCols}
-          showCP={showActiveCP} setShowCP={setShowActiveCP}
-          renderCell={renderActiveCell}
-          exportName="active_listings"
-          zoom={activeZoom}
-        />
       )}
 
       {/* Cross-List tab */}
@@ -8219,7 +8305,7 @@ function History({ listings, stockData, liveData }) {
   const [weekCols,  setWeekCols]  = useState(WEEK_HIST_COLS);
   const [showMonthCP, setShowMonthCP] = useState(false);
   const [showWeekCP,  setShowWeekCP]  = useState(false);
-  const [weekRange,   setWeekRange]   = useState("all");
+  const [weekRange,   setWeekRange]   = useState("16");
   const [monthRange,  setMonthRange]  = useState("all");
 
   const { months, weeks } = useMemo(() => {
@@ -8247,9 +8333,14 @@ function History({ listings, stockData, liveData }) {
       };
     }).reverse(); // newest first
 
-    // Build last 16 weeks
+    // Build every week from Nov 2024 (matching the monthly history start) to
+    // now — range filtering (e.g. "Last 16 weeks") happens afterwards on
+    // this full set, so "All time" actually has all data to show.
     const weeks = [];
-    for (let i=15; i>=0; i--) {
+    const firstWeekStart = new Date(2024, 10, 1);
+    firstWeekStart.setDate(firstWeekStart.getDate() - (firstWeekStart.getDay()===0?6:firstWeekStart.getDay()-1));
+    const totalWeeks = Math.round((_wsd - firstWeekStart) / (7*24*60*60*1000));
+    for (let i=totalWeeks; i>=0; i--) {
       const ws = new Date(_wsd); ws.setDate(ws.getDate()-i*7);
       const we = new Date(ws);   we.setDate(we.getDate()+6);
       const wsStr = localDateStr(ws);
@@ -10955,8 +11046,8 @@ export default function App() {
 
           <div className="content">
             {view==="dashboard"   && <Dashboard listings={listings} stockData={stockData} weeklyGoal={weeklyGoal} setWeeklyGoal={setWeeklyGoal} monthlyGoal={monthlyGoal} setMonthlyGoal={setMonthlyGoal} weeklyRevGoal={weeklyRevGoal} setWeeklyRevGoal={setWeeklyRevGoal} monthlyRevGoal={monthlyRevGoal} setMonthlyRevGoal={setMonthlyRevGoal} liveData={liveData} tier={workspace.tier} listingLimit={listingLimit} onUpgrade={goToUpgrade} />}
-            {view==="stock"       && <StockTab stockData={stockData} setStockData={setStockData} listings={listings} setListings={setListings} liveData={liveData} />}
-            {view==="listings"    && <ListingsTab listings={listings} setListings={setListings} stockData={stockData} customPlatforms={customPlatforms} liveData={liveData} setLiveData={setLiveData} tier={workspace.tier} listingLimit={listingLimit} onUpgrade={goToUpgrade} />}
+            {view==="stock"       && <StockTab stockData={stockData} setStockData={setStockData} listings={listings} setListings={setListings} liveData={liveData} hardSave={hardSave} />}
+            {view==="listings"    && <ListingsTab listings={listings} setListings={setListings} stockData={stockData} customPlatforms={customPlatforms} liveData={liveData} setLiveData={setLiveData} tier={workspace.tier} listingLimit={listingLimit} onUpgrade={goToUpgrade} hardSave={hardSave} />}
             {view==="movement"    && <MovementTracker listings={listings} />}
             {view==="listingdata" && <ListingDataTab listings={listings} liveData={liveData} />}
             {view==="marklisted"  && <MarkAsListed listings={listings} setListings={setListings} customPlatforms={customPlatforms} liveData={liveData} />}
