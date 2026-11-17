@@ -136,7 +136,7 @@ const PLAT_FEES = {
   "Whatnot":8,"Tilt":8,
   "Facebook Marketplace":0,"Grailed":9,"Other":10,
 };
-const WEBSITES = ["Fleek","VWS","Depop","eBay","Vinted","Other"];
+const WEBSITES = ["Depop","eBay","Vinted","Other"];
 
 /* ─── PLATFORM FAMILY UTILITIES ───
    "Vinted 1", "Vinted 2" → family "Vinted"
@@ -171,10 +171,8 @@ const DEFAULT_COLOURS = [
   "Black","White","Navy","Blue","Grey","Brown","Beige","Green","Red","Yellow",
   "Dark Blue","Light Blue","Black and Red","White and Grey","Olive","Orange","Purple","Pink","Multicolour",
 ];
-const DEFAULT_TYPES = [
-  "Jacket","Denim Jacket","Track Jacket","Jersey Top","Polo","Shorts","Jorts",
-  "T-Shirt","Hoodie","Sweatshirt","Shirt","Trousers","Jeans","Vest","Coat","Gilet",
-];
+// No pre-written types: each workspace builds its own list via "+ Add new…"
+const DEFAULT_TYPES = [];
 const DEFAULT_SIZES = [
   "XS","S","S/M","M","M/L","L","L/XL","XL","XXL","2XL","Regular","One Size",
 ];
@@ -1705,7 +1703,7 @@ function EditStockDrawer({ stock, derived, onSave, onDelete, onClose, onAddListi
 function AddStockModal({ stockData, onAdd, onClose, as }) {
   const nextBsku = getNextBundleSku(stockData, as);
   const [form, setForm] = useState({
-    name:"", website:"Fleek", seller:"",
+    name:"", website:"", seller:"",
     datePurchased:TODAY, dateArrived:TODAY,
     contentDetails:"", received:"", sellable:"",
     totalPaid:"", costPer:"",
@@ -1773,7 +1771,7 @@ function AddStockModal({ stockData, onAdd, onClose, as }) {
         <div className="mb">
           <div className="fr">
             <label className="fl">Bundle / Stock Name {errors.name && <span style={{color:"var(--ac)"}}>*</span>}</label>
-            <input className="finp" placeholder="e.g. Ralph Lauren Harrington Jackets"
+            <input className="finp" placeholder="e.g. Summer Tops Bundle"
               value={form.name} onChange={e => set("name", e.target.value)} style={err("name")} />
           </div>
           <div className="fr2">
@@ -1791,7 +1789,7 @@ function AddStockModal({ stockData, onAdd, onClose, as }) {
             </div>
             <div className="fr">
               <label className="fl">Seller</label>
-              <input className="finp" placeholder="e.g. Vintage Voyage"
+              <input className="finp" placeholder="e.g. Supplier name"
                 value={form.seller} onChange={e => set("seller", e.target.value)} />
             </div>
           </div>
@@ -2964,7 +2962,7 @@ function AddListingModal({ listings, stockData, onAdd, onClose, liveData, setLiv
           <div className="fr2">
             <div className="fr">
               <label className="fl">Brand</label>
-              <input className="finp" placeholder="e.g. Ralph Lauren"
+              <input className="finp" placeholder="e.g. Nike"
                 value={form.brand} onChange={e=>set("brand",e.target.value)} />
             </div>
             <div className="fr">
@@ -4977,7 +4975,7 @@ function MarkAsListed({ listings, setListings, customPlatforms, liveData }) {
                 <span className="si">⌕</span>
                 <input
                   className="fi" style={{width:"100%"}}
-                  placeholder="e.g. A023 or Ralph Lauren or Navy M"
+                  placeholder="Search SKU, brand, colour or size"
                   value={skuSearch}
                   onChange={e => { setSkuSearch(e.target.value); setSinglePrev(null); setSingleDone(false); }}
                 />
@@ -5113,11 +5111,11 @@ function MarkAsListed({ listings, setListings, customPlatforms, liveData }) {
               1 · Paste SKUs (one per line)
             </div>
             <div className="info-banner" style={{marginBottom:10,fontSize:11}}>
-              Type or paste SKU codes one per line — e.g. A023, A045, A067. The platform selection below applies to all of them.
+              Type or paste SKU codes one per line — e.g. SK001, SK002, SK003. The platform selection below applies to all of them.
             </div>
             <textarea
               className="qu-ta"
-              placeholder={"A023\nA045\nA067\nA071"}
+              placeholder={"SK001\nSK002\nSK003\nSK004"}
               value={bulkInput}
               onChange={e => { setBulkInput(e.target.value); setBulkParsed([]); setBulkDone(false); }}
               style={{minHeight:130}}
@@ -5283,7 +5281,7 @@ function ListingDrafter({ listings, setListings, liveData, tier, onOpenSettings 
       : [];
     const colourFromDesc = foundColours.length > 0
       ? `EXACT colour to use: "${foundColours.join(" and ")}" — write ALL of these in the title and description`
-      : `EXACT colour to use: "${it.colour}" — write this IN FULL in the title, e.g. "Stussy ${it.colour} Denim Jorts"`;
+      : `EXACT colour to use: "${it.colour}" — write this IN FULL in the title, e.g. "Nike ${it.colour} Hoodie"`;
 
     // Also check if item.colour itself contains multiple colours
     const colourNote = (it.colour||"").toLowerCase().includes(" and ") || (it.colour||"").toLowerCase().includes("/")
@@ -5983,7 +5981,7 @@ function QuickMarkSold({ listings, setListings, customPlatforms, liveData }) {
             <div className="sw" style={{width:"100%"}}>
               <span className="si">⌕</span>
               <input className="fi" style={{width:"100%"}}
-                placeholder="e.g. A023 or Navy M"
+                placeholder="Search SKU, brand, colour or size"
                 value={skuSearch}
                 onChange={e=>{ setSkuSearch(e.target.value); if(!e.target.value){ setSelSku(""); setDone(false); }}}
               />
@@ -6802,9 +6800,8 @@ function Dashboard({ listings, stockData, weeklyGoal: wgProp, setWeeklyGoal, mon
 ═══════════════════════════════════════════════════════════════ */
 function LiveData({ listings, stockData, liveData, setLiveData, customPlatforms }) {
   const set = (k, v) => setLiveData(prev => ({ ...prev, [k]: v }));
-  const { vinted="", withdrawn="", ebayBal="", ebayPend="", depopPend="", vintedPend="", whatnotPend="", profitPocketed="", globalNotes="" } = liveData;
+  const { vinted="", withdrawn="", ebayBal="", ebayPend="", depopPend="", vintedPend="", whatnotPend="", globalNotes="" } = liveData;
 
-  const [pocketInput, setPocketInput] = useState("");
 
   // Notify 45s after notes stop changing
   const prevNotesRef = useRef(globalNotes);
@@ -6876,47 +6873,6 @@ function LiveData({ listings, stockData, liveData, setLiveData, customPlatforms 
           <div className="lr">
             <span className="ll">Withdrawn / Monzo Pot</span>
             <input className="ei" placeholder="£0.00" inputMode="decimal" type="text" pattern="[0-9.]*" value={withdrawn} onChange={e=>set("withdrawn",e.target.value)} />
-          </div>
-
-          {/* Profit Pocketed — weekly log */}
-          <div style={{background:"var(--gnl)",borderRadius:"var(--r)",padding:"8px 10px",marginTop:6,marginBottom:6}}>
-            <div className="ll b" style={{color:"var(--gn)",marginBottom:6}}>💰 Profit Pocketed This Week</div>
-            <div style={{display:"flex",gap:6,alignItems:"center"}}>
-              <input
-                className="ei"
-                placeholder="£0.00"
-                inputMode="decimal"
-                type="text"
-                pattern="[0-9.]*"
-                value={pocketInput}
-                onChange={e=>setPocketInput(e.target.value)}
-                style={{flex:1,background:"var(--gnl)",border:"1px solid rgba(31,92,53,.2)"}}
-              />
-              <button
-                className="btn btn-sm"
-                style={{background:"var(--gn)",color:"#fff",border:"none",whiteSpace:"nowrap"}}
-                onClick={() => {
-                  const val = parseFloat(pocketInput.replace(/[^0-9.]/g,""));
-                  if (!val || isNaN(val)) return;
-                  const entry = { date: getToday(), amount: val, week: WEEK_START };
-                  set("profitLog", [...(liveData.profitLog||[]), entry]);
-                  setPocketInput("");
-                }}
-              >Log</button>
-            </div>
-            {/* Show this week's total */}
-            {(() => {
-              const log = liveData.profitLog || [];
-              const wkTotal = log.filter(e => e.week === WEEK_START).reduce((a,e)=>a+e.amount,0);
-              return wkTotal > 0 ? (
-                <div style={{fontSize:11,color:"var(--gn)",marginTop:6,fontWeight:700}}>
-                  This week: {fmt(wkTotal)}
-                </div>
-              ) : null;
-            })()}
-          </div>
-          <div style={{fontSize:10,color:"var(--txm)",marginBottom:6,paddingLeft:4}}>
-            Log each time you move profit to your bank — History will show weekly totals
           </div>
 
           <div className="lr tot"><span className="ll b">Total Cash</span><span className="lv gn">{fmt(total)}</span></div>
@@ -7088,7 +7044,7 @@ function PriceCalculator({ listings=[] }) {
             <label className="fl">Search SKU, brand, colour, size</label>
             <div className="sw" style={{width:"100%"}}>
               <span className="si">⌕</span>
-              <input className="fi" style={{width:"100%"}} placeholder="e.g. A127 or Navy M"
+              <input className="fi" style={{width:"100%"}} placeholder="Search SKU, brand, colour or size"
                 value={skuSearch}
                 onChange={e=>{ setSkuSearch(e.target.value); setSelectedSku(null); setCost(""); }}
               />
@@ -7879,7 +7835,6 @@ const MONTH_HIST_COLS = [
   {id:"sold",       label:"Items Sold",      visible:true },
   {id:"listed",     label:"Items Listed",    visible:true },
   {id:"proceeds",   label:"Proceeds",        visible:true },
-  {id:"profit",     label:"Profit Kept",     visible:true },
   {id:"stockQty",   label:"Items Purchased", visible:true },
   {id:"stockSpend", label:"Stock Purchased (£)", visible:true },
 ];
@@ -7888,7 +7843,6 @@ const WEEK_HIST_COLS = [
   {id:"listed",     label:"Listed",        visible:true },
   {id:"sold",       label:"Sold",          visible:true },
   {id:"revenue",    label:"Revenue",       visible:true },
-  {id:"profit",     label:"Profit Kept",   visible:true },
   {id:"stockSpend", label:"Stock Purchased (£)",   visible:true },
   {id:"activeLive", label:"Active at EOW", visible:true },
 ];
@@ -8282,15 +8236,12 @@ function History({ listings, stockData, liveData }) {
       const mListings = listings.filter(l => l.sold && l.daySold?.startsWith(mk));
       const mListed   = listings.filter(l => l.dayListed?.startsWith(mk));
       const mStock    = stockData.filter(s => s.datePurchased?.startsWith(mk));
-      const profitLog = liveData?.profitLog || [];
-      const profitKept = profitLog.filter(e => e.date?.startsWith(mk)).reduce((a,e)=>a+e.amount, 0);
       return {
         label: new Date(+y,+mo-1,1).toLocaleDateString("en-GB",{month:"short",year:"numeric"}),
         sold: mListings.length,
         listed: mListed.length,
         proceeds: mListings.reduce((a,l)=>a+(l.soldPrice||0),0),
         profit:   mListings.reduce((a,l)=>a+(l.profit||0),0),
-        profitKept,
         stockQty: mStock.reduce((a,s)=>a+(s.sellable||0),0),
         stockSpend: mStock.reduce((a,s)=>a+(s.totalCost||s.sellable*s.costPer||0),0),
       };
@@ -8308,8 +8259,6 @@ function History({ listings, stockData, liveData }) {
       const wStock  = stockData.filter(s => s.datePurchased && s.datePurchased>=wsStr && s.datePurchased<=weStr);
       // Active at end of week = listed & not sold by end of that week
       const activeLive = listings.filter(l => l.listed && l.dayListed && l.dayListed<=weStr && (!l.sold || l.daySold>weStr)).length;
-      const profitLog  = liveData?.profitLog || [];
-      const profitKept = profitLog.filter(e => e.week === wsStr).reduce((a,e)=>a+e.amount, 0);
       weeks.push({
         label:      ws.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"2-digit"}),
         listed:     wListed.length,
@@ -8318,7 +8267,6 @@ function History({ listings, stockData, liveData }) {
         profit:     wSold.reduce((a,l)=>a+(l.profit||0),0),
         stockSpend: wStock.reduce((a,s)=>a+(s.totalCost||s.sellable*s.costPer||0),0),
         activeLive,
-        profitKept,
       });
     }
     weeks.reverse(); // newest first
@@ -8350,7 +8298,6 @@ function History({ listings, stockData, liveData }) {
     if (col==="listed")     return r.listed > 0 ? r.listed : <span style={{color:"var(--txd)"}}>—</span>;
     if (col==="sold")       return r.sold > 0 ? <span style={{fontWeight:700}}>{r.sold}</span> : <span style={{color:"var(--txd)"}}>—</span>;
     if (col==="revenue")    return renderNum(r.revenue, "var(--gn)");
-    if (col==="profit")     return r.profitKept > 0 ? renderNum(r.profitKept, "var(--gn)") : <span style={{color:"var(--txd)"}}>—</span>;
     if (col==="stockSpend") return renderNum(r.stockSpend, "var(--ac)");
     if (col==="activeLive") return r.activeLive > 0 ? <span style={{fontWeight:700}}>{r.activeLive}</span> : <span style={{color:"var(--txd)"}}>—</span>;
     return "—";
@@ -8361,7 +8308,6 @@ function History({ listings, stockData, liveData }) {
     if (col==="sold")       return r.sold > 0 ? <span style={{fontWeight:700}}>{r.sold}</span> : <span style={{color:"var(--txd)"}}>—</span>;
     if (col==="listed")     return r.listed > 0 ? <span style={{fontWeight:700}}>{r.listed}</span> : <span style={{color:"var(--txd)"}}>—</span>;
     if (col==="proceeds")   return renderNum(r.proceeds, "var(--gn)");
-    if (col==="profit")     return r.profitKept > 0 ? renderNum(r.profitKept, "var(--gn)") : <span style={{color:"var(--txd)"}}>—</span>;
     if (col==="stockQty")   return r.stockQty > 0 ? r.stockQty : <span style={{color:"var(--txd)"}}>—</span>;
     if (col==="stockSpend") return renderNum(r.stockSpend, "var(--ac)");
     return "—";
@@ -9274,9 +9220,9 @@ function STabData({ listings, stockData, setListings, setStockData, handleExport
 }
 
 const TIER_PRICING = {
-  core: { name:"Core", price:7.99,  limit:300  },
-  plus: { name:"Plus", price:12.99, limit:500  },
-  pro:  { name:"Pro",  price:19.99, limit:1000 },
+  core: { name:"Core", price:7.99,  limit:1000 },
+  plus: { name:"Plus", price:12.99, limit:2500 },
+  pro:  { name:"Pro",  price:19.99, limit:5000 },
 };
 const TIER_FEATURES = [
   { label:"Dashboard & Goals",                        tiers:["core","plus","pro"] },
@@ -9285,7 +9231,7 @@ const TIER_FEATURES = [
   { label:"Mark as Listed / Sold",                     tiers:["core","plus","pro"] },
   { label:"Shipping tracker",                          tiers:["core","plus","pro"] },
   { label:"Live Data (basic)",                         tiers:["core","plus","pro"] },
-  { label:"Pending payouts & Profit Pocketed",         tiers:["pro"] },
+  { label:"Pending payouts",         tiers:["pro"] },
   { label:"Price Calculator",                          tiers:["core","plus","pro"] },
   { label:"Version History",                           tiers:["core","plus","pro"] },
   { label:"Velocity tags",                             tiers:["plus","pro"] },
@@ -9304,7 +9250,7 @@ function STabBilling({ workspace, listingCount, onNavContact }) {
   const [comingSoon, setComingSoon] = useState(false);
   const tier = workspace?.tier || "core";
   const isInternal = tier === "internal";
-  const limit = isInternal ? Infinity : (TIER_PRICING[tier]?.limit ?? 300);
+  const limit = isInternal ? Infinity : (TIER_PRICING[tier]?.limit ?? 1000);
   const pct = isInternal ? 0 : Math.min(100, Math.round((listingCount/limit)*100));
 
   const handleUpgradeClick = (targetTier) => {
@@ -10445,8 +10391,6 @@ export default function App() {
     if (data.goals) {
       setWeeklyGoal(data.goals.weekly   || "");
       setMonthlyGoal(data.goals.monthly || "");
-      if (data.goals.liveData?.profitLog)
-        setLiveData(prev => ({ ...prev, profitLog: data.goals.liveData.profitLog }));
     }
     setStorageStatus("saved");
   }, []);

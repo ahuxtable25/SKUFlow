@@ -11,7 +11,7 @@ create table workspaces (
   name          text not null,                          -- e.g. "Archive District"
   tier          text not null default 'core'            -- 'core' | 'plus' | 'pro' | 'internal'
                 check (tier in ('core','plus','pro','internal')),
-  listing_limit integer not null default 300,           -- enforced in app
+  listing_limit integer not null default 1000,           -- enforced in app
   created_at    timestamptz not null default now(),
   is_active     boolean not null default true           -- false = suspended
 );
@@ -169,7 +169,7 @@ begin
   end if;
 
   insert into workspaces (name, tier, listing_limit)
-  values (p_workspace_name, 'core', 300)
+  values (p_workspace_name, 'core', 1000)
   returning id into new_workspace_id;
 
   insert into profiles (id, workspace_id, full_name, email, is_admin, onboarding_complete)
